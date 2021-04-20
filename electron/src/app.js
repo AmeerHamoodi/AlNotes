@@ -55,7 +55,7 @@ class Main {
             storage.saveAll();
             console.log("test....");
         });
-        app.on('window-all-closed', function() {
+        app.on('window-all-closed', function () {
             if (process.platform !== 'darwin') app.quit()
         })
     }
@@ -71,7 +71,7 @@ class Main {
                 contextIsolation: false
             }
         });
-        this.mainWindow.loadURL(path.join(__dirname, "/client/index.html"));
+        this.mainWindow.loadURL(path.join(__dirname, "/public/index.html"));
         this.mainWindow.removeMenu();
         this.notesController = new NotesController(ipcMain, this.mainWindow, storage, settings);
         this.classController = new ClassController(ipcMain, this.mainWindow, storage, settings);

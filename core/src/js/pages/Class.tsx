@@ -6,23 +6,15 @@ import List from "../components/List";
 import Navbar from "../components/Navbar";
 import CreateNew from "../components/CreateNew";
 
-//INTERFACES
-import { UserStoreInterface } from "../stores/interfaces";
-
-
-interface ClassPropsInterface {
-    userStore: UserStoreInterface
-}
-
-const Class = observer(({ userStore }: ClassPropsInterface) => {
+const Class = observer(() => {
     return (
         <>
-            <Navbar backLink="/home" username={userStore.username}></Navbar>
-            <h1 style={{textAlign: "center"}} className="mt">Units:</h1>
+            <Navbar backLink="/home" username={"Development"}></Navbar>
+            <h1 style={{ textAlign: "center" }} className="mt">Units:</h1>
             <List data={
                 [
                     {
-                        title: "Hello World", 
+                        title: "Hello World",
                         url: "/404"
                     },
                     {
@@ -45,7 +37,7 @@ const Class = observer(({ userStore }: ClassPropsInterface) => {
                         title: "This is a test",
                         url: "/404"
                     }
-            ]
+                ]
             }></List>
             <CreateNew title="Create new unit" creationText="Create unit" onClick={console.log("heheh")}>
                 <div className="field">

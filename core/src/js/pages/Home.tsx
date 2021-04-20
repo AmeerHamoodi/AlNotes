@@ -12,16 +12,12 @@ import ClassesStore from "../stores/classesStore";
 
 
 //INTERFACES
-import { ClassesStoreInterface, UserStoreInterface } from "../stores/interfaces";
-
-interface HomePageInterface {
-    userStore: UserStoreInterface
-}
+import { ClassesStoreInterface } from "../stores/interfaces";
 
 
 const classesStore: ClassesStoreInterface = new ClassesStore();
 
-const Home = observer(({ userStore }: HomePageInterface) => {
+const Home = observer(() => {
     const [toReload, setToReload] = useState(false);
 
 
@@ -37,13 +33,13 @@ const Home = observer(({ userStore }: HomePageInterface) => {
         $("#classname").val("");
     };
 
-    const deleteClass = async (id:string) => {
+    const deleteClass = async (id: string) => {
         await classesStore.deleteClass(id);
     }
 
     return (
         <>
-            <Navbar backLink="/" username={userStore.username}></Navbar>
+            <Navbar backLink="/" username={"Development"}></Navbar>
             <h1 style={{ textAlign: "center" }}>Classes:</h1>
             {
                 classesStore.classesLoaded ?

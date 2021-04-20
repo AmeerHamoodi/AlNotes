@@ -41,6 +41,7 @@ class ClassesStore implements ClassesStoreInterface {
      * Sets the two properties
      */
     async getClasses() {
+        /*
         try {
             const data = await API.getClasses();
             
@@ -60,6 +61,34 @@ class ClassesStore implements ClassesStoreInterface {
             this.errorContent.occured = true;
             this.errorContent.data = e.message;
         }
+        */
+        this.classes = [
+            {
+                name: "test",
+                link: "/404",
+                openMessage: "Open Class",
+                deleteMessage: "Delete Class"
+            },
+            {
+                name: "Hello",
+                link: "/404",
+                openMessage: "Open Class",
+                deleteMessage: "Delete Class"
+            },
+            {
+                name: "Another one",
+                link: "/404",
+                openMessage: "Open Class",
+                deleteMessage: "Delete Class"
+            },
+            {
+                name: "Here",
+                link: "/404",
+                openMessage: "Open Class",
+                deleteMessage: "Delete Class"
+            }
+        ];
+        this.classesLoaded = true;
     }
     /**
      * Creates class from name
@@ -91,7 +120,7 @@ class ClassesStore implements ClassesStoreInterface {
     }
 
     async deleteClass(id: string) {
-        if(typeof id !== "string") {
+        if (typeof id !== "string") {
             this.errorContent = {
                 occured: true,
                 data: "There was a store error"
@@ -107,7 +136,7 @@ class ClassesStore implements ClassesStoreInterface {
 
                 this.getClasses();
 
-            } catch(e) {
+            } catch (e) {
                 this.errorContent = {
                     occured: true,
                     data: e.message

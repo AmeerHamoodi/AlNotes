@@ -8,7 +8,7 @@ sass.compiler = require("node-sass");
 const run = [0, 0, 0, 0];
 
 const js = () => {
-    run[0] == 0 && gulp.watch("", js);
+    run[0] == 0 && gulp.watch("./core/src/js/**", js);
 
     run[0] = 1;
 
@@ -30,10 +30,14 @@ const css = () => {
 
     run[2] = 1;
 
-    return gulp.src("./core/src/css/**")
+    return gulp.src("./core/src/css/*.scss")
         .pipe(sass().on("error", sass.logError))
         .pipe(gulp.dest("./dist/public/css/"))
 };
+
+const fonts = () => {
+    return gulp.src("./core/src/css/*.ttf").pipe(gulp.dest("./dist/public/css"))
+}
 
 const image = () => {
     return gulp.src("./core/src/imgs/**")
@@ -45,6 +49,11 @@ const vendor = () => {
         .pipe(gulp.dest("./dist/public/vendor"))
 }
 
+const electronPipe = () => {
+    return gulp.src("./electron/src/**")
+        .pipe(gulp.dest("./dist/"))
+}
+
 const electron = () => {
     exec("npm start", (error, output) => {
         if (error) throw error;
@@ -54,4 +63,4 @@ const electron = () => {
 }
 
 
-module.exports.default = gulp.parallel(vendor, js, html, css, image, electron);
+module.exports.default = gulp.parallel(vendor, fonts, js, html, css, image, gulp.series(electronPipe, electron));

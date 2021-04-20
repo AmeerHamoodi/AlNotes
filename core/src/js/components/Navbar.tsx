@@ -13,7 +13,7 @@ const Navbar = (props: NavbarProps) => {
                 <i className="icon arrow left"></i>
             </Link>
             <Link to="/home" className="ui item">
-                <img src="/imgs/logo-plain-desktop_v2.png" alt="Logo" />
+                <img src="./imgs/logo-plain-desktop_v2.png" alt="Logo" />
             </Link>
             <Link className="ui icon item" to="/home">
                 <i className="home icon"></i>
