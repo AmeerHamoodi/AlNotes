@@ -39,7 +39,6 @@ class Main {
             const webContents = this.mainWindow.webContents;
 
             webContents.once("dom-ready", () => {
-                console.log("showing...");
                 this.mainWindow.show();
                 this.showUpdateMessage();
                 this.autoupdate();
@@ -53,7 +52,6 @@ class Main {
     beforeCloseFunctions() {
         app.once("before-quit", () => {
             storage.saveAll();
-            console.log("test....");
         });
         app.on('window-all-closed', function () {
             if (process.platform !== 'darwin') app.quit()
@@ -105,7 +103,6 @@ class Main {
         if (typeof currentVersion == "undefined") store.set("version", app.getVersion());
 
         if (currentVersion !== app.getVersion()) {
-            console.log("true");
             this.mainWindow.webContents.send("showJustUpdated");
             store.set("version", app.getVersion());
         }

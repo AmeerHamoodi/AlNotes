@@ -2,9 +2,12 @@ import { action, observable, makeObservable } from "mobx";
 
 import { ClassesStoreInterface } from "./interfaces";
 import { ClassFrontInterface } from "./helpers/interfaces";
+import ClassResponseError from "./helpers/ClassResponseError";
 
 import API from "../api";
 import ClassFront, { ConstParams } from "./helpers/ClassFront";
+
+const { ipcRenderer } = window.require("electron");
 
 /**
  * Classes store class, contains all of the data regarding classes
@@ -31,118 +34,44 @@ class ClassesStore implements ClassesStoreInterface {
             classes: observable,
             classesLoaded: observable,
             errorContent: observable,
-            getClasses: action,
-            createClass: action,
-            deleteClass: action
+            _classListener: action
 
         });
+
+        this._classListener();
     }
+
     /**
-     * Sets the two properties
+     * Listens to the getAllClasses:response data
      */
-    async getClasses() {
-        /*
-        try {
-            const data = await API.getClasses();
-            
-            const loopData = JSON.parse(JSON.parse(data).message);
-
-            const arrayData: ClassFrontInterface[] = [];
-            
-            loopData.forEach((item: ConstParams) => {
-                const newItem = new ClassFront(item);
-                arrayData.push(newItem);
-            });
-
-            this.classes = arrayData;
-            this.classesLoaded = true;
-            
-        } catch(e) {
-            this.errorContent.occured = true;
-            this.errorContent.data = e.message;
-        }
-        */
-        this.classes = [
-            {
-                name: "test",
-                link: "/404",
-                openMessage: "Open Class",
-                deleteMessage: "Delete Class"
-            },
-            {
-                name: "Hello",
-                link: "/404",
-                openMessage: "Open Class",
-                deleteMessage: "Delete Class"
-            },
-            {
-                name: "Another one",
-                link: "/404",
-                openMessage: "Open Class",
-                deleteMessage: "Delete Class"
-            },
-            {
-                name: "Here",
-                link: "/404",
-                openMessage: "Open Class",
-                deleteMessage: "Delete Class"
-            }
-        ];
-        this.classesLoaded = true;
-    }
-    /**
-     * Creates class from name
-     * @param {string} className The name of the class you want to create
-     */
-    async createClass(className: string) {
-        if (typeof className !== "string") {
-            this.errorContent = {
-                occured: true,
-                data: "Class name must be a string"
-            };
-        } else {
+    _classListener() {
+        ipcRenderer.on("getAllClasses:response", (event: object, data: object[]) => {
             try {
-                await API.createClass({ className });
+                if (!Array.isArray(data)) throw new ClassResponseError("Invalid response data");
 
-                this.errorContent = {
-                    occured: false,
-                    data: ""
-                };
+                const frontViewArray: ClassFrontInterface[] = Array.isArray(data) &&
+                    data.map((item: ConstParams) => new ClassFront(item));
 
-                this.getClasses();
-            } catch (e) {
-                this.errorContent = {
-                    occured: true,
-                    data: e.message
-                };
-            }
-        }
-    }
-
-    async deleteClass(id: string) {
-        if (typeof id !== "string") {
-            this.errorContent = {
-                occured: true,
-                data: "There was a store error"
-            };
-        } else {
-            try {
-                await API.deleteClass(id);
-
-                this.errorContent = {
-                    occured: false,
-                    data: ""
-                };
-
-                this.getClasses();
+                this.classes = frontViewArray;
+                this.classesLoaded = true;
+                this.errorContent.occured = false;
+                this.errorContent.data = "";
 
             } catch (e) {
-                this.errorContent = {
-                    occured: true,
-                    data: e.message
+                if (e.name !== "Class Response Error") {
+                    this.errorContent.occured = true;
+                    this.errorContent.data = "Unknown error occurred with the getAllClasses:response data!";
+                } else {
+                    this.errorContent.occured = true;
+                    this.errorContent.data = e.message;
                 }
             }
-        }
+        })
+    }
+
+    public getClasses() {
+        ipcRenderer.send("getAllClasses");
+        console.log("called");
     }
 }
 

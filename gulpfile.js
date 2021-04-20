@@ -55,7 +55,7 @@ const electronPipe = () => {
 }
 
 const electron = () => {
-    exec("npm start", (error, output) => {
+    exec("npm start", { maxBuffer: 1024 * 500 }, (error, output) => {
         if (error) throw error;
 
         console.log(output);

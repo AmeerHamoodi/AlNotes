@@ -25,17 +25,6 @@ const Home = observer(() => {
         classesStore.getClasses();
     }, [toReload]);
 
-    const createNewClass = () => {
-        const className = $("#classname").val();
-
-        classesStore.createClass(className.toString());
-
-        $("#classname").val("");
-    };
-
-    const deleteClass = async (id: string) => {
-        await classesStore.deleteClass(id);
-    }
 
     return (
         <>
@@ -43,10 +32,10 @@ const Home = observer(() => {
             <h1 style={{ textAlign: "center" }}>Classes:</h1>
             {
                 classesStore.classesLoaded ?
-                    <CardsContainer data={classesStore.classes} generalFunction={deleteClass}></CardsContainer> :
+                    <CardsContainer data={classesStore.classes} generalFunction={() => 0}></CardsContainer> :
                     <h1 style={{ textAlign: "center" }}>Loading...</h1>
             }
-            <CreateNew title="Create new class" onClick={createNewClass}
+            <CreateNew title="Create new class" onClick={() => 0}
                 creationText="Create class">
                 <div className="field">
                     <label>Class name:</label>

@@ -34,7 +34,6 @@ class UserSettings {
             store.set("userSettings", JSON.stringify(this.settings));
         } else {
             this.settings = JSON.parse(store.get("userSettings"));
-            console.log(this.settings);
         }
     }
     get size() {

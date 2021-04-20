@@ -19,7 +19,6 @@ class DataStorage {
             store.set("appData", JSON.stringify(data));
             this.db = JSON.parse(store.get("appData"));
         } else {
-            console.log(store.get("appData"));
             this.db = JSON.parse(store.get("appData"));
             this.db = this._patchData(this.db);
         }
@@ -136,10 +135,9 @@ class DataStorage {
         return false;
     }
     getNoteById(className, unitName, id) {
-        console.log("unitname", unitName);
         className = this.formatClassName(className);
         let ob = this.db.classes[className].units[unitName.toLowerCase()].notes;
-        console.log(this.db.classes[className].units, unitName)
+
         for (let key in ob) {
             if (id == ob[key].id) {
                 return ob[key];
@@ -174,7 +172,6 @@ class DataStorage {
     createClass(className) {
         let temp = this.formatClassName(className);
         if (!this.classExists(temp)) {
-            console.log(temp, className);
             this.db.classes[temp] = {
                 name: className,
                 textbooks: [],
@@ -193,7 +190,6 @@ class DataStorage {
         if (this.classExists(classroom)) {
             this.db.classes[classroom].formulaSheet += params + "${$$$}";
             this.saveAll();
-            console.log(this.db.classes[classroom].formulaSheet)
         } else {
             console.log("Class doesn't exist");
             return false;
@@ -254,7 +250,6 @@ class DataStorage {
         if (this.classExists(classroom)) {
             let array = this.db.classes[classroom].textbooks;
             let i = array.indexOf(array.find(item => item.name == name));
-            console.log(i)
             array.splice(i, 1);
             this.saveAll();
         }
@@ -283,7 +278,6 @@ class DataStorage {
         return typeof this.db.classes[className].units[name] !== "undefined";
     }
     newUnit(className, name) {
-        console.log(className, name);
         const classroom = className.toLowerCase();
         if (!this.unitExists(classroom, name)) {
             this.db.classes[classroom].units[name.toLowerCase()] = {
