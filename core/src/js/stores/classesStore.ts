@@ -2,12 +2,21 @@ import { action, observable, makeObservable } from "mobx";
 
 import { ClassesStoreInterface } from "./interfaces";
 import { ClassFrontInterface } from "./helpers/interfaces";
-import ClassResponseError from "./helpers/ClassResponseError";
 
-import API from "../api";
+
 import ClassFront, { ConstParams } from "./helpers/ClassFront";
 
+import ClassResponseError from "./helpers/ClassResponseError";
+import ClassStoreError from "./helpers/ClassStoreError";
+
 const { ipcRenderer } = window.require("electron");
+console.log(ipcRenderer);
+
+declare global {
+    interface Window {
+        ipcRenderer: any
+    }
+}
 
 /**
  * Classes store class, contains all of the data regarding classes
@@ -41,6 +50,22 @@ class ClassesStore implements ClassesStoreInterface {
         this._classListener();
     }
 
+    _handleError(e: Error) {
+        switch (e.name) {
+            case "Class Response Error":
+                this.errorContent.occured = true;
+                this.errorContent.data = `[Response Error]: ${e.message}`;
+                break;
+            case "Class Store Error":
+                this.errorContent.occured = true;
+                this.errorContent.data = `[Store Error]: ${e.message}`;
+                break;
+            default:
+                this.errorContent.occured = true;
+                this.errorContent.data = "Unknown error occurred with classesStore.createClass!";
+        }
+    }
+
     /**
      * Listens to the getAllClasses:response data
      */
@@ -58,21 +83,28 @@ class ClassesStore implements ClassesStoreInterface {
                 this.errorContent.data = "";
 
             } catch (e) {
-                if (e.name !== "Class Response Error") {
-                    this.errorContent.occured = true;
-                    this.errorContent.data = "Unknown error occurred with the getAllClasses:response data!";
-                } else {
-                    this.errorContent.occured = true;
-                    this.errorContent.data = e.message;
-                }
+                this._handleError(e);
             }
         })
     }
-
+    /**
+     * Sends request to electron backend for class data
+     */
     public getClasses() {
         ipcRenderer.send("getAllClasses");
-        console.log("called");
     }
+
+    public createClass(className: string) {
+        try {
+            if(typeof className !== "string") throw new ClassStoreError("Class name must be a string!");
+
+            ipcRenderer.send("newClass", className);
+
+        } catch(e) {
+            this._handleError(e);
+        }
+    }
+
 }
 
 export default ClassesStore;

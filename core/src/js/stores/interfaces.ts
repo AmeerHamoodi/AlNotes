@@ -6,7 +6,8 @@ interface ClassesStoreInterface {
         data: any
     },
     _classListener: () => void,
-    getClasses: () => void
+    getClasses: () => void,
+    createClass: (className: string) => void
 };
 
 export { ClassesStoreInterface };

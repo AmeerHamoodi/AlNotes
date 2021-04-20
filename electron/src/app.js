@@ -53,7 +53,7 @@ class Main {
         app.once("before-quit", () => {
             storage.saveAll();
         });
-        app.on('window-all-closed', function () {
+        app.on('window-all-closed', function() {
             if (process.platform !== 'darwin') app.quit()
         })
     }

@@ -25,6 +25,12 @@ const Home = observer(() => {
         classesStore.getClasses();
     }, [toReload]);
 
+    const createClass = () => {
+        const className = $("#classname").val().toString();
+        classesStore.createClass(className);
+        $("#classname").val("");
+    }
+
 
     return (
         <>
@@ -35,7 +41,7 @@ const Home = observer(() => {
                     <CardsContainer data={classesStore.classes} generalFunction={() => 0}></CardsContainer> :
                     <h1 style={{ textAlign: "center" }}>Loading...</h1>
             }
-            <CreateNew title="Create new class" onClick={() => 0}
+            <CreateNew title="Create new class" onClick={createClass}
                 creationText="Create class">
                 <div className="field">
                     <label>Class name:</label>
