@@ -1,15 +1,22 @@
 {
-    "compilerOptions": {
+  "compilerOptions": {
+      "jsx": "react",
       "module": "commonjs",
       "noImplicitAny": true,
+      "outDir": "./dist/public/",
+      "preserveConstEnums": true,
+      "removeComments": true,
       "sourceMap": true,
-      "outDir": "dist",
-      "baseUrl": ".",
-      "paths": {
-        "*": ["node_modules/*"]
-      }
-    },
-    "include": [
-      "electron/**"
-    ]
-  }
+      "target": "es5",
+      "incremental": true,
+      "esModuleInterop": true,
+      "allowSyntheticDefaultImports": true,
+      "experimentalDecorators": true,
+      "emitDecoratorMetadata": true,
+      "useDefineForClassFields": true
+  },
+  "exclude": [
+    "electron",
+    "node_modules"
+  ]
+}

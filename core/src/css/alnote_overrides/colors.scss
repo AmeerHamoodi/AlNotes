@@ -1,0 +1,61 @@
+$default: #199CFF;
+$darker_default: #1F5FFF;
+$danger: #E43535;
+$background: #fcfcfc;
+$red: $danger;
+$outline: $darker_default;
+:root {
+    --red: $danger;
+    --default: $default;
+    --danger: $red;
+    --primary: $default;
+}
+
+body {
+    background-color: $background;
+}
+
+.appView {
+    background-color: white !important;
+}
+
+.quill {
+    background-color: white !important;
+}
+
+.quill>.ql-container.ql-snow>.ql-editor>p,
+h1,
+h2,
+h3,
+div,
+span,
+b,
+strong,
+em {
+    font-family: Arial, Helvetica, sans-serif !important;
+}
+
+.red {
+    background-color: $danger !important;
+}
+
+.primary {
+    background-color: $default !important;
+}
+
+.primary_s {
+    background-color: $darker_default !important;
+}
+
+input:focus {
+    border: 2px solid $darker_default !important;
+}
+
+span.date {
+    font-weight: bold !important;
+}
+
+div.ui.items>.item>.content>a.header:hover,
+div.ui.card>div.content>a.header:hover {
+    color: $default !important;
+}

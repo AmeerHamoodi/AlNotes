@@ -1,0 +1,33 @@
+.ui.button {
+    border-radius: 3px !important;
+    border: none !important;
+    box-shadow: none !important;
+    transition: 0.1s ease;
+    font-family: "Main" !important;
+}
+
+.ui.button.attached.bottom {
+    margin-top: 0.5em !important;
+    margin-bottom: 0.5em !important;
+    box-shadow: none !important;
+}
+
+.ui.button.primary_s {
+    color: white !important;
+}
+
+.ui.button.primary_s:hover {
+    background-color: #0041e3 !important;
+}
+
+.ui.button.primary:hover {
+    background-color: #0077d1 !important;
+}
+
+.ui.button.danger:hover {
+    background-color: #cc0000 !important;
+}
+
+.ui.button.red:hover {
+    background-color: #cc0000 !important;
+}

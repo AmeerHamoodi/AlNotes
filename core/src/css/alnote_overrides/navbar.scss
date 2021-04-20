@@ -1,0 +1,13 @@
+.ui.top.attached.menu {
+    border: none !important;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+
+.ui.top .icon.item {
+    font-size: 1.4em;
+    padding: .42857143em 1.14285714em !important;
+}
+
+.ui.top .item:before {
+    width: 0;
+}
