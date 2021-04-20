@@ -6,6 +6,8 @@ interface ClassesStoreInterface {
         data: any
     },
     _classListener: () => void,
+    _errorListener: () => void,
+    _handleError: (e: Error) => void,
     getClasses: () => void,
     createClass: (className: string) => void
 };

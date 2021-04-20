@@ -25,34 +25,6 @@ class DataStorage {
 
     }
     _patchData(data) {
-        const expectedOverAllStructure = {
-            classes: {
-                "name": {
-                    name: "",
-                    units: {},
-                    textbooks: [],
-                    meetings: [],
-                    labs: [],
-                    formulaSheet: ""
-                }
-            }
-        };
-        const expectedUnits = {
-            units: {
-                name: "",
-                notes: {}
-            }
-        };
-        const expectedNotes = {
-            notes: {
-                "id": {
-                    name: "",
-                    id: "",
-                    content: ""
-                }
-            }
-        };
-
         if (typeof data.classes !== "undefined") {
             const classes = data.classes;
             for (let i in classes) {
@@ -167,7 +139,7 @@ class DataStorage {
     }
     classExists(className) {
         className = this.formatClassName(className);
-        return typeof this.db.classes[className] !== "undefined";
+        return className in this.db.classes;
     }
     createClass(className) {
         let temp = this.formatClassName(className);

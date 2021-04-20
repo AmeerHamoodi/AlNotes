@@ -1,4 +1,4 @@
-import { action, observable, makeObservable } from "mobx";
+import { action, observable, makeObservable, runInAction } from "mobx";
 
 import { ClassesStoreInterface } from "./interfaces";
 import { ClassFrontInterface } from "./helpers/interfaces";
@@ -43,14 +43,18 @@ class ClassesStore implements ClassesStoreInterface {
             classes: observable,
             classesLoaded: observable,
             errorContent: observable,
-            _classListener: action
+            _classListener: action,
+            _errorListener: action,
+            _handleError: action
 
         });
 
         this._classListener();
+        this._errorListener()
     }
 
     _handleError(e: Error) {
+        console.log(e);
         switch (e.name) {
             case "Class Response Error":
                 this.errorContent.occured = true;
@@ -77,16 +81,31 @@ class ClassesStore implements ClassesStoreInterface {
                 const frontViewArray: ClassFrontInterface[] = Array.isArray(data) &&
                     data.map((item: ConstParams) => new ClassFront(item));
 
-                this.classes = frontViewArray;
-                this.classesLoaded = true;
-                this.errorContent.occured = false;
-                this.errorContent.data = "";
 
+                runInAction(() => {
+                    this.classes = frontViewArray;
+                    this.classesLoaded = true;
+                    this.errorContent.occured = false;
+                    this.errorContent.data = "";
+                })
+            
             } catch (e) {
                 this._handleError(e);
             }
         })
     }
+    /**
+     * Listens for any errors on electron backend
+     */
+    _errorListener() {
+        ipcRenderer.on("classThread:error", (event: object, data: string) => {
+            runInAction(() => {
+                this.errorContent.occured = true;
+                this.errorContent.data = data;
+            });            
+        })
+    }
+
     /**
      * Sends request to electron backend for class data
      */

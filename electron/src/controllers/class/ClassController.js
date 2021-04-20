@@ -38,7 +38,7 @@ module.exports = class ClassController {
             const storage = this.storage;
 
             ipcMain.on("newClass", (eve, args) => {
-                storage.createClass(args);
+                if (storage.createClass(args) === false) return this.mainWindow.webContents.send("classThread:error", `Class ${args} already exists`);
                 storage.saveAll();
 
                 this.mainWindow.webContents.send("getAllClasses:response", storage.getClasses());
