@@ -7,7 +7,9 @@ interface ClassFrontInterface {
 
 interface UnitFrontInterface {
     name: string,
-    link: string
+    link: string,
+    classroomName?: string,
+    deleteFunction?: (className: string, unitName: string) => void
 }
 
 export { ClassFrontInterface, UnitFrontInterface };

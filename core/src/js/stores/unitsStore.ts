@@ -52,7 +52,7 @@ class UnitsStore extends DefaultStore implements UnitsStoreInterface {
                     this.errorContent.occured = false;
                     this.errorContent.data = "";
                 })
-            
+
             } catch (e) {
                 this._handleError(e);
             }
@@ -65,10 +65,10 @@ class UnitsStore extends DefaultStore implements UnitsStoreInterface {
      */
     public getUnits(className: string) {
         try {
-            if(typeof className !== "string") throw new StoreError("Invalid class name!");
+            if (typeof className !== "string") throw new StoreError("Invalid class name!");
 
             ipcRenderer.send("getAllUnits", className);
-        } catch(e) {
+        } catch (e) {
             this._handleError(e);
         }
     }
@@ -81,11 +81,26 @@ class UnitsStore extends DefaultStore implements UnitsStoreInterface {
 
     public createUnit(className: string, unitName: string) {
         try {
-            if(typeof className !== "string" || typeof unitName !== "string") throw new StoreError("Invalid unit or class name!");
+            if (typeof className !== "string" || typeof unitName !== "string") throw new StoreError("Invalid unit or class name!");
 
-            ipcRenderer.send("createNewUnit", {className, unitName});
-            console.log({className, unitName})
-        } catch(e) {
+            ipcRenderer.send("createNewUnit", { className, unitName });
+        } catch (e) {
+            this._handleError(e);
+        }
+    }
+
+    /**
+     * Deletes unit using className
+     * @param className Name of class
+     * @param unitName Name of unit
+     */
+
+    public deleteUnit(className: string, unitName: string) {
+        try {
+            if (typeof className !== "string" || typeof unitName !== "string") throw new StoreError("Invalid unit or class name");
+
+            ipcRenderer.send("deleteUnit", { className, unitName });
+        } catch (e) {
             this._handleError(e);
         }
     }

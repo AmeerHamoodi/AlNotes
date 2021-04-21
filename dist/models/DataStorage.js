@@ -266,12 +266,12 @@ class DataStorage {
         }
         this.saveAll();
     }
-    deleteUnit(className, name) {
+    deleteUnit(className, unitName) {
         const classroom = className.toLowerCase();
-        if (this.unitExists(classroom, name.toLowerCase())) {
-            delete this.db.classes[classroom].units[name.toLowerCase()];
-            this.saveAll();
-        }
+        if (!this.unitExists(classroom, unitName.toLowerCase())) return false;
+
+        delete this.db.classes[classroom].units[unitName.toLowerCase()];
+        this.saveAll();
     }
     getAllUnits(className) {
         const classroom = className.toLowerCase();

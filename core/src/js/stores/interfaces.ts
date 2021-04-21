@@ -24,7 +24,8 @@ interface UnitsStoreInterface {
     _errorListener: () => void,
     _handleError: (e: Error) => void,
     getUnits: (className: string) => void,
-    createUnit: (className: string, unitName: string) => void
+    createUnit: (className: string, unitName: string) => void,
+    deleteUnit: (className: string, unitName: string) => void
 }
 
 export { ClassesStoreInterface, UnitsStoreInterface };

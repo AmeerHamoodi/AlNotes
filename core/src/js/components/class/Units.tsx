@@ -7,7 +7,9 @@ import { UnitsStoreInterface } from "../../stores/interfaces";
 
 interface UnitInterface {
     name: string,
-    link: string
+    link: string,
+    classroomName?: string,
+    deleteFunction?: (className: string, unitName: string) => void,
 }
 
 interface UnitsInterface {
@@ -16,13 +18,24 @@ interface UnitsInterface {
     className: string
 }
 
-const Units = ({unitsData, unitsStore, className}: UnitsInterface) => {
+const Units = ({ unitsData, unitsStore, className }: UnitsInterface) => {
 
     const createUnit = () => {
         const unitName = $("#unitname").val();
         unitsStore.createUnit(className, unitName.toString());
-        $("#unitname").val("");    
+        $("#unitname").val("");
     }
+
+    const deleteUnit = (className: string, unitName: string) => {
+        unitsStore.deleteUnit(className, unitName);
+    };
+
+    unitsData = unitsData.map(item => {
+        item.deleteFunction = deleteUnit;
+        item.classroomName = className;
+
+        return item;
+    });
 
     return (
         <>
