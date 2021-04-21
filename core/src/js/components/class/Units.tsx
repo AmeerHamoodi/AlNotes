@@ -27,7 +27,7 @@ const Units = ({ unitsData, unitsStore, className }: UnitsInterface) => {
     }
 
     const deleteUnit = (className: string, unitName: string) => {
-        unitsStore.deleteUnit(className, unitName);
+        if (confirm("Are you sure you want to delete this unit? This is irreversiable")) unitsStore.deleteUnit(className, unitName);
     };
 
     unitsData = unitsData.map(item => {

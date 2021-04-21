@@ -1,10 +1,7 @@
 const Store = require('electron-store');
+const { v4: uuid } = require("uuid");
 
 const store = new Store();
-
-/**
- * ! TODO: Refactor this to have proper error handling
- */
 
 class DataStorage {
     constructor() {
@@ -121,182 +118,233 @@ class DataStorage {
         this.saveAll();
     }
     /**
-     * 
+     * Saves all of the data to persistent storage.
      */
     saveAll() {
         store.set("appData", JSON.stringify(this.db));
     }
+    /**
+     * Gets all of the notes
+     * @param {string} className Name of class
+     * @param {string} unitName Name of unit
+     * @returns {object} All of the notes associated with class and unit
+     */
     getNotes(className, unitName) {
         className = this.formatClassName(className);
-        let ob = this.db.classes[className].units[unitName.toLowerCase()].notes;
-        let arr = [];
-        for (let key in ob) {
-            arr.push(ob[key]);
-        }
-
-        return arr;
+        return Object.values(this.db.classes[className].units[unitName.toLowerCase()].notes);
     }
-    getNoteByName(className, unitName, name) {
-        className = this.formatClassName(className);
-        let ob = this.db.classes[className].units[unitName.toLowerCase()].notes;
-        for (let key in ob) {
-            if (name == ob[key].name) {
-                return ob[key];
-            }
-        }
-
-        return false;
-    }
+    /**
+     * Gets note by id
+     * @param {string} className Name of class
+     * @param {string} unitName Name of unit
+     * @param {string} id Id of note
+     * @returns {boolean | object} Will return false if note can't be found, otherwise just the note
+     */
     getNoteById(className, unitName, id) {
         className = this.formatClassName(className);
-        let ob = this.db.classes[className].units[unitName.toLowerCase()].notes;
 
-        for (let key in ob) {
-            if (id == ob[key].id) {
-                return ob[key];
-            }
-        }
+        if (!id in this.db.classes[className].units[unitName.toLowerCase()].notes) return false;
 
-        return false;
+        return this.db.classes[className].units[unitName.toLowerCase()].notes[id];
     }
+    /**
+     * 
+     * @returns {string} Random note id
+     */
     generateNoteId() {
-        let id = Math.random().toString(36).slice(2);
-
-        return id;
+        return uuid();
     }
+    /**
+     * Deletes note by id
+     * @param {string} className Name of class
+     * @param {string} unitName Name of unit
+     * @param {string} id Id of note
+     * @returns {boolean | undefined} Will return nothing if successful, will return false if failed
+     */
     deleteNote(className, unitName, id) {
         className = this.formatClassName(className);
-        if (this.noteExists(className, unitName.toLowerCase(), id)) {
-            delete this.db.classes[className].units[unitName.toLowerCase()].notes[id];
-            this.saveAll();
-        } else {
-            console.error("ERROR, ID NOT FOUND");
-        }
+
+        if (!this.noteExists(className, unitName.toLowerCase(), id)) return false;
+
+        delete this.db.classes[className].units[unitName.toLowerCase()].notes[id];
+        this.saveAll();
     }
+    /**
+     * Deletes class by name
+     * @param {string} className Name of class
+     * @returns {boolean | undefined} Will return nothing if successful, will return false if failed
+     */
     deleteClass(className) {
         const classroom = this.formatClassName(className);
 
-        if (this.classExists(classroom)) {
-            delete this.db.classes[className];
-            this.saveAll();
-        } else {
-            return false;
-        }
+        if (!this.classExists(classroom)) return false;
+
+        delete this.db.classes[classroom];
+        this.saveAll();
 
     }
+    /**
+     * Checks if class exists
+     * @param {string} className Name of class
+     * @returns {boolean} Whether class exists or not
+     */
     classExists(className) {
         className = this.formatClassName(className);
         return className in this.db.classes;
     }
+    /**
+     * Creates class using className
+     * @param {string} className 
+     * @returns {boolean | undefined} Will return false if failed, nothing if successful
+     */
     createClass(className) {
         let temp = this.formatClassName(className);
-        if (!this.classExists(temp)) {
-            this.db.classes[temp] = {
-                name: className,
-                textbooks: [],
-                labs: [],
-                meetings: [],
-                units: {},
-                formulaSheet: ""
-            }
-        } else {
-            console.log("Class already exists");
-            return false;
-        }
+
+        if (this.classExists(temp)) return false;
+
+        this.db.classes[temp] = {
+            name: className,
+            textbooks: [],
+            labs: [],
+            meetings: [],
+            units: {},
+            formulaSheet: ""
+        };
+
+        this.saveAll();
     }
-    updateFormulaSheet(classname, params) {
-        const classroom = classname.toLowerCase();
-        if (this.classExists(classroom)) {
-            this.db.classes[classroom].formulaSheet += params + "${$$$}";
-            this.saveAll();
-        } else {
-            console.log("Class doesn't exist");
-            return false;
-        }
+    /**
+     * Adds textbook to class
+     * @param {string} className Name of class 
+     * @param {object} params Params of textbook
+     * @returns {boolean | undefined} Returns false if failed
+     */
+    addTextbook(className, params) {
+        const classroom = className.toLowerCase();
+        if (!this.classExists(classroom)) return false;
+
+        this.db.classes[classroom].textbooks.push(params);
     }
-    getFormulaSheet(classname) {
-        const classroom = classname.toLowerCase();
-        if (this.classExists(classroom)) {
-            console.log(this.db.classes[classroom].formulaSheet)
-            return this.db.classes[classroom].formulaSheet;
-        }
+    /**
+     * Adds lab to class
+     * @param {string} className Name of class 
+     * @param {object} params Params of lab
+     * @returns {boolean | undefined} Returns false if failed
+     */
+    addLab(className, params) {
+        const classroom = className.toLowerCase();
+        if (!this.classExists(classroom)) return false;
+
+        this.db.classes[classroom].labs.push(params);
     }
-    addTextbook(classname, params) {
-        console.log("tb", classname, params);
-        const classroom = classname.toLowerCase();
-        if (this.classExists(classroom)) {
-            this.db.classes[classroom].textbooks.push(params);
-        } else {
-            console.log("Class doesn't exist");
-            return false;
-        }
+    /**
+     * Adds meeting to class
+     * @param {string} className Name of class 
+     * @param {object} params Params of meeting
+     * @returns {boolean | undefined} Returns false if failed
+     */
+    addMeeting(className, params) {
+        const classroom = className.toLowerCase();
+        if (!this.classExists(classroom)) return false;
+
+        this.db.classes[classroom].meetings.push(params);
     }
-    addLab(classname, params) {
-        const classroom = classname.toLowerCase();
-        if (this.classExists(classroom)) {
-            this.db.classes[classroom].labs.push(params);
-        } else {
-            console.log("Class doesn't exists");
-            return false;
-        }
-    }
-    addMeeting(classname, params) {
-        const classroom = classname.toLowerCase();
-        if (this.classExists(classroom)) {
-            this.db.classes[classroom].meetings.push(params);
-        } else {
-            console.log("Class doesn't exists");
-            return false;
-        }
-    }
+    /**
+     * Gets all of the classes
+     * @returns {array} Array of class objects
+     */
     getClasses() {
-        let arr = [];
-        for (let key in this.db.classes) {
-            arr.push(this.db.classes[key]);
-        }
-        return arr;
+        return Object.values(this.db.classes);
     }
-    getClassByName(name) {
-        for (let key in this.db.classes) {
-            if (name.toLowerCase() == this.db.classes[key].name.toLowerCase()) {
-                return this.db.classes[key];
-            }
-        }
-        return false;
+    /**
+     * Gets class by name
+     * @param {string} className Name of class
+     * @returns {boolean | object} Returns false if failed or class
+     */
+    getClassByName(className) {
+        if (!this.classExists(className)) return false;
+        return this.classes[className.toLowerCase()];
     }
-    deleteTextbook(classname, name) {
-        const classroom = classname.toLowerCase();
-        if (this.classExists(classroom)) {
-            let array = this.db.classes[classroom].textbooks;
-            let i = array.indexOf(array.find(item => item.name == name));
-            array.splice(i, 1);
-            this.saveAll();
-        }
-    }
-    deleteLab(classname, name) {
-        const classroom = classname.toLowerCase();
-        if (this.classExists(classroom)) {
-            let array = this.db.classes[classroom].labs;
-            let i = array.indexOf(array.find(item => item.name == name));
+    /**
+     * Deletes textbook
+     * @param {string} className Name of class 
+     * @param {string} name Name of textbook
+     * @returns {boolean | undefined} Will return false if failed
+     */
+    deleteTextbook(className, name) {
+        const classroom = className.toLowerCase();
+        let array = this.db.classes[classroom].textbooks;
 
-            array.splice(i, 1);
-            this.saveAll();
-        }
-    }
-    deleteMeeting(classname, name) {
-        const classroom = classname.toLowerCase();
-        if (this.classExists(classroom)) {
-            let array = this.db.classes[classroom].meetings;
-            let i = array.indexOf(array.find(item => item.name == name));
+        if (!this.classExists(classroom)) return false;
 
-            array.splice(i, 1);
+        try {
+            array.splice(array.indexOf(array.find(item => item.name == name)), 1);
+
+            this.db.classes[classroom].textbooks = array;
             this.saveAll();
+        } catch (e) {
+            return false;
         }
     }
+    /**
+     * Deletes lab
+     * @param {string} className Name of class 
+     * @param {string} name Name of lab
+     * @returns {boolean | undefined} Will return false if failed
+     */
+    deleteLab(className, name) {
+        const classroom = className.toLowerCase();
+        let array = this.db.classes[classroom].labs;
+
+        if (!this.classExists(classroom)) return false;
+
+        try {
+            array.splice(array.indexOf(array.find(item => item.name == name)), 1);
+
+            this.db.classes[classroom].labs = array;
+            this.saveAll();
+        } catch (e) {
+            return false;
+        }
+    }
+    /**
+     * Deletes meeting
+     * @param {string} className Name of class 
+     * @param {string} name Name of meeting
+     * @returns {boolean | undefined} Will return false if failed
+     */
+    deleteMeeting(className, name) {
+        const classroom = className.toLowerCase();
+        let array = this.db.classes[classroom].meetings;
+
+        if (!this.classExists(classroom)) return false;
+
+        try {
+            array.splice(array.indexOf(array.find(item => item.name == name)), 1);
+
+            this.db.classes[classroom].meetings = array;
+            this.saveAll();
+        } catch (e) {
+            return false;
+        }
+    }
+    /**
+     * Checks if unit exists
+     * @param {string} className Name of class
+     * @param {string} name Name of unit
+     * @returns {boolean}
+     */
     unitExists(className, name) {
-        return typeof this.db.classes[className.toLowerCase()].units[name.toLowerCase()] !== "undefined";
+        return className.toLowerCase() in this.db.classes &&
+            name.toLowerCase() in this.db.classes[className.toLowerCase()].units;
     }
-    newUnit({ className, unitName }) {
+    /**
+     * Creates new unit
+     * @param {string} className Name of class
+     * @param {string} unitName Name of unit
+     * @return {boolean | undefined} False if unit exists, otherwise nothing
+     */
+    newUnit(className, unitName) {
         const classroom = className.toLowerCase();
 
         if (this.unitExists(classroom, unitName)) return false;
@@ -307,6 +355,12 @@ class DataStorage {
         }
         this.saveAll();
     }
+    /**
+     * Deletes unit
+     * @param {string} className Name of class
+     * @param {string} unitName Name of unit
+     * @returns {boolean | undefined} False if unit does not exist, nothing otherwise
+     */
     deleteUnit(className, unitName) {
         const classroom = className.toLowerCase();
         if (!this.unitExists(classroom, unitName.toLowerCase())) return false;
@@ -314,6 +368,11 @@ class DataStorage {
         delete this.db.classes[classroom].units[unitName.toLowerCase()];
         this.saveAll();
     }
+    /**
+     * Gets all units by class name
+     * @param {string} className Name of class
+     * @returns {boolean | array} False if fails otherwise will return array of units
+     */
     getAllUnits(className) {
         const classroom = className.toLowerCase();
 
@@ -321,11 +380,22 @@ class DataStorage {
 
         return Object.values(this.db.classes[classroom].units);
     }
+    /**
+     * Gets unit by class name and unit name
+     * @param {string} className Name of class
+     * @param {string} unitName Name of unit
+     * @returns {boolean | object} False if fails or object of unit
+     */
     getUnit(className, unitName) {
         const classroom = className.toLowerCase();
 
+        if (!this.unitExists(className, unitName)) return false;
+
         return this.db.classes[classroom].units[unitName.toLowerCase()];
     }
+    /*
+///////////////// BETA METHODS ////////////////////
+    */
     exportClasses() {
         return JSON.stringify(Object.values(this.db.classes));
     }

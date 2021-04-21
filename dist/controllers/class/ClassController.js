@@ -135,7 +135,7 @@ module.exports = class ClassController {
         ipcMain.on("createNewUnit", (eve, args) => {
             if (!"unitName" in args || !"className" in args) return this.mainWindow.webContents.send("classThread:error", `Class and unit not included`);
 
-            const result = storage.newUnit(args);
+            const result = storage.newUnit(args.className, args.unitName);
             if (result === false) return this.mainWindow.webContents.send("classThread:error", "Unit already exists");
 
             this.mainWindow.webContents.send("getAllUnits:response", storage.getAllUnits(args.className))
