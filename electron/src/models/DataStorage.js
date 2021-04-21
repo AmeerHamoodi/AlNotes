@@ -2,10 +2,6 @@ const Store = require('electron-store');
 
 const store = new Store();
 
-/**
- * ! TODO: Refactor this to have proper error handling
- */
-
 class DataStorage {
     constructor() {
         this.db = null;
@@ -136,6 +132,9 @@ class DataStorage {
         className = this.formatClassName(className);
         return Object.values(this.db.classes[className].units[unitName.toLowerCase()].notes);
     }
+    /*
+////// ! REFACTOR ALL OF THIS STUFF
+    */
     getNoteByName(className, unitName, name) {
         className = this.formatClassName(className);
         let ob = this.db.classes[className].units[unitName.toLowerCase()].notes;
