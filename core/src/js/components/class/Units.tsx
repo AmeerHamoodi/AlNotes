@@ -39,7 +39,7 @@ const Units = ({ unitsData, unitsStore, className }: UnitsInterface) => {
 
     return (
         <>
-            <h1 style={{ textAlign: "center" }} className="mt">Units:</h1>
+            <h2 style={{ textAlign: "center" }} className="mt">Units:</h2>
             <List data={unitsData}></List>
             <CreateNew title="Create new unit" creationText="Create unit" onClick={createUnit}>
                 <div className="field">

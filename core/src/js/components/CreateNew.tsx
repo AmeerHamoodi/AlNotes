@@ -19,6 +19,7 @@ const CreateNew = (props: CreateNewProps) => {
                     className="ui button primary"
                     style={{ marginTop: "1em" }}
                     onClick={props.onClick}
+                    id="createNew"
                 >
                     {props.creationText}
                 </div>

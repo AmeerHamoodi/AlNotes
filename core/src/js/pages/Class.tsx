@@ -20,7 +20,7 @@ interface ClassProps {
 
 const unitsStore = new UnitsStore();
 
-const Class = observer((props : ClassProps) => {
+const Class = observer((props: ClassProps) => {
 
     useEffect(() => {
         unitsStore.getUnits(props.match.params.name);
@@ -28,10 +28,11 @@ const Class = observer((props : ClassProps) => {
 
     return (
         <>
-            <Navbar backLink="/home" username={"Development"}></Navbar>
+            <Navbar backLink="/" username={"Development"}></Navbar>
+            <h1 style={{ textAlign: "center" }}>{props.match.params.name}</h1>
             {
-                unitsStore.unitsLoaded ? <Units unitsData={unitsStore.units} unitsStore={unitsStore} className={props.match.params.name}></Units> 
-                : <h3 style={{textAlign: "center"}}>Loading units</h3>
+                unitsStore.unitsLoaded ? <Units unitsData={unitsStore.units} unitsStore={unitsStore} className={props.match.params.name}></Units>
+                    : <h3 style={{ textAlign: "center" }}>Loading units</h3>
             }
             <Error toShow={unitsStore.errorContent.occured} textToShow={unitsStore.errorContent.data}></Error>
         </>

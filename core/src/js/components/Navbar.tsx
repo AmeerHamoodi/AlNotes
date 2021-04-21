@@ -9,9 +9,9 @@ interface NavbarProps {
 const Navbar = (props: NavbarProps) => {
     return (
         <nav className="ui top attached menu">
-            <a className="ui icon item">
+            <Link to={props.backLink || "/"} className="ui icon item">
                 <i className="icon arrow left"></i>
-            </a>
+            </Link>
             <Link to="/" className="ui item">
                 <img src="./imgs/logo-plain-desktop_v2.png" alt="Logo" />
             </Link>
