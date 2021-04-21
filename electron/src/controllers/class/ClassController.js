@@ -112,41 +112,33 @@ module.exports = class ClassController {
             const storage = this.storage;
 
             ipcMain.on("deleteClass", (ev, args) => {
-                storage.deleteClass(args.className);
+                if (storage.deleteClass(args) === false) return this.mainWindow.webContents.send("classThread:error", `Class ${args} doesn't exists`);
+
+                this.mainWindow.webContents.send("getAllClasses:response", storage.getClasses());
             })
         }
         /**
          * Listens to all unit events.
          */
-        //TODO: REFACTOR THIS LOL
     _unitListeners() {
         const ipcMain = this.ipcMain;
         const storage = this.storage;
-        const mainWindow = this.mainWindow;
 
         ipcMain.on("getAllUnits", (eve, args) => {
-            const results = storage.getAllUnits(args);
-            mainWindow.webContents.send("allUnits", results);
-        });
-        let unit = "";
+            const allUnits = storage.getAllUnits(args);
 
-        ipcMain.on("getUnit", (eve, args) => {
-            if (unit !== args.unitName) {
-                const results = storage.getUnit(args.className, args.unitName);
+            if (allUnits === false) return this.mainWindow.webContents.send("classThread:error", `Class ${args} doesn't exists`);
 
-                mainWindow.webContents.send("unit", results);
-                unit = args.unitName;
-            }
-
+            this.mainWindow.webContents.send("getAllUnits:response", allUnits);
         });
 
-        ipcMain.on("resetUnit", (eve, args) => {
-            unit = "";
+        ipcMain.on("createNewUnit", (eve, args) => {
+            if (!"unitName" in args || !"className" in args) return this.mainWindow.webContents.send("classThread:error", `Class and unit not included`);
+
+            const result = storage.newUnit(args);
+            if (result === false) return this.mainWindow.webContents.send("classThread:error", "Unit already exists");
+
+            this.mainWindow.webContents.send("getAllUnits:response", storage.getAllUnits(args.className))
         })
-
-        ipcMain.on("newUnit", (eve, args) => {
-            storage.newUnit(args.className, args.unitName);
-            mainWindow.webContents.send("itemCreationCompleted");
-        });
     }
 }

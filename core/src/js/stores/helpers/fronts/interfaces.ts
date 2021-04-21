@@ -5,4 +5,9 @@ interface ClassFrontInterface {
     deleteMessage: string
 };
 
-export { ClassFrontInterface };
+interface UnitFrontInterface {
+    name: string,
+    link: string
+}
+
+export { ClassFrontInterface, UnitFrontInterface };

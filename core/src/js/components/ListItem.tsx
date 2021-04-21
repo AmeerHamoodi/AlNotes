@@ -2,21 +2,21 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 interface ListItemProps {
-    title?: string,
-    url: string
+    name?: string,
+    link: string
 }
 
 const ICONS = ["folder", "book"];
 
-const ListItem = ({title, url}: ListItemProps) => {
+const ListItem = ({name, link}: ListItemProps) => {
     return (
         <div className="item">
             <div className="ui tiny image">
                 <i className="big icon book"/>
             </div>
             <div className="middle aligned content">
-                <Link className="header" to={url || "/404"}>
-                    {title || ""}
+                <Link className="header" to={link || "/404"}>
+                    {name || ""}
                 </Link>
             </div>
             <div className="right aligned content" style={{marginRight: "3em"}}>
@@ -24,7 +24,7 @@ const ListItem = ({title, url}: ListItemProps) => {
                     <i className="trash icon"></i> 
                     Delete
                 </div>
-                <Link className="ui primary right floated button" to={url || "/404"}>
+                <Link className="ui primary right floated button" to={link || "/404"}>
                     <i className="plus icon"></i>
                     Open
                 </Link>

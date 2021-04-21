@@ -9,13 +9,13 @@ interface NavbarProps {
 const Navbar = (props: NavbarProps) => {
     return (
         <nav className="ui top attached menu">
-            <Link className="ui icon item" to={props.backLink}>
+            <a className="ui icon item">
                 <i className="icon arrow left"></i>
-            </Link>
-            <Link to="/home" className="ui item">
+            </a>
+            <Link to="/" className="ui item">
                 <img src="./imgs/logo-plain-desktop_v2.png" alt="Logo" />
             </Link>
-            <Link className="ui icon item" to="/home">
+            <Link className="ui icon item" to="/">
                 <i className="home icon"></i>
             </Link>
             <Link className="ui icon item" to="/settings">

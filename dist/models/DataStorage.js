@@ -133,9 +133,15 @@ class DataStorage {
         }
     }
     deleteClass(className) {
-        className = this.formatClassName(className);
-        delete this.db.classes[className];
-        this.saveAll();
+        const classroom = this.formatClassName(className);
+
+        if (this.classExists(classroom)) {
+            delete this.db.classes[className];
+            this.saveAll();
+        } else {
+            return false;
+        }
+
     }
     classExists(className) {
         className = this.formatClassName(className);
@@ -247,17 +253,18 @@ class DataStorage {
         }
     }
     unitExists(className, name) {
-        return typeof this.db.classes[className].units[name] !== "undefined";
+        return typeof this.db.classes[className.toLowerCase()].units[name.toLowerCase()] !== "undefined";
     }
-    newUnit(className, name) {
+    newUnit({ className, unitName }) {
         const classroom = className.toLowerCase();
-        if (!this.unitExists(classroom, name)) {
-            this.db.classes[classroom].units[name.toLowerCase()] = {
-                name: name,
-                notes: {}
-            }
-            this.saveAll();
+
+        if (this.unitExists(classroom, unitName)) return false;
+
+        this.db.classes[classroom].units[unitName.toLowerCase()] = {
+            name: unitName,
+            notes: {}
         }
+        this.saveAll();
     }
     deleteUnit(className, name) {
         const classroom = className.toLowerCase();
@@ -268,6 +275,8 @@ class DataStorage {
     }
     getAllUnits(className) {
         const classroom = className.toLowerCase();
+
+        if (!this.classExists(classroom)) return false;
 
         return Object.values(this.db.classes[classroom].units);
     }

@@ -12,12 +12,8 @@ const App = () => {
     return (
         <HashRouter>
             <Switch>
-                <Route path="/">
-                    <Home></Home>
-                </Route>
-                <Route path="/class/:id">
-                    <Class></Class>
-                </Route>
+                <Route path="/" exact render={params => <Home {... params}></Home>} />
+                <Route path="/class/:name" exact render={params => <Class {... params}></Class>} />
                 <Route path="/404" component={FOF}></Route>
                 <Redirect from="*" to="/404"></Redirect>
             </Switch>

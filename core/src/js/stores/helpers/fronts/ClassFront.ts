@@ -1,8 +1,7 @@
 import { ClassFrontInterface } from "./interfaces";
 
 interface ConstParams {
-    name: string,
-    id: string
+    name: string
 };
 
 export default class ClassFront implements ClassFrontInterface {
@@ -10,14 +9,12 @@ export default class ClassFront implements ClassFrontInterface {
     link: string;
     openMessage: string;
     deleteMessage: string;
-    id: string;
 
     constructor(data: ConstParams) {
         this.name = data.name;
-        this.link = `/class/${data.id}`;
+        this.link = `/class/${data.name}`;
         this.openMessage = "Open Class";
         this.deleteMessage = "Delete Class";
-        this.id = data.id;
     }
 }
 

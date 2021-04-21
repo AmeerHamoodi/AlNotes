@@ -1,50 +1,39 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { observer } from "mobx-react-lite";
 
-//COMPONENTS
-import List from "../components/List";
-import Navbar from "../components/Navbar";
-import CreateNew from "../components/CreateNew";
+//STORES
+import UnitsStore from "../stores/unitsStore";
 
-const Class = observer(() => {
+//COMPONENTS
+import Navbar from "../components/Navbar";
+import Error from "../components/Error";
+import Units from "../components/class/Units";
+
+//INTERFACES
+interface ClassProps {
+    match: {
+        params: {
+            name: string
+        }
+    }
+}
+
+const unitsStore = new UnitsStore();
+
+const Class = observer((props : ClassProps) => {
+
+    useEffect(() => {
+        unitsStore.getUnits(props.match.params.name);
+    }, []);
+
     return (
         <>
             <Navbar backLink="/home" username={"Development"}></Navbar>
-            <h1 style={{ textAlign: "center" }} className="mt">Units:</h1>
-            <List data={
-                [
-                    {
-                        title: "Hello World",
-                        url: "/404"
-                    },
-                    {
-                        title: "This is a test",
-                        url: "/404"
-                    },
-                    {
-                        title: "This is a test",
-                        url: "/404"
-                    },
-                    {
-                        title: "This is a test",
-                        url: "/404"
-                    },
-                    {
-                        title: "This is a test",
-                        url: "/404"
-                    },
-                    {
-                        title: "This is a test",
-                        url: "/404"
-                    }
-                ]
-            }></List>
-            <CreateNew title="Create new unit" creationText="Create unit" onClick={console.log("heheh")}>
-                <div className="field">
-                    <label>Unit name:</label>
-                    <input type="text" id="unitname" placeholder="Enter the unit name" />
-                </div>
-            </CreateNew>
+            {
+                unitsStore.unitsLoaded ? <Units unitsData={unitsStore.units} unitsStore={unitsStore} className={props.match.params.name}></Units> 
+                : <h3 style={{textAlign: "center"}}>Loading units</h3>
+            }
+            <Error toShow={unitsStore.errorContent.occured} textToShow={unitsStore.errorContent.data}></Error>
         </>
     );
 });

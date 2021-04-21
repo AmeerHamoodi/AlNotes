@@ -3,8 +3,8 @@ import React, { useState } from "react";
 import ListItem from "./ListItem";
 
 interface ListItem {
-    title: string,
-    url: string
+    name: string,
+    link: string
 };
 
 interface ListProps {
@@ -33,7 +33,7 @@ const List = ({data}:ListProps) => {
             }
             <a onClick={updateState} className="cursor">{viewAll ? "View less" : "View all"}</a>
         </div>
-    ) : <h3 style={{textAlign: "center"}}>No content!</h3>
+    ) : <h3 style={{textAlign: "center"}}>No content</h3>
 };
 
 export default List;

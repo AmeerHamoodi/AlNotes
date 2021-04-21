@@ -17,7 +17,7 @@ import { ClassesStoreInterface } from "../stores/interfaces";
 
 const classesStore: ClassesStoreInterface = new ClassesStore();
 
-const Home = observer(() => {
+const Home = observer((props) => {
     const [toReload, setToReload] = useState(false);
 
 
@@ -29,6 +29,10 @@ const Home = observer(() => {
         const className = $("#classname").val().toString();
         classesStore.createClass(className);
         $("#classname").val("");
+    };
+
+    const deleteClass = (className: string) => {
+        classesStore.deleteClass(className);
     }
 
 
@@ -38,7 +42,7 @@ const Home = observer(() => {
             <h1 style={{ textAlign: "center" }}>Classes:</h1>
             {
                 classesStore.classesLoaded ?
-                    <CardsContainer data={classesStore.classes} generalFunction={() => 0}></CardsContainer> :
+                    <CardsContainer data={classesStore.classes} generalFunction={deleteClass}></CardsContainer> :
                     <h1 style={{ textAlign: "center" }}>Loading...</h1>
             }
             <CreateNew title="Create new class" onClick={createClass}
