@@ -11,19 +11,28 @@ class DataStorage {
         this.db = null;
         this._init();
     }
+    /**
+     * Sets the db value by fetching data from user storage
+     * @returns Simply returns to exit the function
+     */
     _init() {
-        if (typeof store.get("appData") == "undefined") {
+        if (typeof store.get("appData") === "undefined") {
             const data = {
                 classes: {}
             };
             store.set("appData", JSON.stringify(data));
-            this.db = JSON.parse(store.get("appData"));
-        } else {
-            this.db = JSON.parse(store.get("appData"));
-            this.db = this._patchData(this.db);
+            return this.db = JSON.parse(store.get("appData"));
         }
 
+        this.db = JSON.parse(store.get("appData"));
+        this.db = this._patchData(this.db);
+
     }
+    /**
+     * Patches the data such that older versions of AlNotes will still work
+     * @param {object} data DB object, essentially just this.db
+     * @returns Exit function
+     */
     _patchData(data) {
         if (typeof data.classes !== "undefined") {
             const classes = data.classes;
@@ -39,13 +48,28 @@ class DataStorage {
 
         return data;
     }
-    checkNote(className, unitName, id) {
-        className = this.formatClassName(className);
-        return typeof this.db.classes[className].units[unitName.toLowerCase()].notes[id] !== "undefined";
+    /**
+     * Checks if note exists
+     * @param {string} className Name of class
+     * @param {string} unitName Name of unit
+     * @param {string} id Id of note
+     * @returns {boolean} Exists or not
+     */
+    noteExists(className, unitName, id) {
+        return id in this.db.classes[className.toLowerCase()].units[unitName.toLowerCase()].notes;
     }
+    /**
+     * Formats class name
+     * @param {string} className Name of class
+     * @returns {string} Class name
+     */
     formatClassName(className) {
         return className.toLowerCase();
     }
+    /**
+     * Returns the current date on machine as a string
+     * @returns {string} Formatted date "M/d/Y"
+     */
     getDate() {
         let date = new Date();
 
@@ -57,9 +81,17 @@ class DataStorage {
 
         return stringed;
     }
+    /**
+     * Creates a new note
+     * @param {string} title Name of note
+     * @param {string} content Default content to be added to note
+     * @param {string} className Name of class
+     * @param {string} unitName Name of unit
+     * @returns {string | boolean} Will return false if note already exists otherwise will return the id
+     */
     newNote(title, content, className, unitName) {
         let id = this.generateNoteId();
-        if (!this.checkNote(className, unitName.toLowerCase(), id)) {
+        if (!this.noteExists(className, unitName.toLowerCase(), id)) {
             this.db.classes[className].units[unitName.toLowerCase()].notes[id] = {
                 content: content,
                 name: title,
@@ -68,32 +100,41 @@ class DataStorage {
             };
             this.saveAll();
             return id;
-        } else {
-            return false;
         }
+        return false;
     }
+    /**
+     * Updates note date, name and content
+     * @param {string} id Id of note
+     * @param {string} name Name of note
+     * @param {string} content Content of note
+     * @param {string} className Name of class
+     * @param {string} unitName Name of unit
+     */
     updateNote(id, name, content, className, unitName) {
         className = this.formatClassName(className);
 
         let note = this.db.classes[className].units[unitName.toLowerCase()].notes[id];
-        note.content = this.checkNote(className, unitName.toLowerCase(), id) ? content : note.content;
-        note.date = this.checkNote(className, unitName.toLowerCase(), id) ? this.getDate() : note.date;
+        note.content = this.noteExists(className, unitName.toLowerCase(), id) ? content : note.content;
+        note.date = this.noteExists(className, unitName.toLowerCase(), id) ? this.getDate() : note.date;
         note.name = name;
         this.saveAll();
     }
+    /**
+     * Saves all of the data to persistent storage.
+     */
     saveAll() {
-        let json = JSON.stringify(this.db);
-        store.set("appData", json);
+        store.set("appData", JSON.stringify(this.db));
     }
+    /**
+     * Gets all of the notes
+     * @param {string} className Name of class
+     * @param {string} unitName Name of unit
+     * @returns {object} All of the notes associated with class and unit
+     */
     getNotes(className, unitName) {
         className = this.formatClassName(className);
-        let ob = this.db.classes[className].units[unitName.toLowerCase()].notes;
-        let arr = [];
-        for (let key in ob) {
-            arr.push(ob[key]);
-        }
-
-        return arr;
+        return Object.values(this.db.classes[className].units[unitName.toLowerCase()].notes);
     }
     getNoteByName(className, unitName, name) {
         className = this.formatClassName(className);
@@ -125,7 +166,7 @@ class DataStorage {
     }
     deleteNote(className, unitName, id) {
         className = this.formatClassName(className);
-        if (this.checkNote(className, unitName.toLowerCase(), id)) {
+        if (this.noteExists(className, unitName.toLowerCase(), id)) {
             delete this.db.classes[className].units[unitName.toLowerCase()].notes[id];
             this.saveAll();
         } else {
