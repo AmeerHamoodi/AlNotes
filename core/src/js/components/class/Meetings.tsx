@@ -9,8 +9,7 @@ import { ClassItemsInterface } from "../../stores/interfaces";
 type ClassItem = {
     name: string,
     link: string,
-    classroomName?: string,
-    deleteFunction?: (className: string, itemName: string) => void,
+    deleteFunction?: () => void,
     icon?: string | "folder" | "book" | "flask" | "users"
 }
 
@@ -35,13 +34,6 @@ const Meetings = observer(({ classItemsStore, className }: UnitsPropsInterface) 
     }
 
     const meetings = classItemsStore.meetings.map((item: ClassItem) => {
-        item.deleteFunction = (classroomName) => {
-            if (confirm("Are you sure you want to delete this meeting? This action is irreversiable!")) {
-                classItemsStore.deleteClassItem(classroomName, "meeting", item.name);
-            }
-
-        };
-        item.classroomName = className;
         item.icon = "users";
 
         return item;

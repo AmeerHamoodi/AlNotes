@@ -2,16 +2,15 @@ import React from "react";
 import Card from "./Card";
 
 interface CardsContainerProps {
-    data: object[],
-    generalFunction: (id: string) => void
+    data: object[]
 }
 
-const CardsContainer = ({ data, generalFunction }: CardsContainerProps) => {
+const CardsContainer = ({ data }: CardsContainerProps) => {
     return (typeof data !== "undefined" && data.length > 0) ? (
         <div className="container mt" style={{ marginLeft: "2rem", marginRight: "2rem" }}>
             <div className="gridish-flow">
                 {
-                    data.map((item, index) => <Card {...item} key={`card_${index}`} deleteFunction={generalFunction}></Card>)
+                    data.map((item, index) => <Card {...item} key={`card_${index}`}></Card>)
                 }
             </div>
         </div>

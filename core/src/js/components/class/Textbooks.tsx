@@ -9,8 +9,7 @@ import { ClassItemsInterface } from "../../stores/interfaces";
 type ClassItem = {
     name: string,
     link: string,
-    classroomName?: string,
-    deleteFunction?: (className: string, itemName: string) => void,
+    deleteFunction?: () => void,
     icon?: string | "folder" | "book" | "flask" | "users"
 }
 
@@ -35,14 +34,7 @@ const Textbooks = observer(({ classItemsStore, className }: UnitsPropsInterface)
     }
 
     const textbooks = classItemsStore.textbooks.map((item: ClassItem) => {
-        item.deleteFunction = (classroomName) => {
-            if (confirm("Are you sure you want to delete this textbook? This action is irreversiable!")) {
-                classItemsStore.deleteClassItem(classroomName, "textbook", item.name);
-            }
-        };
-        item.classroomName = className;
         item.icon = "book";
-
         return item;
     });
 

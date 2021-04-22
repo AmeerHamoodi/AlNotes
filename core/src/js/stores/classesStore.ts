@@ -52,8 +52,13 @@ class ClassesStore extends DefaultStore implements ClassesStoreInterface {
             try {
                 if (!Array.isArray(data)) throw new ResponseError("Invalid response data");
 
-                const frontViewArray: ClassFrontInterface[] = Array.isArray(data) &&
-                    data.map((item: ConstParams) => new ClassFront(item));
+                const frontViewArray: ClassFrontInterface[] = data.map((item: ConstParams) => {
+                    const classroom: ClassFrontInterface = new ClassFront(item);
+                    classroom.deleteFunction = () => {
+                        if(confirm("Last chance, turn back now! This process can not be reversed!")) this.deleteClass(item.name);
+                    };
+                    return classroom;
+                })
 
 
                 runInAction(() => {

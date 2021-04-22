@@ -8,6 +8,7 @@ const { ipcRenderer } = window.require("electron");
 
 //INTERFACES
 import { ClassItemsInterface } from "./interfaces";
+import { ClassItemFrontInterface } from "./helpers/fronts/interfaces";
 
 type ClassItem = {
     name: string,
@@ -34,12 +35,14 @@ class ClassItemsStore extends DefaultStore implements ClassItemsInterface {
     labs: ClassItem[];
     meetings: ClassItem[];
     contentLoaded: boolean;
+    currentClass: string;
 
     constructor() {
         super();
         this.textbooks = [];
         this.labs = [];
         this.meetings = [];
+        this.currentClass = "";
         this.contentLoaded = false;
 
         makeObservable(this, {
@@ -61,12 +64,44 @@ class ClassItemsStore extends DefaultStore implements ClassItemsInterface {
             try {
                 if(typeof args !== "object" && args !== null) throw new ResponseError("Invalid response");
 
-                const { textbooks, labs, meetings } = args;
+                const textbooks: ClassItemFrontInterface[] = args.textbooks.map(item => {
+                    const textbook: ClassItemFrontInterface = new ClassItemFront(item.name, item.link);
+                    textbook.deleteFunction = () => {
+                        if (confirm("Are you sure you want to delete this item? This is irreversiable")) {
+                            this.deleteClassItem(this.currentClass, "textbook", item.name);
+                        }
+                    };
+
+                    return textbook;
+                });
+
+                const labs: ClassItemFrontInterface[] = args.labs.map(item => {
+                    const lab: ClassItemFrontInterface = new ClassItemFront(item.name, item.link);
+                    lab.deleteFunction = () => {
+                        if (confirm("Are you sure you want to delete this item? This is irreversiable")) {
+                            this.deleteClassItem(this.currentClass, "lab", item.name);
+                        }
+                    };
+
+                    return lab;
+                });
+
+                const meetings: ClassItemFrontInterface[] = args.meetings.map(item => {
+                    const meeting: ClassItemFrontInterface = new ClassItemFront(item.name, item.link);
+                    meeting.deleteFunction = () => {
+                        if (confirm("Are you sure you want to delete this item? This is irreversiable")) {
+                            this.deleteClassItem(this.currentClass, "meeting", item.name);
+                        } 
+                    };
+
+                    return meeting;
+                })
+
 
                 runInAction(() => {
-                    this.textbooks = textbooks.map(item => new ClassItemFront(item));
-                    this.labs = labs.map(item => new ClassItemFront(item));
-                    this.meetings = meetings.map(item => new  ClassItemFront(item));
+                    this.textbooks = textbooks;
+                    this.labs = labs;
+                    this.meetings = meetings;
 
                     this.contentLoaded = true;
                 });                
@@ -81,7 +116,9 @@ class ClassItemsStore extends DefaultStore implements ClassItemsInterface {
      */
     public getClassContent(className: string) {
         try {
-            if(typeof className !== "string") throw new StoreError("Invalid class name!");
+            if(typeof className !== "string" || className.length === 0 || !className.trim()) throw new StoreError("Invalid class name!");
+
+            this.currentClass = className;
 
             ipcRenderer.send("getClassContent", className);
         } catch(e) {

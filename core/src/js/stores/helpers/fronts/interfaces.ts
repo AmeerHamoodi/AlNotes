@@ -2,22 +2,31 @@ interface ClassFrontInterface {
     name: string,
     link: string,
     openMessage: string,
-    deleteMessage: string
+    deleteMessage: string,
+    deleteFunction?: () => void
 };
 
 interface UnitFrontInterface {
     name: string,
     link: string,
-    className?: string,
-    classroomName: string,
-    deleteFunction?: (className: string, unitName: string) => void
+    deleteFunction?: () => void
+    icon?: string | "folder" | "book" | "flask" | "users"
 };
 
 interface ClassItemFrontInterface {
     name: string,
     link: string,
-    classroomName?: string,
-    deleteFunction?: (className: string, itemName: string) => void
+    deleteFunction?: () => void
+};
+
+interface NoteFrontInterface {
+    name: string,
+    id: string,
+    link: string,
+    className?: string,
+    unitName?: string,
+    deleteFunction?: (className: string, unitName: string, id: string) => void
+    
 }
 
-export { ClassFrontInterface, UnitFrontInterface, ClassItemFrontInterface };
+export { ClassFrontInterface, UnitFrontInterface, ClassItemFrontInterface, NoteFrontInterface };

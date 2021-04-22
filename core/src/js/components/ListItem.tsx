@@ -4,17 +4,14 @@ import { Link } from "react-router-dom";
 interface ListItemProps {
     name: string,
     link: string,
-    classroomName?: string,
-    deleteFunction?: (classroomName: string, childName: string) => void,
+    deleteFunction?: () => void,
     icon?: string | "folder" | "book" | "flask" | "users"
 }
 
-const ListItem = ({ name, link, classroomName, deleteFunction, icon }: ListItemProps) => {
+const ListItem = ({ name, link, deleteFunction, icon }: ListItemProps) => {
 
     const internalDelete = () => {
-        if (typeof deleteFunction === "function"
-            && typeof classroomName === "string"
-            && typeof name === "string") deleteFunction(classroomName, name);
+        if (typeof deleteFunction === "function") deleteFunction();
     }
     return (
         <div className="item">

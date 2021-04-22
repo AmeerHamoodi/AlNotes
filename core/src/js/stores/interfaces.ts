@@ -1,3 +1,5 @@
+import { NoteFrontInterface } from "./helpers/fronts/interfaces";
+
 interface ClassesStoreInterface {
     classes: object[],
     classesLoaded: boolean,
@@ -48,6 +50,15 @@ interface ClassItemsInterface {
     getClassContent: (className: string) => void,
     createClassItem: (className: string, type: string | "textbook" | "lab" | "meeting", data: ClassItem) => void,
     deleteClassItem: (className: string, type: string | "textbook" | "lab" | "meeting", name: string) => void
+};
+
+interface NotesStoreInterface {
+    errorContent: {
+        occured: boolean,
+        data: any
+    },
+    notes: NoteFrontInterface[],
+    notesLoaded: boolean
 }
 
-export { ClassesStoreInterface, UnitsStoreInterface, ClassItemsInterface, ClassItem };
+export { ClassesStoreInterface, UnitsStoreInterface, ClassItemsInterface, ClassItem, NotesStoreInterface };

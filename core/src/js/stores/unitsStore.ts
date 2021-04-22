@@ -42,11 +42,17 @@ class UnitsStore extends DefaultStore implements UnitsStoreInterface {
             try {
                 if (!Array.isArray(data)) throw new ResponseError("Invalid response data");
 
+
                 const frontViewArray: UnitFrontInterface[] = Array.isArray(data) &&
-                    data.map((item: UnitFrontParams) => new UnitFront(item));
+                    data.map((item: UnitFrontParams) => new UnitFront(item, this.currentClass));
 
                 runInAction(() => {
-                    this.units = frontViewArray;
+                    this.units = frontViewArray.map((unit: UnitFrontInterface) => {
+                        unit.deleteFunction = () => {
+                            if (confirm("Are you sure you want to delete this unit? This is irreversiable")) this.deleteUnit(this.currentClass, unit.name);   
+                        };
+                        return unit;
+                    });
                     this.unitsLoaded = true;
                     this.errorContent.occured = false;
                     this.errorContent.data = "";

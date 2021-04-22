@@ -4,9 +4,9 @@ class ClassItemFront implements ClassItemFrontInterface {
     name: string;
     link: string;
 
-    constructor(params: { name: string, link: string }) {
-        this.name = params.name;
-        this.link = params.link;
+    constructor(selfName: string, link: string) {
+        this.name = selfName;
+        this.link = link;
     }
 }
 

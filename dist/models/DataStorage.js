@@ -131,6 +131,7 @@ class DataStorage {
          */
     getNotes(className, unitName) {
             className = this.formatClassName(className);
+            if (!this.classExists(className) || !this.unitExists(unitName)) return false;
             return Object.values(this.db.classes[className].units[unitName.toLowerCase()].notes);
         }
         /**

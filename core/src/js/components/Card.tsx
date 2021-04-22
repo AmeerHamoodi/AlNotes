@@ -6,13 +6,13 @@ interface CardPropsInterface {
     openMessage?: string,
     deleteMessage?: string,
     link?: string,
-    deleteFunction?: (className: string) => void
+    deleteFunction?: () => void
 }
 
 const Card = ({ name, openMessage, deleteMessage, link, deleteFunction }: CardPropsInterface) => {
 
     const deleteInternal = () => {
-        if(typeof deleteFunction == "function" && confirm("Are you sure you want to delete this? Please note this process is irreversible")) deleteFunction(name);
+        if(typeof deleteFunction == "function" && confirm("Are you sure you want to delete this? Please note this process is irreversible")) deleteFunction();
     }
 
     return (

@@ -31,10 +31,6 @@ const Home = observer((props) => {
         $("#classname").val("");
     };
 
-    const deleteClass = (className: string) => {
-        classesStore.deleteClass(className);
-    }
-
 
     return (
         <>
@@ -42,7 +38,7 @@ const Home = observer((props) => {
             <h1 style={{ textAlign: "center" }}>Classes:</h1>
             {
                 classesStore.classesLoaded ?
-                    <CardsContainer data={classesStore.classes} generalFunction={deleteClass}></CardsContainer> :
+                    <CardsContainer data={classesStore.classes}></CardsContainer> :
                     <h1 style={{ textAlign: "center" }}>Loading...</h1>
             }
             <CreateNew title="Create new class" onClick={createClass}

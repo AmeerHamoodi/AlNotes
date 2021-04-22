@@ -1,41 +1,54 @@
 class NotesController {
     constructor(ipcMain, mainWindow, storage, settings) {
-        this.ipcMain = ipcMain;
-        this.mainWindow = mainWindow;
-        this.storage = storage;
-        this.settings = settings;
-        this.saveCalled = false;
-    }
-    setAll() {
-        this._saveData();
-        this._deleteNote();
-        this._getNotes();
-        this._getSettings();
-        this._saveNote();
-    }
-    _saveData() {
-        const ipcMain = this.ipcMain;
-        const storage = this.storage;
-        const mainWindow = this.mainWindow;
-
-        ipcMain.on("saveData", (event, args) => {
-            if (typeof storage.getNoteById(args.className.toLowerCase(), args.unitName.toLowerCase(), args.id) == "object") {
-                storage.updateNote(args.id, args.name, args.content, args.className.toLowerCase(), args.unitName.toLowerCase());
-            }
+            this.ipcMain = ipcMain;
+            this.mainWindow = mainWindow;
+            this.storage = storage;
+            this.settings = settings;
             this.saveCalled = false;
-        });
+        }
+        /**
+         * Sets all listeners
+         */
+    setAll() {
+            this._saveData();
+            this._deleteNote();
+            this._getNotes();
+            this._getSettings();
+            this._saveNote();
+        }
+        /**
+         * Listens to any save related events
+         */
+    _saveData() {
+            const ipcMain = this.ipcMain;
+            const storage = this.storage;
+            const mainWindow = this.mainWindow;
 
-        ipcMain.on("newNote", (event, args) => {
-            mainWindow.send("id", storage.newNote(args.name, "", args.className.toLowerCase(), args.unitName.toLowerCase()));
-        })
-    }
+            ipcMain.on("saveData", (event, args) => {
+                if (typeof storage.getNoteById(args.className.toLowerCase(), args.unitName.toLowerCase(), args.id) == "object") {
+                    storage.updateNote(args.id, args.name, args.content, args.className.toLowerCase(), args.unitName.toLowerCase());
+                }
+                this.saveCalled = false;
+            });
+
+            ipcMain.on("newNote", (event, args) => {
+                mainWindow.send("id", storage.newNote(args.name, "", args.className.toLowerCase(), args.unitName.toLowerCase()));
+            })
+        }
+        /**
+         * Listens for any get based events
+         */
     _getNotes() {
         const ipcMain = this.ipcMain;
         const storage = this.storage;
         const mainWindow = this.mainWindow;
 
         ipcMain.once("getNotes", (event, args) => {
-            mainWindow.webContents.send("notes", storage.getNotes(args.className.toLowerCase()));
+            const response = storage.getNotes(args.className.toLowerCase());
+
+            if (!response) return mainWindow.webContents.send("classThread:error", "Unit or class does not exist");
+
+            mainWindow.webContents.send("getNotes:response", response);
         });
 
         ipcMain.on("getNoteById", (event, args) => {

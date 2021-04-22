@@ -6,7 +6,7 @@ interface ListItem {
     name: string,
     link: string,
     classroomName?: string,
-    deleteFunction?: (classroomName: string, childName: string) => void
+    deleteFunction?: () => void
 };
 
 interface ListProps {
