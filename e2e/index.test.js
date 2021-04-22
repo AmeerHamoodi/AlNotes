@@ -8,7 +8,7 @@ const app = new Application({
     args: [path.join(__dirname, "../dist/app.js")]
 });
 
-describe("Overall app test", function () {
+describe("Overall app test", function() {
     process.env.NODE_ENV = "TESTING";
     this.timeout(20000);
 
@@ -19,19 +19,20 @@ describe("Overall app test", function () {
             return app.stop();
         }
     });
-    it("Should show 1 window", async function () {
+
+    it("Should show 1 window", async function() {
         await app.client.waitUntilWindowLoaded();
         const count = await app.client.getWindowCount();
 
         assert(count === 1, "Incorrect number of windows");
     });
     //HOME PAGE TEST
-    it("Should create new classes", async function () {
+    it("Should create new classes", async function() {
         const classes = ["Bio1a03", "Chemistry Class"];
         await app.client.waitUntilWindowLoaded();
 
         for (let i = 0; i < classes.length; i++) {
-            const input = await (await app.client.$("#classname")).setValue(classes[i]);
+            await (await app.client.$("#classname")).setValue(classes[i]);
             const button = await app.client.$("#createNew");
             button.click();
         }
@@ -41,16 +42,30 @@ describe("Overall app test", function () {
 
         assert(cards.length === 2, "Could not create all classes!");
     });
-    it("Should delete all classes", async function () {
+
+    it("Should delete all classes", async function() {
         await app.client.waitUntilWindowLoaded();
-        const buttons = await app.client.$$(".ui.bottom.attached.button.red");
+
+        const classes = ["Bio1a03", "Chemistry Class"];
+        await app.client.waitUntilWindowLoaded();
+
+        for (let i = 0; i < classes.length; i++) {
+            await (await app.client.$("#classname")).setValue(classes[i]);
+            const button = await app.client.$("#createNew");
+            button.click();
+        }
+
+        const buttons = await app.client.$$("//div[@class='ui.bottom.attached.button.red']");
+
+        console.log(buttons);
 
         for (let i = 0; i < buttons.length; i++) {
             buttons[i].click();
         }
 
-        const newButtons = await app.client.$$(".ui.bottom.attached.button.red");
+        const newButtons = await app.client.$$("//div[@class='ui.bottom.attached.button.red']");
 
         assert(newButtons.length === 0, "Could not delete all classes");
     });
+
 })
