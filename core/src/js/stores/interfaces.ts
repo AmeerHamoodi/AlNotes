@@ -20,6 +20,7 @@ interface UnitsStoreInterface {
         occured: boolean,
         data: any
     },
+    currentClass: string,
     _unitsListener: () => void,
     _errorListener: () => void,
     _handleError: (e: Error) => void,

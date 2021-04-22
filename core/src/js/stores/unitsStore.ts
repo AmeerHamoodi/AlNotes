@@ -15,13 +15,15 @@ import StoreError from "./helpers/errors/StoreError";
 const { ipcRenderer } = window.require("electron")
 
 class UnitsStore extends DefaultStore implements UnitsStoreInterface {
-    units: UnitFront[];
+    units: UnitFrontInterface[];
     unitsLoaded: boolean;
+    currentClass: string;
 
     constructor() {
         super();
         this.units = [];
         this.unitsLoaded = false;
+        this.currentClass = "";
 
         makeObservable(this, {
             units: observable,
@@ -63,6 +65,7 @@ class UnitsStore extends DefaultStore implements UnitsStoreInterface {
     public getUnits(className: string) {
         try {
             if (typeof className !== "string") throw new StoreError("Invalid class name!");
+            this.currentClass = className;
 
             ipcRenderer.send("getAllUnits", className);
         } catch (e) {

@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { RouteComponentProps } from "react-router-dom";
 import { observer } from "mobx-react-lite";
 
 //STORES
@@ -13,47 +14,43 @@ import Textbooks from "../components/class/Textbooks";
 import Labs from "../components/class/Labs";
 import Meetings from "../components/class/Meetings";
 
-//INTERFACES
-interface ClassProps {
-    match: {
-        params: {
-            name: string
-        }
-    }
+//TYPES
+type RouteDetails = {
+    name: string
 }
 
 const unitsStore = new UnitsStore();
 const classItemsStore = new ClassItemsStore();
 
-const Class = observer((props: ClassProps) => {
+const Class = observer(({ match }: RouteComponentProps<RouteDetails>) => {
 
     useEffect(() => {
-        unitsStore.getUnits(props.match.params.name);
-        classItemsStore.getClassContent(props.match.params.name);
+        unitsStore.getUnits(match.params.name);
+        classItemsStore.getClassContent(match.params.name);
     }, []);
 
     return (
         <>
             <Navbar backLink="/" username={"Development"}></Navbar>
-            <h1 style={{ textAlign: "center" }}>{props.match.params.name}</h1>
+            <h1 style={{ textAlign: "center" }}>{match.params.name}</h1>
             {
-                unitsStore.unitsLoaded ? <Units unitsData={unitsStore.units} unitsStore={unitsStore} className={props.match.params.name}></Units>
+                unitsStore.unitsLoaded ? <Units unitsData={unitsStore.units} unitsStore={unitsStore} className={match.params.name}></Units>
                     : <h3 style={{ textAlign: "center" }}>Loading units</h3>
             }
             <Error toShow={unitsStore.errorContent.occured} textToShow={unitsStore.errorContent.data}></Error>
             {
-                classItemsStore.contentLoaded ? <Textbooks classItemsStore={classItemsStore} className={props.match.params.name}></Textbooks>
-                : <h3 style={{textAlign: "center"}}>Loading textbooks</h3>
+                classItemsStore.contentLoaded ? <Textbooks classItemsStore={classItemsStore} className={match.params.name}></Textbooks>
+                    : <h3 style={{ textAlign: "center" }}>Loading textbooks</h3>
             }
             <Error toShow={classItemsStore.errorContent.occured} textToShow={classItemsStore.errorContent.data}></Error>
             {
-                classItemsStore.contentLoaded ? <Labs classItemsStore={classItemsStore} className={props.match.params.name}></Labs>
-                : <h3 style={{textAlign: "center"}}>Loading labs</h3>
+                classItemsStore.contentLoaded ? <Labs classItemsStore={classItemsStore} className={match.params.name}></Labs>
+                    : <h3 style={{ textAlign: "center" }}>Loading labs</h3>
             }
             <Error toShow={classItemsStore.errorContent.occured} textToShow={classItemsStore.errorContent.data}></Error>
             {
-                classItemsStore.contentLoaded ? <Meetings classItemsStore={classItemsStore} className={props.match.params.name}></Meetings>
-                : <h3 style={{textAlign: "center"}}>Loading meetings</h3>
+                classItemsStore.contentLoaded ? <Meetings classItemsStore={classItemsStore} className={match.params.name}></Meetings>
+                    : <h3 style={{ textAlign: "center" }}>Loading meetings</h3>
             }
             <Error toShow={classItemsStore.errorContent.occured} textToShow={classItemsStore.errorContent.data}></Error>
         </>

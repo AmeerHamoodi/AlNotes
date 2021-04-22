@@ -9,7 +9,9 @@ interface UnitInterface {
     name: string,
     link: string,
     classroomName?: string,
+    className?: string,
     deleteFunction?: (className: string, unitName: string) => void,
+    icon?: string | "folder" | "book" | "flask" | "users"
 }
 
 interface UnitsInterface {
@@ -32,7 +34,8 @@ const Units = ({ unitsData, unitsStore, className }: UnitsInterface) => {
 
     unitsData = unitsData.map(item => {
         item.deleteFunction = deleteUnit;
-        item.classroomName = className;
+        item.className = className;
+        item.icon = "folder";
 
         return item;
     });

@@ -11,6 +11,7 @@ type ClassItem = {
     link: string,
     classroomName?: string,
     deleteFunction?: (className: string, itemName: string) => void,
+    icon?: string | "folder" | "book" | "flask" | "users"
 }
 
 interface UnitsPropsInterface {
@@ -35,9 +36,12 @@ const Textbooks = observer(({ classItemsStore, className }: UnitsPropsInterface)
 
     const textbooks = classItemsStore.textbooks.map((item: ClassItem) => {
         item.deleteFunction = (classroomName) => {
-            classItemsStore.deleteClassItem(classroomName, "textbook", item.name);
+            if (confirm("Are you sure you want to delete this textbook? This action is irreversiable!")) {
+                classItemsStore.deleteClassItem(classroomName, "textbook", item.name);
+            }
         };
         item.classroomName = className;
+        item.icon = "book";
 
         return item;
     });
