@@ -5,12 +5,11 @@ interface ListItemProps {
     name: string,
     link: string,
     classroomName?: string,
-    deleteFunction?: (classroomName: string, childName: string) => void
+    deleteFunction?: (classroomName: string, childName: string) => void,
+    icon?: string | "folder" | "book" | "flask" | "users"
 }
 
-const ICONS = ["folder", "book"];
-
-const ListItem = ({ name, link, classroomName, deleteFunction }: ListItemProps) => {
+const ListItem = ({ name, link, classroomName, deleteFunction, icon }: ListItemProps) => {
 
     const internalDelete = () => {
         if (typeof deleteFunction === "function"
@@ -20,7 +19,7 @@ const ListItem = ({ name, link, classroomName, deleteFunction }: ListItemProps) 
     return (
         <div className="item">
             <div className="ui tiny image">
-                <i className="big icon book" />
+                <i className={`big icon ${icon || "book"}`} />
             </div>
             <div className="middle aligned content">
                 <Link className="header" to={link || "/404"}>

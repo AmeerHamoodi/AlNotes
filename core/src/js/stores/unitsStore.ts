@@ -43,9 +43,6 @@ class UnitsStore extends DefaultStore implements UnitsStoreInterface {
                 const frontViewArray: UnitFrontInterface[] = Array.isArray(data) &&
                     data.map((item: UnitFrontParams) => new UnitFront(item));
 
-
-                console.log(frontViewArray);
-
                 runInAction(() => {
                     this.units = frontViewArray;
                     this.unitsLoaded = true;
