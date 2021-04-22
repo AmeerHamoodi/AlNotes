@@ -54,7 +54,6 @@ module.exports = class ClassController {
 
             ipcMain.on("getClassContent", (eve, args) => {
                 const result = storage.getClassByName(args);
-                console.log(args);
                 if (result === false) return mainWindow.webContents.send("classThread:error", "Class does not exist");
 
                 mainWindow.webContents.send("classContent", result);
@@ -87,24 +86,20 @@ module.exports = class ClassController {
     _deleteClassItem() {
             const ipcMain = this.ipcMain;
             const storage = this.storage;
+            const mainWindow = this.mainWindow;
 
-            ipcMain.on("deleteItem", (ev, args) => {
-                switch (args.type) {
-                    case "textbook":
-                        storage.deleteTextbook(args.className, args.name);
-                        break;
-                    case "lab":
-                        storage.deleteLab(args.className, args.name);
-                        break;
-                    case "meeting":
-                        storage.deleteMeeting(args.className, args.name);
-                        break;
-                    case "unit":
-                        storage.deleteUnit(args.className, args.name);
-                        break;
-                }
-            })
-
+            ipcMain.on("deleteClassItem:textbook", (ev, args) => {
+                storage.deleteTextbook(args.className, args.name);
+                mainWindow.webContents.send("classContent", storage.getClassByName(args.className));
+            });
+            ipcMain.on("deleteClassItem:lab", (ev, args) => {
+                storage.deleteLab(args.className, args.name);
+                mainWindow.webContents.send("classContent", storage.getClassByName(args.className));
+            });
+            ipcMain.on("deleteClassItem:meeting", (ev, args) => {
+                storage.deleteMeeting(args.className, args.name);
+                mainWindow.webContents.send("classContent", storage.getClassByName(args.className));
+            });
         }
         /**
          * Listens to events regarding deletion of a class.

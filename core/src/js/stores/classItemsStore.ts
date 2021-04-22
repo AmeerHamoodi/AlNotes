@@ -1,4 +1,4 @@
-import { action, observable, makeObservable } from "mobx";
+import { action, observable, makeObservable, runInAction } from "mobx";
 
 //LIBS
 import DefaultStore from "./DefaultStore";
@@ -63,13 +63,13 @@ class ClassItemsStore extends DefaultStore implements ClassItemsInterface {
 
                 const { textbooks, labs, meetings } = args;
 
-                this.textbooks = textbooks.map(item => new ClassItemFront(item));
-                this.labs = labs.map(item => new ClassItemFront(item));
-                this.meetings = meetings.map(item => new  ClassItemFront(item));
+                runInAction(() => {
+                    this.textbooks = textbooks.map(item => new ClassItemFront(item));
+                    this.labs = labs.map(item => new ClassItemFront(item));
+                    this.meetings = meetings.map(item => new  ClassItemFront(item));
 
-                console.log("UPDATE");
-
-                this.contentLoaded = true;
+                    this.contentLoaded = true;
+                });                
             } catch(e) {
                 this._handleError(e);
             }
@@ -101,6 +101,22 @@ class ClassItemsStore extends DefaultStore implements ClassItemsInterface {
             if(!("name" in data) || !("link" in data)) throw new StoreError("Name or link of item not included");
 
             ipcRenderer.send(`createNewClassItem:${type}`, {className, data});
+        } catch(e) {
+            this._handleError(e);
+        }
+    }
+    /**
+     * 
+     * @param className Name of class
+     * @param type Type of class item "textbook" | "lab" | "meeting"
+     * @param name Name of class item
+     */
+    public deleteClassItem(className: string, type: string | "textbook" | "lab" | "meeting", name: string) {
+        try {
+            if(!["textbook", "lab", "meeting"].includes(type) || typeof className !== "string" 
+            || typeof name !== "string") throw new StoreError("Invalid class name or type");
+
+            ipcRenderer.send(`deleteClassItem:${type}`, {className, name});
         } catch(e) {
             this._handleError(e);
         }

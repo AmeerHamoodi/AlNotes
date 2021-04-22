@@ -86,17 +86,18 @@ module.exports = class ClassController {
     _deleteClassItem() {
             const ipcMain = this.ipcMain;
             const storage = this.storage;
+            const mainWindow = this.mainWindow;
 
             ipcMain.on("deleteClassItem:textbook", (ev, args) => {
-                storage.deleteTextbook(args.clasName, args.name);
+                storage.deleteTextbook(args.className, args.name);
                 mainWindow.webContents.send("classContent", storage.getClassByName(args.className));
             });
             ipcMain.on("deleteClassItem:lab", (ev, args) => {
-                storage.deleteLab(args.clasName, args.name);
+                storage.deleteLab(args.className, args.name);
                 mainWindow.webContents.send("classContent", storage.getClassByName(args.className));
             });
             ipcMain.on("deleteClassItem:meeting", (ev, args) => {
-                storage.deleteMeeting(args.clasName, args.name);
+                storage.deleteMeeting(args.className, args.name);
                 mainWindow.webContents.send("classContent", storage.getClassByName(args.className));
             });
         }

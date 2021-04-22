@@ -31,12 +31,23 @@ const Labs = observer(({ classItemsStore, className }: UnitsPropsInterface) => {
 
         $("#labName").val("");
         $("#labLink").val("");
-    }
+    };
+
+    const labs = classItemsStore.labs.map((item: ClassItem) => {
+        item.deleteFunction = (classroomName) => {
+            classItemsStore.deleteClassItem(classroomName, "lab", item.name);
+        };
+        item.classroomName = className;
+
+        return item;
+    });
 
     return (
         <>
             <h2 style={{ textAlign: "center" }} className="mt">Labs:</h2>
-            <List data={classItemsStore.labs}></List>
+            {
+                classItemsStore.contentLoaded ? <List data={labs}></List> : ""
+            }
             <CreateNew title="Create new unit" creationText="Create unit" onClick={createLabInternal}>
                 <div className="field">
                     <label>Lab name:</label>

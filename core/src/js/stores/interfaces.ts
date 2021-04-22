@@ -45,7 +45,8 @@ interface ClassItemsInterface {
     _errorListener: () => void,
     _handleError: (e: Error) => void,
     getClassContent: (className: string) => void,
-    createClassItem: (className: string, type: string | "textbook" | "lab" | "meeting", data: ClassItem) => void
+    createClassItem: (className: string, type: string | "textbook" | "lab" | "meeting", data: ClassItem) => void,
+    deleteClassItem: (className: string, type: string | "textbook" | "lab" | "meeting", name: string) => void
 }
 
 export { ClassesStoreInterface, UnitsStoreInterface, ClassItemsInterface, ClassItem };

@@ -33,10 +33,21 @@ const Meetings = observer(({ classItemsStore, className }: UnitsPropsInterface) 
         $("#meetingLink").val("");
     }
 
+    const meetings = classItemsStore.meetings.map((item: ClassItem) => {
+        item.deleteFunction = (classroomName) => {
+            classItemsStore.deleteClassItem(classroomName, "meeting", item.name);
+        };
+        item.classroomName = className;
+
+        return item;
+    });
+
     return (
         <>
             <h2 style={{ textAlign: "center" }} className="mt">Meetings:</h2>
-            <List data={classItemsStore.meetings}></List>
+            {
+                classItemsStore.contentLoaded ? <List data={meetings}></List> : ""
+            }
             <CreateNew title="Create new unit" creationText="Create unit" onClick={createMeetingInternal}>
                 <div className="field">
                     <label>Meeting name:</label>

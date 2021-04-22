@@ -33,10 +33,21 @@ const Textbooks = observer(({ classItemsStore, className }: UnitsPropsInterface)
         $("#textbookLink").val("");
     }
 
+    const textbooks = classItemsStore.textbooks.map((item: ClassItem) => {
+        item.deleteFunction = (classroomName) => {
+            classItemsStore.deleteClassItem(classroomName, "textbook", item.name);
+        };
+        item.classroomName = className;
+
+        return item;
+    });
+
     return (
         <>
             <h2 style={{ textAlign: "center" }} className="mt">Textbooks:</h2>
-            <List data={classItemsStore.textbooks}></List>
+            {
+                classItemsStore.contentLoaded ? <List data={textbooks}></List> : ""
+            }
             <CreateNew title="Create new unit" creationText="Create unit" onClick={createTextbookinternal}>
                 <div className="field">
                     <label>Textbook name:</label>
