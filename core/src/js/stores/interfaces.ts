@@ -59,6 +59,7 @@ interface NotesStoreInterface {
     },
     notes: NoteFrontInterface[],
     notesLoaded: boolean,
+    currentClass: string,
     _errorListener: () => void,
     _handleError: (e: Error) => void,
     getNotes: (className: string, unitName: string) => void,

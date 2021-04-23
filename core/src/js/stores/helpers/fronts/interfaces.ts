@@ -25,7 +25,7 @@ interface NoteFrontInterface {
     link: string,
     className?: string,
     unitName?: string,
-    deleteFunction?: (className: string, unitName: string, id: string) => void
+    deleteFunction?: () => void
     
 }
 

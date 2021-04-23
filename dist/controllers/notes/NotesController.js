@@ -92,8 +92,11 @@ class NotesController {
         const mainWindow = this.mainWindow;
 
         ipcMain.on("deleteNote", (evem, args) => {
-            storage.deleteNote(args.className.toLowerCase(), args.unitName.toLowerCase(), args.id);
-            mainWindow.webContents.send("notes", storage.getNotes(args.className.toLowerCase(), args.unitName.toLowerCase()));
+            const response = storage.deleteNote(args.className.toLowerCase(), args.unitName.toLowerCase(), args.id);
+
+            if (response === false) return mainWindow.webContents.send("classThread:error", "Could not delete the note");
+
+            mainWindow.webContents.send("getNotes:response", storage.getNotes(args.className.toLowerCase(), args.unitName.toLowerCase()));
         })
     }
 };

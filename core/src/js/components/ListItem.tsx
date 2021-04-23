@@ -11,7 +11,7 @@ interface ListItemProps {
 const ListItem = ({ name, link, deleteFunction, icon }: ListItemProps) => {
 
     const internalDelete = () => {
-        if (typeof deleteFunction === "function") deleteFunction();
+        if (typeof deleteFunction === "function" && confirm("Are you sure you want to delete this item? It's irrverisible")) deleteFunction();
     }
     return (
         <div className="item">

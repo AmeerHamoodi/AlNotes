@@ -16,11 +16,15 @@ import ResponseError from "./helpers/errors/ResponseError";
 class NotesStore extends DefaultStore implements NotesStoreInterface {
     notesLoaded: boolean;
     notes: NoteFrontInterface[];
+    currentClass: string;
+    currentUnit: string;
 
     constructor() {
         super();
         this.notesLoaded = false;
         this.notes = [];
+        this.currentClass = "";
+        this.currentUnit = "";
 
         makeObservable(this, {
             notes: observable,
@@ -40,9 +44,14 @@ class NotesStore extends DefaultStore implements NotesStoreInterface {
                 console.log(args);
 
                 runInAction(() => {
-                    this.notes = args.map(item => new NoteFront(item.name, item.id));
+                    this.notes = args.map(item => {
+                        const note: NoteFrontInterface = new NoteFront(item.name, item.id);
+                        note.deleteFunction = () => {
+                            if(confirm("Are you really sure you want to delete this note? This is irreversible!")) this.deleteNote(this.currentClass, this.currentUnit, item.id);
+                        };
+                        return note;
+                    });
                     this.notesLoaded = true;
-                    console.log("loaded");
                 });
 
             } catch(e) {
@@ -58,8 +67,11 @@ class NotesStore extends DefaultStore implements NotesStoreInterface {
     public getNotes(className: string, unitName: string) {
         try {
             if(typeof className !== "string" || typeof unitName !== "string") throw new StoreError("Invalid className, unitName, or noteName!");
+            
+            this.currentClass = className;
+            this.currentUnit = unitName;
+
             ipcRenderer.send("getNotes", {className, unitName});
-            console.log("called");
         } catch(e) {
             this._handleError(e);
         }
@@ -73,6 +85,15 @@ class NotesStore extends DefaultStore implements NotesStoreInterface {
         try {
             if(typeof className !== "string" || typeof unitName !== "string" || typeof noteName !== "string") throw new StoreError("Invalid className or unitName!");
             ipcRenderer.send("newNote", {className, unitName, noteName})
+        } catch(e) {
+            this._handleError(e);
+        }
+    }
+
+    public deleteNote(className: string, unitName: string, id: string) {
+        try {
+            if(typeof className !== "string" || typeof unitName !== "string" || typeof id !== "string") throw new StoreError("Invalid className, unitName, or id!");
+            ipcRenderer.send("deleteNote", {className, unitName, id});
         } catch(e) {
             this._handleError(e);
         }
