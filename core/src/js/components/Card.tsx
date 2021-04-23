@@ -14,7 +14,7 @@ const Card = ({ name, openMessage, deleteMessage, link, deleteFunction }: CardPr
     const deleteInternal = () => {
         if(typeof deleteFunction == "function" && confirm("Are you sure you want to delete this? Please note this process is irreversible")) deleteFunction();
     }
-
+    console.log(link);
     return (
         <div className="ui card mt">
             <div className="content">

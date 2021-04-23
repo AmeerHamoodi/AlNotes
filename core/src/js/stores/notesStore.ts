@@ -49,6 +49,8 @@ class NotesStore extends DefaultStore implements NotesStoreInterface {
                         note.deleteFunction = () => {
                             if(confirm("Are you really sure you want to delete this note? This is irreversible!")) this.deleteNote(this.currentClass, this.currentUnit, item.id);
                         };
+                        note.className = this.currentClass;
+                        note.unitName = this.currentUnit;
                         return note;
                     });
                     this.notesLoaded = true;
