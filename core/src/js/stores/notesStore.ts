@@ -35,6 +35,7 @@ class NotesStore extends DefaultStore implements NotesStoreInterface {
         ipcRenderer.on("getNotes:response", (event:object, args: NoteFrontInterface[]) => {
             try {
                 if(!Array.isArray(args)) throw new ResponseError("Invalid response for 'getNotes:response'");
+                console.log(args);
 
                 this.notes = args.map(item => new NoteFront(item.name, item.id));
                 this.notesLoaded = false;
@@ -43,6 +44,19 @@ class NotesStore extends DefaultStore implements NotesStoreInterface {
                 this._handleError(e);
             }
         })
+    }
+    /**
+     * Gets notes
+     * @param className Name of class
+     * @param unitName Name of unit
+     */
+    public getNotes(className: string, unitName: string) {
+        try {
+            if(typeof className !== "string" || typeof unitName !== "string") throw new StoreError("Invalid className or unitName!");
+            ipcRenderer.send("getNotes", {className, unitName});
+        } catch(e) {
+            this._handleError(e);
+        }
     }
 };
 

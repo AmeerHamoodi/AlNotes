@@ -130,6 +130,7 @@ class DataStorage {
          * @returns {object} All of the notes associated with class and unit
          */
     getNotes(className, unitName) {
+            console.log(className, unitName);
             className = this.formatClassName(className);
             if (!this.classExists(className) || !this.unitExists(unitName)) return false;
             return Object.values(this.db.classes[className].units[unitName.toLowerCase()].notes);
@@ -191,7 +192,7 @@ class DataStorage {
          */
     classExists(className) {
             className = this.formatClassName(className);
-            return className in this.db.classes;
+            return this.db.classes.hasOwnProperty(className);
         }
         /**
          * Creates class using className
@@ -336,8 +337,9 @@ class DataStorage {
          * @returns {boolean}
          */
     unitExists(className, name) {
-            return className.toLowerCase() in this.db.classes &&
-                name.toLowerCase() in this.db.classes[className.toLowerCase()].units;
+            console.log(this.db.classes, className);
+            return this.db.classes.hasOwnProperty(className.toLowerCase()) &&
+                this.db.classes[className.toLowerCase()].units.hasOwnProperty(name.toLowerCase());
         }
         /**
          * Creates new unit

@@ -38,7 +38,7 @@ const Home = observer((props) => {
             <h1 style={{ textAlign: "center" }}>Classes:</h1>
             {
                 classesStore.classesLoaded ?
-                    <CardsContainer data={classesStore.classes}></CardsContainer> :
+                    <CardsContainer data={classesStore.classes} emptyMessage="No classes."></CardsContainer> :
                     <h1 style={{ textAlign: "center" }}>Loading...</h1>
             }
             <CreateNew title="Create new class" onClick={createClass}

@@ -87,7 +87,7 @@ class UnitsStore extends DefaultStore implements UnitsStoreInterface {
 
     public createUnit(className: string, unitName: string) {
         try {
-            if (typeof className !== "string" || typeof unitName !== "string") throw new StoreError("Invalid unit or class name!");
+            if (typeof className !== "string" || typeof unitName !== "string" || unitName.length < 0 || !unitName.trim() ) throw new StoreError("Invalid unit name!");
 
             ipcRenderer.send("createNewUnit", { className, unitName });
         } catch (e) {

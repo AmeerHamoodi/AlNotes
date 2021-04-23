@@ -137,6 +137,9 @@ class ClassItemsStore extends DefaultStore implements ClassItemsInterface {
 
             if(!("name" in data) || !("link" in data)) throw new StoreError("Name or link of item not included");
 
+            if(data.name.length < 0 || !data.name.trim()) throw new StoreError("Name is invalid");
+            if(data.link.length < 0 || !data.link.trim()) throw new StoreError("Link is invalid");
+
             ipcRenderer.send(`createNewClassItem:${type}`, {className, data});
         } catch(e) {
             this._handleError(e);

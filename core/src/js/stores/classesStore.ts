@@ -13,7 +13,6 @@ import ResponseError from "./helpers/errors/ResponseError";
 import StoreError from "./helpers/errors/StoreError";
 
 const { ipcRenderer } = window.require("electron");
-console.log(ipcRenderer);
 
 declare global {
     interface Window {
@@ -87,7 +86,7 @@ class ClassesStore extends DefaultStore implements ClassesStoreInterface {
      */
     public createClass(className: string) {
         try {
-            if(typeof className !== "string") throw new StoreError("Class name must be a string!");
+            if(typeof className !== "string" || className.length < 0 || !className.trim()) throw new StoreError("Invalid classname!");
 
             ipcRenderer.send("newClass", className);
 

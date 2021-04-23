@@ -2,10 +2,11 @@ import React from "react";
 import Card from "./Card";
 
 interface CardsContainerProps {
-    data: object[]
+    data: object[],
+    emptyMessage: string
 }
 
-const CardsContainer = ({ data }: CardsContainerProps) => {
+const CardsContainer = ({ data, emptyMessage }: CardsContainerProps) => {
     return (typeof data !== "undefined" && data.length > 0) ? (
         <div className="container mt" style={{ marginLeft: "2rem", marginRight: "2rem" }}>
             <div className="gridish-flow">
@@ -15,7 +16,7 @@ const CardsContainer = ({ data }: CardsContainerProps) => {
             </div>
         </div>
 
-    ) : <h3 style={{ textAlign: "center" }}>No classes.</h3>
+    ) : <h3 style={{ textAlign: "center" }}>{emptyMessage}</h3>
 };
 
 export default CardsContainer;
