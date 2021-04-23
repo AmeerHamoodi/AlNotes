@@ -1,4 +1,4 @@
-import { observable, makeObservable, action } from "mobx";
+import { observable, makeObservable, action, runInAction } from "mobx";
 
 //INTERFACES
 import { NotesStoreInterface } from "./interfaces";
@@ -26,7 +26,9 @@ class NotesStore extends DefaultStore implements NotesStoreInterface {
             notes: observable,
             notesLoaded: observable,
             _listenNotes: action
-        })
+        });
+
+        this._listenNotes();
     }
     /**
      * listens for getNotes:response
@@ -37,8 +39,11 @@ class NotesStore extends DefaultStore implements NotesStoreInterface {
                 if(!Array.isArray(args)) throw new ResponseError("Invalid response for 'getNotes:response'");
                 console.log(args);
 
-                this.notes = args.map(item => new NoteFront(item.name, item.id));
-                this.notesLoaded = false;
+                runInAction(() => {
+                    this.notes = args.map(item => new NoteFront(item.name, item.id));
+                    this.notesLoaded = true;
+                    console.log("loaded");
+                });
 
             } catch(e) {
                 this._handleError(e);
@@ -52,8 +57,22 @@ class NotesStore extends DefaultStore implements NotesStoreInterface {
      */
     public getNotes(className: string, unitName: string) {
         try {
-            if(typeof className !== "string" || typeof unitName !== "string") throw new StoreError("Invalid className or unitName!");
+            if(typeof className !== "string" || typeof unitName !== "string") throw new StoreError("Invalid className, unitName, or noteName!");
             ipcRenderer.send("getNotes", {className, unitName});
+            console.log("called");
+        } catch(e) {
+            this._handleError(e);
+        }
+    }
+    /**
+     * Creates note
+     * @param className Name of class
+     * @param unitName Name of unit
+     */
+    public createNote(className: string, unitName: string, noteName: string) {
+        try {
+            if(typeof className !== "string" || typeof unitName !== "string" || typeof noteName !== "string") throw new StoreError("Invalid className or unitName!");
+            ipcRenderer.send("newNote", {className, unitName, noteName})
         } catch(e) {
             this._handleError(e);
         }

@@ -5,6 +5,7 @@ import { RouteComponentProps } from "react-router-dom";
 //COMPONENTS
 import Navbar from "../components/Navbar";
 import CardsContainer from "../components/CardsContainer";
+import CreateNew from "../components/CreateNew";
 import Error from "../components/Error";
 
 //STORES
@@ -24,6 +25,14 @@ const Unit = observer(({ match }: RouteComponentProps<RouteDetails>) => {
     useEffect(() => {
         notesStore.getNotes(match.params.className, match.params.unitName);
     }, []);
+
+
+    const createNote = () => {
+        const value = $("#notename").val().toString();
+        notesStore.createNote(match.params.className, match.params.unitName, value);
+        $("#notename").val("");
+    }
+
     return (
         <>
             <Navbar backLink={`/class/${match.params.className}`} username="Development"></Navbar>
@@ -34,7 +43,12 @@ const Unit = observer(({ match }: RouteComponentProps<RouteDetails>) => {
             }
             <div className="container mt">
                 <Error toShow={notesStore.errorContent.occured} textToShow={notesStore.errorContent.data}></Error>
-                <div className="fluid ui button primary">Create note</div>
+                <CreateNew title="New note" creationText="Create new note" onClick={createNote}>
+                    <div className="field">
+                        <label>Note name:</label>
+                        <input type="text" id="notename" placeholder="Enter name of note"/>
+                    </div>
+                </CreateNew>
             </div>
         </>
     )

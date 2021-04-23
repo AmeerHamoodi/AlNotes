@@ -32,7 +32,10 @@ class NotesController {
             });
 
             ipcMain.on("newNote", (event, args) => {
-                mainWindow.webContents.send("id", storage.newNote("New Note", "", args.className.toLowerCase(), args.unitName.toLowerCase()));
+                const response = storage.newNote(args.noteName || "New Note", "", args.className.toLowerCase(), args.unitName.toLowerCase());
+                if (response === false) return mainWindow.webContents.send("classThread:error", "Unit or class does not exist");
+
+                mainWindow.webContents.send("getNotes:response", storage.getNotes(args.className, args.unitName))
             })
         }
         /**
@@ -43,7 +46,7 @@ class NotesController {
         const storage = this.storage;
         const mainWindow = this.mainWindow;
 
-        ipcMain.once("getNotes", (event, args) => {
+        ipcMain.on("getNotes", (event, args) => {
             const response = storage.getNotes(args.className.toLowerCase(), args.unitName.toLowerCase());
 
             if (response === false) return mainWindow.webContents.send("classThread:error", "Unit or class does not exist");

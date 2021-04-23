@@ -130,10 +130,9 @@ class DataStorage {
          * @returns {object} All of the notes associated with class and unit
          */
     getNotes(className, unitName) {
-            console.log(className, unitName);
-            className = this.formatClassName(className);
-            if (!this.classExists(className) || !this.unitExists(unitName)) return false;
-            return Object.values(this.db.classes[className].units[unitName.toLowerCase()].notes);
+            if (typeof this.db.classes[className.toLowerCase()] === "undefined" ||
+                typeof this.db.classes[className.toLowerCase()].units[unitName.toLowerCase()] === "undefined") return false;
+            return Object.values(this.db.classes[className.toLowerCase()].units[unitName.toLowerCase()].notes);
         }
         /**
          * Gets note by id
@@ -192,7 +191,7 @@ class DataStorage {
          */
     classExists(className) {
             className = this.formatClassName(className);
-            return this.db.classes.hasOwnProperty(className);
+            return typeof this.db.classes[className] !== "undefined";
         }
         /**
          * Creates class using className
@@ -338,8 +337,8 @@ class DataStorage {
          */
     unitExists(className, name) {
             console.log(this.db.classes, className);
-            return this.db.classes.hasOwnProperty(className.toLowerCase()) &&
-                this.db.classes[className.toLowerCase()].units.hasOwnProperty(name.toLowerCase());
+            return typeof this.db.classes[className.toLowerCase()] !== "undefined" &&
+                typeof this.db.classes[className.toLowerCase()].units[name.toLowerCase()] !== "undefined";
         }
         /**
          * Creates new unit

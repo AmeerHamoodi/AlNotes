@@ -61,7 +61,8 @@ interface NotesStoreInterface {
     notesLoaded: boolean,
     _errorListener: () => void,
     _handleError: (e: Error) => void,
-    getNotes: (className: string, unitName: string) => void
+    getNotes: (className: string, unitName: string) => void,
+    createNote: (className: string, unitName: string, noteName: string)=> void
 }
 
 export { ClassesStoreInterface, UnitsStoreInterface, ClassItemsInterface, ClassItem, NotesStoreInterface };
