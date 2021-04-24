@@ -7,8 +7,8 @@ import Core, { CoreInterface } from "../../core";
 const core: CoreInterface = new Core();
 
 const Editor: FC = () => {
-    const [noteValue, setNoteValue] = useState({editorContent: ""});
-    const editorRef: {current: Quill | any} = useRef();
+    const [noteValue, setNoteValue] = useState({ editorContent: "" });
+    const editorRef: { current: Quill | any } = useRef();
 
 
     const handleChange = (value: string) => {
@@ -18,7 +18,7 @@ const Editor: FC = () => {
     };
 
     useEffect(() => {
-        if(typeof editorRef.current.getEditor === "function") core.coreEditor = editorRef.current;
+        if (typeof editorRef.current.getEditor === "function") core.coreEditor = editorRef.current;
     }, []);
 
     return (
@@ -27,7 +27,7 @@ const Editor: FC = () => {
             placeholder=""
             theme="snow"
             modules={core.modules}
-            ref={(el) => {editorRef.current = el}}
+            ref={(el: ReactQuill) => { editorRef.current = el }}
         />
     )
 };
