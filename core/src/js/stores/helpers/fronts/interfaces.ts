@@ -24,7 +24,7 @@ interface NoteFrontInterface {
     id: string,
     link: string,
     className?: string,
-    unitName?: string,
+    publicUnitName?: string,
     deleteFunction?: () => void
     
 }

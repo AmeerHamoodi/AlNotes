@@ -41,7 +41,6 @@ class NotesStore extends DefaultStore implements NotesStoreInterface {
         ipcRenderer.on("getNotes:response", (event:object, args: NoteFrontInterface[]) => {
             try {
                 if(!Array.isArray(args)) throw new ResponseError("Invalid response for 'getNotes:response'");
-                console.log(args);
 
                 runInAction(() => {
                     this.notes = args.map(item => {
@@ -50,7 +49,7 @@ class NotesStore extends DefaultStore implements NotesStoreInterface {
                             if(confirm("Are you really sure you want to delete this note? This is irreversible!")) this.deleteNote(this.currentClass, this.currentUnit, item.id);
                         };
                         note.className = this.currentClass;
-                        note.unitName = this.currentUnit;
+                        note.publicUnitName = this.currentUnit;
                         return note;
                     });
                     this.notesLoaded = true;
