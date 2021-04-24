@@ -15,6 +15,7 @@
         "@babel/preset-env": "^7.13.15",
         "@babel/preset-react": "^7.13.13",
         "@types/jquery": "^3.5.5",
+        "@types/quill": "^2.0.6",
         "@types/react": "^17.0.3",
         "@types/react-dom": "^17.0.3",
         "@types/react-router-dom": "^5.1.7",

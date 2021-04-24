@@ -250,7 +250,43 @@ eval("\r\nvar __importDefault = (this && this.__importDefault) || function (mod)
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-eval("\r\nvar __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {\r\n    if (k2 === undefined) k2 = k;\r\n    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });\r\n}) : (function(o, m, k, k2) {\r\n    if (k2 === undefined) k2 = k;\r\n    o[k2] = m[k];\r\n}));\r\nvar __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {\r\n    Object.defineProperty(o, \"default\", { enumerable: true, value: v });\r\n}) : function(o, v) {\r\n    o[\"default\"] = v;\r\n});\r\nvar __importStar = (this && this.__importStar) || function (mod) {\r\n    if (mod && mod.__esModule) return mod;\r\n    var result = {};\r\n    if (mod != null) for (var k in mod) if (k !== \"default\" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);\r\n    __setModuleDefault(result, mod);\r\n    return result;\r\n};\r\nvar __importDefault = (this && this.__importDefault) || function (mod) {\r\n    return (mod && mod.__esModule) ? mod : { \"default\": mod };\r\n};\r\nObject.defineProperty(exports, \"__esModule\", { value: true });\r\nvar react_1 = __importStar(__webpack_require__(/*! react */ \"./node_modules/react/index.js\"));\r\nvar react_quill_1 = __importDefault(__webpack_require__(/*! react-quill */ \"./node_modules/react-quill/lib/index.js\"));\r\nvar Editor = function () {\r\n    var _a = react_1.useState({ editorContent: \"\" }), noteValue = _a[0], setNoteValue = _a[1];\r\n    var editorRef = react_1.useRef();\r\n    var handleChange = function (value) {\r\n        setNoteValue({\r\n            editorContent: value\r\n        });\r\n    };\r\n    return (react_1.default.createElement(react_quill_1.default, { onChange: handleChange, placeholder: \"\", theme: \"snow\", ref: function (el) { editorRef.current = el; } }));\r\n};\r\nexports.default = Editor;\r\n\n\n//# sourceURL=webpack:///./core/src/js/components/editor/Editor.tsx?");
+eval("\r\nvar __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {\r\n    if (k2 === undefined) k2 = k;\r\n    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });\r\n}) : (function(o, m, k, k2) {\r\n    if (k2 === undefined) k2 = k;\r\n    o[k2] = m[k];\r\n}));\r\nvar __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {\r\n    Object.defineProperty(o, \"default\", { enumerable: true, value: v });\r\n}) : function(o, v) {\r\n    o[\"default\"] = v;\r\n});\r\nvar __importStar = (this && this.__importStar) || function (mod) {\r\n    if (mod && mod.__esModule) return mod;\r\n    var result = {};\r\n    if (mod != null) for (var k in mod) if (k !== \"default\" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);\r\n    __setModuleDefault(result, mod);\r\n    return result;\r\n};\r\nvar __importDefault = (this && this.__importDefault) || function (mod) {\r\n    return (mod && mod.__esModule) ? mod : { \"default\": mod };\r\n};\r\nObject.defineProperty(exports, \"__esModule\", { value: true });\r\nvar react_1 = __importStar(__webpack_require__(/*! react */ \"./node_modules/react/index.js\"));\r\nvar react_quill_1 = __importDefault(__webpack_require__(/*! react-quill */ \"./node_modules/react-quill/lib/index.js\"));\r\nvar core_1 = __importDefault(__webpack_require__(/*! ../../core */ \"./core/src/js/core/index.ts\"));\r\nvar core = new core_1.default();\r\nvar Editor = function () {\r\n    var _a = react_1.useState({ editorContent: \"\" }), noteValue = _a[0], setNoteValue = _a[1];\r\n    var editorRef = react_1.useRef();\r\n    var handleChange = function (value) {\r\n        setNoteValue({\r\n            editorContent: value\r\n        });\r\n    };\r\n    react_1.useEffect(function () {\r\n        if (typeof editorRef.current.getEditor === \"function\")\r\n            core.coreEditor = editorRef.current;\r\n    }, []);\r\n    return (react_1.default.createElement(react_quill_1.default, { onChange: handleChange, placeholder: \"\", theme: \"snow\", modules: core.modules, ref: function (el) { editorRef.current = el; } }));\r\n};\r\nexports.default = Editor;\r\n\n\n//# sourceURL=webpack:///./core/src/js/components/editor/Editor.tsx?");
+
+/***/ }),
+
+/***/ "./core/src/js/core/config/formats.ts":
+/*!********************************************!*\
+  !*** ./core/src/js/core/config/formats.ts ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\r\nObject.defineProperty(exports, \"__esModule\", { value: true });\r\nvar formats = [\r\n    \"header\",\r\n    \"bold\",\r\n    \"italic\",\r\n    \"underline\",\r\n    \"strike\",\r\n    \"list\",\r\n    \"bullet\",\r\n    \"indent\",\r\n    \"link\",\r\n    \"size\",\r\n    \"formula\",\r\n    \"align\",\r\n    \"code-block\",\r\n    \"script\",\r\n    \"color\"\r\n];\r\nexports.default = formats;\r\n\n\n//# sourceURL=webpack:///./core/src/js/core/config/formats.ts?");
+
+/***/ }),
+
+/***/ "./core/src/js/core/config/toolbar.ts":
+/*!********************************************!*\
+  !*** ./core/src/js/core/config/toolbar.ts ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\r\nObject.defineProperty(exports, \"__esModule\", { value: true });\r\nvar quillToolbar = [\r\n    [{ header: 1 }, { header: 2 }],\r\n    [\"bold\", \"italic\", \"underline\", \"strike\"],\r\n    [\"code-block\"],\r\n    [{ \"list\": \"ordered\" }, { \"list\": \"bullet\" }, { \"indent\": \"-1\" }, { \"indent\": \"+1\" }],\r\n    [{ direction: \"rtl\" }],\r\n    [{ header: [1, 2, 3, 4, 5, 6, false] }],\r\n    [{ align: [\"\", \"center\", \"right\", \"justify\"] }],\r\n    [\"clean\"]\r\n];\r\nexports.default = quillToolbar;\r\n\n\n//# sourceURL=webpack:///./core/src/js/core/config/toolbar.ts?");
+
+/***/ }),
+
+/***/ "./core/src/js/core/index.ts":
+/*!***********************************!*\
+  !*** ./core/src/js/core/index.ts ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\r\nvar __importDefault = (this && this.__importDefault) || function (mod) {\r\n    return (mod && mod.__esModule) ? mod : { \"default\": mod };\r\n};\r\nObject.defineProperty(exports, \"__esModule\", { value: true });\r\nvar toolbar_1 = __importDefault(__webpack_require__(/*! ./config/toolbar */ \"./core/src/js/core/config/toolbar.ts\"));\r\nvar formats_1 = __importDefault(__webpack_require__(/*! ./config/formats */ \"./core/src/js/core/config/formats.ts\"));\r\nvar Core = (function () {\r\n    function Core() {\r\n        Object.defineProperty(this, \"core\", {\r\n            enumerable: true,\r\n            configurable: true,\r\n            writable: true,\r\n            value: void 0\r\n        });\r\n        Object.defineProperty(this, \"toolbar\", {\r\n            enumerable: true,\r\n            configurable: true,\r\n            writable: true,\r\n            value: toolbar_1.default\r\n        });\r\n        Object.defineProperty(this, \"canStart\", {\r\n            enumerable: true,\r\n            configurable: true,\r\n            writable: true,\r\n            value: false\r\n        });\r\n        Object.defineProperty(this, \"modules\", {\r\n            enumerable: true,\r\n            configurable: true,\r\n            writable: true,\r\n            value: {\r\n                toolbar: toolbar_1.default,\r\n                syntax: true\r\n            }\r\n        });\r\n        Object.defineProperty(this, \"formats\", {\r\n            enumerable: true,\r\n            configurable: true,\r\n            writable: true,\r\n            value: formats_1.default\r\n        });\r\n    }\r\n    Object.defineProperty(Core.prototype, \"coreEditor\", {\r\n        set: function (q) {\r\n            console.log(q);\r\n            this.core = q;\r\n            this.canStart = true;\r\n        },\r\n        enumerable: false,\r\n        configurable: true\r\n    });\r\n    return Core;\r\n}());\r\n;\r\nexports.default = Core;\r\n\n\n//# sourceURL=webpack:///./core/src/js/core/index.ts?");
 
 /***/ }),
 
@@ -298,7 +334,7 @@ eval("\r\nvar __createBinding = (this && this.__createBinding) || (Object.create
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-eval("\r\nvar __importDefault = (this && this.__importDefault) || function (mod) {\r\n    return (mod && mod.__esModule) ? mod : { \"default\": mod };\r\n};\r\nObject.defineProperty(exports, \"__esModule\", { value: true });\r\nvar react_1 = __importDefault(__webpack_require__(/*! react */ \"./node_modules/react/index.js\"));\r\nvar Editor_1 = __importDefault(__webpack_require__(/*! ../components/editor/Editor */ \"./core/src/js/components/editor/Editor.tsx\"));\r\nvar Note = function (_a) {\r\n    var match = _a.match;\r\n    console.log(\"HI\");\r\n    return (react_1.default.createElement(Editor_1.default, null));\r\n};\r\nexports.default = Note;\r\n\n\n//# sourceURL=webpack:///./core/src/js/pages/Note.tsx?");
+eval("\r\nvar __importDefault = (this && this.__importDefault) || function (mod) {\r\n    return (mod && mod.__esModule) ? mod : { \"default\": mod };\r\n};\r\nObject.defineProperty(exports, \"__esModule\", { value: true });\r\nvar react_1 = __importDefault(__webpack_require__(/*! react */ \"./node_modules/react/index.js\"));\r\nvar Editor_1 = __importDefault(__webpack_require__(/*! ../components/editor/Editor */ \"./core/src/js/components/editor/Editor.tsx\"));\r\nvar Note = function (_a) {\r\n    var match = _a.match;\r\n    return (react_1.default.createElement(Editor_1.default, null));\r\n};\r\nexports.default = Note;\r\n\n\n//# sourceURL=webpack:///./core/src/js/pages/Note.tsx?");
 
 /***/ }),
 
