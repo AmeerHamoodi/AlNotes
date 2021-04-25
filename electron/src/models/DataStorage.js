@@ -112,8 +112,8 @@ class DataStorage {
             className = this.formatClassName(className);
 
             let note = this.db.classes[className].units[unitName.toLowerCase()].notes[id];
-            note.content = this.noteExists(className, unitName.toLowerCase(), id) ? content : note.content;
-            note.date = this.noteExists(className, unitName.toLowerCase(), id) ? this.getDate() : note.date;
+            note.content = content;
+            note.date = this.getDate();
             note.name = name;
             this.saveAll();
         }

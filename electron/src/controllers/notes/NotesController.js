@@ -55,7 +55,11 @@ class NotesController {
         });
 
         ipcMain.on("getNoteById", (event, args) => {
-            mainWindow.webContents.send("notesByName", storage.getNoteById(args.className.toLowerCase(), args.unitName.toLowerCase(), args.id));
+            const response = storage.getNoteById(args.className.toLowerCase(), args.unitName.toLowerCase(), args.id);
+
+            if (response === false) return mainWindow.webContents.send("classThread:error", "Error getting note");
+
+            mainWindow.webContents.send("getNoteById:response", response);
         });
 
     }

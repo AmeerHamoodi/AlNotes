@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { RouteComponentProps } from "react-router-dom";
 
 //COMPONENTS
 import Editor from "../components/editor/Editor";
 
+
+//STORES
+import NotesStore from "../stores/noteStore";
 
 //TYPES
 type RouteDetails = {
@@ -12,9 +15,17 @@ type RouteDetails = {
     unitName: string
 }
 
+const noteStore = new NotesStore();
+
 const Note = ({match}: RouteComponentProps<RouteDetails>) => {
+
+    useEffect(() => {
+        const { id, className, unitName } = match.params;
+        noteStore.getNote(className, unitName, id);
+    }, []);
+
     return (
-        <Editor></Editor>
+        <Editor content={noteStore.noteContent}></Editor>
     )
 };
 

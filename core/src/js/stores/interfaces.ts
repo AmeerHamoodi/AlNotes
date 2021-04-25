@@ -66,4 +66,29 @@ interface NotesStoreInterface {
     createNote: (className: string, unitName: string, noteName: string)=> void
 }
 
-export { ClassesStoreInterface, UnitsStoreInterface, ClassItemsInterface, ClassItem, NotesStoreInterface };
+
+type getNoteByIdResponse = {
+    content: string;
+    id: string;
+    date: string;
+    name: string;
+    title: string;
+}
+
+interface NoteStoreInterface {
+    errorContent: {
+        occured: boolean,
+        data: any
+    },
+    noteContent: string,
+    noteId: string,
+    noteLoaded: boolean,
+    noteDate: string,
+    noteTitle: string,
+    _errorListener: () => void,
+    _handleError: (e: Error) => void,
+    getNote: (className: string, unitName: string, id: string) => void
+}
+
+
+export { ClassesStoreInterface, UnitsStoreInterface, ClassItemsInterface, ClassItem, NotesStoreInterface, getNoteByIdResponse, NoteStoreInterface };

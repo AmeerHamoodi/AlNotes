@@ -6,8 +6,12 @@ import Core, { CoreInterface } from "../../core";
 
 const core: CoreInterface = new Core();
 
-const Editor: FC = () => {
-    const [noteValue, setNoteValue] = useState({editorContent: ""});
+type EditorProps = {
+    content: string
+}
+
+const Editor: FC<EditorProps> = ({content}) => {
+    const [noteValue, setNoteValue] = useState({editorContent: content});
     const editorRef: {current: Quill | any} = useRef();
 
 
@@ -27,6 +31,7 @@ const Editor: FC = () => {
             placeholder=""
             theme="snow"
             modules={core.modules}
+            value={content}
             ref={(el) => {editorRef.current = el}}
         />
     )
