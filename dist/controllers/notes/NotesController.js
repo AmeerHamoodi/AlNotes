@@ -55,35 +55,37 @@ class NotesController {
         });
 
         ipcMain.on("getNoteById", (event, args) => {
-            mainWindow.webContents.send("notesByName", storage.getNoteById(args.className.toLowerCase(), args.unitName.toLowerCase(), args.id));
+            const response = storage.getNoteById(args.className.toLowerCase(), args.unitName.toLowerCase(), args.id);
+
+            console.log(response)
+
+            if (response === false) return mainWindow.webContents.send("classThread:error", "Error getting note");
+
+            mainWindow.webContents.send("getNoteById:response", response);
         });
 
     }
     _getSettings() {
-            const ipcMain = this.ipcMain;
-            const settings = this.settings;
-            const mainWindow = this.mainWindow;
+        const ipcMain = this.ipcMain;
+        const settings = this.settings;
+        const mainWindow = this.mainWindow;
 
-            ipcMain.on("getKeyboard", () => {
-                const keyboard = settings.keyboard();
+        ipcMain.on("getKeyboard", () => {
+            const keyboard = settings.keyboard();
 
-                mainWindow.send("keyboard", keyboard);
-            })
-        }
-        //TODO: Refactor this, need to see how I'm gonna do the front-end first
+            mainWindow.send("keyboard", keyboard);
+        })
+    }
+
     _saveNote() {
         const ipcMain = this.ipcMain;
         const storage = this.storage;
         const mainWindow = this.mainWindow;
 
-        ipcMain.on("save", () => {
-            this.saveCalled = true;
-            mainWindow.webContents.send("getSave");
-        });
-
         ipcMain.on("saveData", (err, args) => {
-            console.log(args.unitName);
-            storage.updateNote(args.id, args.name, args.content, args.className.toLowerCase(), args.unitName.toLowerCase());
+            const response = storage.updateNote(args.id, args.name, args.content, args.className.toLowerCase(), args.unitName.toLowerCase());
+
+            if (response === false) return mainWindow.send("classThread:error", "Note does not exist!");
         })
     }
     _deleteNote() {

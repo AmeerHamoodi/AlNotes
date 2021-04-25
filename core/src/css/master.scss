@@ -5,6 +5,7 @@
 @import "./alnote_overrides/card.scss";
 @import "./alnote_overrides/forms.scss";
 @import "./alnote_overrides/navbar.scss";
+@import "./alnote_overrides/editor.scss";
 //FONT
 @font-face {
     font-family: "Main";
@@ -47,7 +48,6 @@ a:not(.ql-editor *) {
     overflow: hidden;
 }
 
-
 .title .centered br {
     display: none;
 }
@@ -85,26 +85,6 @@ a:not(.ql-editor *) {
 
 .w-100 {
     width: 100%;
-}
-
-.ql-container {
-    font-size: 1.2em;
-    border: none !important;
-    position: absolute;
-    width: 100%;
-    height: 100%;
-}
-
-.ql-toolbar {
-    position: sticky;
-    border: none !important;
-}
-
-.ql-editor {
-    position: absolute;
-    width: 100%;
-    height: 90%;
-    overflow-y: hidden;
 }
 
 .gridish-flow {

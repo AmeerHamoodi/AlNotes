@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { RouteComponentProps } from "react-router-dom";
+import { observer } from "mobx-react-lite";
 
 //COMPONENTS
 import Editor from "../components/editor/Editor";
@@ -18,21 +19,30 @@ type RouteDetails = {
 
 const noteStore = new NoteStore();
 
-const Note = ({ match }: RouteComponentProps<RouteDetails>) => {
+const Note = observer(({ match }: RouteComponentProps<RouteDetails>) => {
+
+    const { id, className, unitName } = match.params;
+
+    const { noteContent, noteName } = noteStore;
 
     useEffect(() => {
-        const { id, className, unitName } = match.params;
         noteStore.getNote(className, unitName, id);
     }, []);
 
     return (
         <>
-            <TopBar backLink={`/class/${match.params.className}/unit/${match.params.unitName}`}
-                unitName={match.params.unitName} name={noteStore.noteTitle}
-            ></TopBar>
-            <Editor content={noteStore.noteContent}></Editor>
+            {
+               //! DO NOT REMOVE THIS
+                //I really don't know why, but it makes this whole component work
+                noteStore.noteLoaded ? <TopBar backLink={`/class/${match.params.className}/unit/${match.params.unitName}`}
+                unitName={match.params.unitName} name={noteName}
+                ></TopBar> : <TopBar backLink={`/class/${match.params.className}/unit/${match.params.unitName}`}
+                    unitName={match.params.unitName} name={"Note name"}
+                ></TopBar>
+            }
+            <Editor content={noteContent} store={noteStore}></Editor>
         </>
     )
-};
+});
 
 export default Note;

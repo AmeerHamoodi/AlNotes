@@ -72,7 +72,6 @@ type getNoteByIdResponse = {
     id: string;
     date: string;
     name: string;
-    title: string;
 }
 
 interface NoteStoreInterface {
@@ -84,10 +83,11 @@ interface NoteStoreInterface {
     noteId: string,
     noteLoaded: boolean,
     noteDate: string,
-    noteTitle: string,
+    noteName: string,
     _errorListener: () => void,
     _handleError: (e: Error) => void,
-    getNote: (className: string, unitName: string, id: string) => void
+    getNote: (className: string, unitName: string, id: string) => void,
+    saveNote: (className: string, unitName: string, id: string, content: string, name: string) => void
 }
 
 

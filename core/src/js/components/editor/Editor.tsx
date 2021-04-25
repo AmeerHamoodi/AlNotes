@@ -4,13 +4,17 @@ import ReactQuill, { Quill } from "react-quill";
 //CORE
 import Core, { CoreInterface } from "../../core";
 
-const core: CoreInterface = new Core();
+//INTERFACES AND TYPES
+import { NoteStoreInterface } from "../../stores/interfaces";
 
 type EditorProps = {
-    content: string
+    content: string,
+    store: NoteStoreInterface
 }
 
-const Editor: FC<EditorProps> = ({content}) => {
+const core: CoreInterface = new Core();
+
+const Editor: FC<EditorProps> = ({content, store}) => {
     const [noteValue, setNoteValue] = useState({ editorContent: content });
     const editorRef: { current: Quill | any } = useRef();
 
@@ -23,6 +27,7 @@ const Editor: FC<EditorProps> = ({content}) => {
 
     useEffect(() => {
         if (typeof editorRef.current.getEditor === "function") core.coreEditor = editorRef.current;
+        
     }, []);
 
     return (
@@ -31,7 +36,7 @@ const Editor: FC<EditorProps> = ({content}) => {
             placeholder=""
             theme="snow"
             modules={core.modules}
-            value={content}
+            value={noteValue.editorContent}
             ref={(el: ReactQuill) => { editorRef.current = el }}
         />
     )

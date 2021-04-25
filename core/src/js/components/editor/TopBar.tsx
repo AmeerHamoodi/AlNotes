@@ -1,14 +1,15 @@
 import React, { FC, useState } from "react";
+import { observer } from "mobx-react-lite";
 import { Link } from "react-router-dom"
 
 type TopBarProps = {
     name: string,
     backLink: string,
-    unitName: string
+    unitName?: string
 }
 
-const TopBar: FC<TopBarProps> = ({ name, backLink, unitName }) => {
-    const [noteName, setNoteName] = useState("");
+const TopBar: FC<TopBarProps> = observer(({ name, backLink }) => {
+    const [,setNoteName] = useState(name);
 
     const handleChange = (content: string) => {
         setNoteName(content);
@@ -26,6 +27,6 @@ const TopBar: FC<TopBarProps> = ({ name, backLink, unitName }) => {
             <Link to={backLink || "404"} className="ui icon item"><i className="folder icon"></i></Link>
         </nav>
     )
-};
+});
 
 export default TopBar;

@@ -107,13 +107,16 @@ class DataStorage {
          * @param {string} content Content of note
          * @param {string} className Name of class
          * @param {string} unitName Name of unit
+         * @return {boolean | void} Returns false if note DNE else nothing.
          */
     updateNote(id, name, content, className, unitName) {
+            if (!this.noteExists(className, unitName, id)) return false;
+
             className = this.formatClassName(className);
 
             let note = this.db.classes[className].units[unitName.toLowerCase()].notes[id];
-            note.content = this.noteExists(className, unitName.toLowerCase(), id) ? content : note.content;
-            note.date = this.noteExists(className, unitName.toLowerCase(), id) ? this.getDate() : note.date;
+            note.content = content;
+            note.date = this.getDate();
             note.name = name;
             this.saveAll();
         }
@@ -336,7 +339,6 @@ class DataStorage {
          * @returns {boolean}
          */
     unitExists(className, name) {
-            console.log(this.db.classes, className);
             return typeof this.db.classes[className.toLowerCase()] !== "undefined" &&
                 typeof this.db.classes[className.toLowerCase()].units[name.toLowerCase()] !== "undefined";
         }

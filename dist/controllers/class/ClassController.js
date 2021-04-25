@@ -23,8 +23,6 @@ module.exports = class ClassController {
             const storage = this.storage;
             const mainWindow = this.mainWindow;
 
-            console.log("Listening");
-
             ipcMain.on("getAllClasses", () => {
                 mainWindow.webContents.send("getAllClasses:response", storage.getClasses());
             });
