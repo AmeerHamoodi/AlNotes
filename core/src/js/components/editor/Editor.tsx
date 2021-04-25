@@ -11,8 +11,8 @@ type EditorProps = {
 }
 
 const Editor: FC<EditorProps> = ({content}) => {
-    const [noteValue, setNoteValue] = useState({editorContent: content});
-    const editorRef: {current: Quill | any} = useRef();
+    const [noteValue, setNoteValue] = useState({ editorContent: content });
+    const editorRef: { current: Quill | any } = useRef();
 
 
     const handleChange = (value: string) => {
@@ -22,7 +22,7 @@ const Editor: FC<EditorProps> = ({content}) => {
     };
 
     useEffect(() => {
-        if(typeof editorRef.current.getEditor === "function") core.coreEditor = editorRef.current;
+        if (typeof editorRef.current.getEditor === "function") core.coreEditor = editorRef.current;
     }, []);
 
     return (
@@ -32,7 +32,7 @@ const Editor: FC<EditorProps> = ({content}) => {
             theme="snow"
             modules={core.modules}
             value={content}
-            ref={(el) => {editorRef.current = el}}
+            ref={(el: ReactQuill) => { editorRef.current = el }}
         />
     )
 };

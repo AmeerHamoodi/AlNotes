@@ -3,10 +3,11 @@ import { RouteComponentProps } from "react-router-dom";
 
 //COMPONENTS
 import Editor from "../components/editor/Editor";
+import TopBar from "../components/editor/TopBar";
 
 
 //STORES
-import NotesStore from "../stores/noteStore";
+import NoteStore from "../stores/noteStore";
 
 //TYPES
 type RouteDetails = {
@@ -15,9 +16,9 @@ type RouteDetails = {
     unitName: string
 }
 
-const noteStore = new NotesStore();
+const noteStore = new NoteStore();
 
-const Note = ({match}: RouteComponentProps<RouteDetails>) => {
+const Note = ({ match }: RouteComponentProps<RouteDetails>) => {
 
     useEffect(() => {
         const { id, className, unitName } = match.params;
@@ -25,7 +26,12 @@ const Note = ({match}: RouteComponentProps<RouteDetails>) => {
     }, []);
 
     return (
-        <Editor content={noteStore.noteContent}></Editor>
+        <>
+            <TopBar backLink={`/class/${match.params.className}/unit/${match.params.unitName}`}
+                unitName={match.params.unitName} name={noteStore.noteTitle}
+            ></TopBar>
+            <Editor content={noteStore.noteContent}></Editor>
+        </>
     )
 };
 
