@@ -57,7 +57,7 @@ class NotesController {
         ipcMain.on("getNoteById", (event, args) => {
             const response = storage.getNoteById(args.className.toLowerCase(), args.unitName.toLowerCase(), args.id);
 
-            console.log(response)
+            //console.log(response)
 
             if (response === false) return mainWindow.webContents.send("classThread:error", "Error getting note");
 
@@ -83,6 +83,7 @@ class NotesController {
         const mainWindow = this.mainWindow;
 
         ipcMain.on("saveData", (err, args) => {
+            console.log(`Save data: ${args}`);
             const response = storage.updateNote(args.id, args.name, args.content, args.className.toLowerCase(), args.unitName.toLowerCase());
 
             if (response === false) return mainWindow.send("classThread:error", "Note does not exist!");

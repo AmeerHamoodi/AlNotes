@@ -18,6 +18,8 @@ export default class NotesStore extends DefaultStore implements NoteStoreInterfa
     public noteId: string;
     public noteDate: string;
     public noteName: string;
+    public unitName: string;
+    public className: string;
 
     constructor() {
         super();
@@ -26,6 +28,8 @@ export default class NotesStore extends DefaultStore implements NoteStoreInterfa
         this.noteId = "";
         this.noteName = "Loading name...";
         this.noteDate = "";
+        this.unitName = "";
+        this.className = "";
         this.noteLoaded = false;
 
         makeObservable(this, {
@@ -65,6 +69,9 @@ export default class NotesStore extends DefaultStore implements NoteStoreInterfa
         try {
             if(typeof className !== "string" || typeof unitName !== "string" || typeof id !== "string") throw new StoreError("Invalid unit, class or id data!");
             
+            this.unitName = unitName;
+            this.className = className;
+
             ipcRenderer.send("getNoteById", { unitName, className, id });
 
         } catch(e) {
@@ -80,6 +87,7 @@ export default class NotesStore extends DefaultStore implements NoteStoreInterfa
             ipcRenderer.send("saveData", {className, unitName, id, content, name})
 
         } catch(e) {
+            console.log(e);
             this._handleError(e);
         }
         

@@ -6,6 +6,9 @@ import { observer } from "mobx-react-lite";
 import Editor from "../components/editor/Editor";
 import TopBar from "../components/editor/TopBar";
 
+//CORE
+import Core, { CoreInterface } from "../core";
+
 
 //STORES
 import NoteStore from "../stores/noteStore";
@@ -19,6 +22,8 @@ type RouteDetails = {
 
 const noteStore = new NoteStore();
 
+const core: CoreInterface = new Core();
+
 const Note = observer(({ match }: RouteComponentProps<RouteDetails>) => {
 
     const { id, className, unitName } = match.params;
@@ -29,20 +34,15 @@ const Note = observer(({ match }: RouteComponentProps<RouteDetails>) => {
         noteStore.getNote(className, unitName, id);
     }, []);
 
-    return (
+    return noteStore.noteLoaded ? (
         <>
-            {
-               //! DO NOT REMOVE THIS
-                //I really don't know why, but it makes this whole component work
-                noteStore.noteLoaded ? <TopBar backLink={`/class/${match.params.className}/unit/${match.params.unitName}`}
-                unitName={match.params.unitName} name={noteName}
-                ></TopBar> : <TopBar backLink={`/class/${match.params.className}/unit/${match.params.unitName}`}
-                    unitName={match.params.unitName} name={"Note name"}
-                ></TopBar>
-            }
-            <Editor content={noteContent} store={noteStore}></Editor>
+                <TopBar backLink={`/class/${match.params.className}/unit/${match.params.unitName}`}
+                unitName={match.params.unitName} name={noteName} core={core}
+                ></TopBar> 
+                <Editor content={noteContent} store={noteStore} core={core}></Editor>
         </>
-    )
+    ) : <h1 style={{textAlign: "center"}}>Loading...</h1>
+
 });
 
 export default Note;

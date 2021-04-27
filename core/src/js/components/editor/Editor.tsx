@@ -2,21 +2,20 @@ import React, { FC, useState, useRef, useEffect } from "react";
 import ReactQuill, { Quill } from "react-quill";
 
 //CORE
-import Core, { CoreInterface } from "../../core";
+import { CoreInterface } from "../../core";
 
 //INTERFACES AND TYPES
 import { NoteStoreInterface } from "../../stores/interfaces";
 
 type EditorProps = {
     content: string,
-    store: NoteStoreInterface
+    store: NoteStoreInterface,
+    core: CoreInterface
 }
 
-const core: CoreInterface = new Core();
-
-const Editor: FC<EditorProps> = ({content, store}) => {
-    const [noteValue, setNoteValue] = useState({ editorContent: content });
-    const editorRef: { current: Quill | any } = useRef();
+const Editor: FC<EditorProps> = ({content, store, core}) => {
+    const [noteValue, setNoteValue] = useState({ editorContent: "" });
+    const editorRef: { current: ReactQuill } = useRef();
 
 
     const handleChange = (value: string) => {
@@ -26,8 +25,8 @@ const Editor: FC<EditorProps> = ({content, store}) => {
     };
 
     useEffect(() => {
-        if (typeof editorRef.current.getEditor === "function") core.coreEditor = editorRef.current;
-        
+        core.noteStore = store;
+        if (typeof editorRef.current.getEditor === "function") core.coreEditor = editorRef.current.getEditor();
     }, []);
 
     return (

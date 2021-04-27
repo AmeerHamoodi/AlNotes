@@ -16,14 +16,13 @@ interface Modules {
 interface CoreInterface {
     modules: Modules,
     formats: string[],
-    coreEditor: Quill
+    coreEditor: Quill,
+    infoAboutNote: NoteDetails,
+    noteStore: NoteStoreInterface
 }
 
 interface NoteDetails {
     name: string,
-    date: string,
-    unitName: string,
-    className: string
 }
 
 class Core implements CoreInterface {
@@ -47,15 +46,25 @@ class Core implements CoreInterface {
     }
 
     //PRIVATE METHODS
+    private callAll() {
+        this.setAllKeyEvents();
+        this.setEditorContent();
+    }
+
     private setAllKeyEvents() {
         const { keyboard } = this.core;
-
         keyboard.addBinding({
             key: "S",
             shortKey: true
         }, () => {
-            //this.store.saveNote()
+            const jsonContent = JSON.stringify(this.core.getContents());
+            this.store.saveNote(this.store.className, this.store.unitName, this.store.noteId, jsonContent, this.noteDetails.name);
         })
+    }
+    
+    private setEditorContent() {
+        const content = JSON.parse(this.store.noteContent);
+        this.core.setContents(content);
     }
 
 
@@ -63,12 +72,17 @@ class Core implements CoreInterface {
     set coreEditor(q: Quill) {
         this.core = q;
         this.canStart = true;
+        if (typeof q === "object" && q !== null) this.callAll();
     }
     set noteStore(store: NoteStoreInterface) {
         this.store = store;
     }
     set infoAboutNote(data: NoteDetails) {
         this.noteDetails = data;
+    }
+
+    get infoAboutNote() {
+        return this.noteDetails;
     }
 
 };

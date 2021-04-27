@@ -84,6 +84,8 @@ interface NoteStoreInterface {
     noteLoaded: boolean,
     noteDate: string,
     noteName: string,
+    unitName: string,
+    className: string,
     _errorListener: () => void,
     _handleError: (e: Error) => void,
     getNote: (className: string, unitName: string, id: string) => void,
