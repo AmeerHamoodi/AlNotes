@@ -24,6 +24,7 @@ module.exports = class ClassController {
             const mainWindow = this.mainWindow;
 
             ipcMain.on("getAllClasses", () => {
+                console.log("classes");
                 mainWindow.webContents.send("getAllClasses:response", storage.getClasses());
             });
         }

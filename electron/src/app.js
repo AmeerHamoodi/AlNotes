@@ -33,8 +33,6 @@ class Main {
     _init() {
         app.whenReady().then(() => {
             this.setWindowMain();
-            this.notesController.setAll();
-            this.classController.setAll();
 
             const webContents = this.mainWindow.webContents;
 
@@ -71,8 +69,12 @@ class Main {
         });
         this.mainWindow.loadURL(path.join(__dirname, "/public/index.html"));
         this.mainWindow.removeMenu();
+
         this.notesController = new NotesController(ipcMain, this.mainWindow, storage, settings);
         this.classController = new ClassController(ipcMain, this.mainWindow, storage, settings);
+
+        this.notesController.setAll();
+        this.classController.setAll();
 
         this.mainWindow.on("close", () => {
             this.mainWindow.webContents.send("closing");
@@ -82,6 +84,8 @@ class Main {
             const size = this.mainWindow.getSize();
             settings.updateSize({ width: size[0], height: size[1] });
         });
+
+        this.mainWindow.webContents.openDevTools();
     }
 
     setLoadingWindow() {

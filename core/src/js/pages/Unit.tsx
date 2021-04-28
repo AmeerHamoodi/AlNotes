@@ -39,7 +39,9 @@ const Unit = observer(({ match }: RouteComponentProps<RouteDetails>) => {
             <h1 style={{ textAlign: "center" }}>{match.params.unitName}:</h1>
             {
                 notesStore.notesLoaded ? <CardsContainer data={notesStore.notes} emptyMessage="No notes."></CardsContainer>
-                : <h3 style={{textAlign: "center"}}>Loading notes...</h3>
+                : <div className="ui active dimmer massive inverted">
+                    <div className="ui text loader">Loading</div>
+                </div>
             }
             <div className="container mt">
                 <Error toShow={notesStore.errorContent.occured} textToShow={notesStore.errorContent.data}></Error>

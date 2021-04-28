@@ -35,7 +35,7 @@ const TopBar: FC<TopBarProps> = observer(({ name, backLink, core }) => {
                     const realTarget = target as HTMLElement;
                     handleChange(realTarget.innerText)
 
-                }}>{name}</div>
+                }} suppressContentEditableWarning={true}>{name}</div>
             </div>
             <Link to="/" className="ui icon item"><i className="home icon"></i></Link>
             <Link to={backLink || "404"} className="ui icon item"><i className="folder icon"></i></Link>

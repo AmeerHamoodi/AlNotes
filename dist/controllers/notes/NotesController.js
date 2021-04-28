@@ -42,53 +42,59 @@ class NotesController {
          * Listens for any get based events
          */
     _getNotes() {
-        const ipcMain = this.ipcMain;
-        const storage = this.storage;
-        const mainWindow = this.mainWindow;
+            const ipcMain = this.ipcMain;
+            const storage = this.storage;
+            const mainWindow = this.mainWindow;
 
-        ipcMain.on("getNotes", (event, args) => {
-            const response = storage.getNotes(args.className.toLowerCase(), args.unitName.toLowerCase());
+            ipcMain.on("getNotes", (event, args) => {
+                const response = storage.getNotes(args.className.toLowerCase(), args.unitName.toLowerCase());
 
-            if (response === false) return mainWindow.webContents.send("classThread:error", "Unit or class does not exist");
+                if (response === false) return mainWindow.webContents.send("classThread:error", "Unit or class does not exist");
 
-            mainWindow.webContents.send("getNotes:response", response);
-        });
+                mainWindow.webContents.send("getNotes:response", response);
+            });
 
-        ipcMain.on("getNoteById", (event, args) => {
-            const response = storage.getNoteById(args.className.toLowerCase(), args.unitName.toLowerCase(), args.id);
+            ipcMain.on("getNoteById", (event, args) => {
+                const response = storage.getNoteById(args.className.toLowerCase(), args.unitName.toLowerCase(), args.id);
 
-            //console.log(response)
+                //console.log(response)
 
-            if (response === false) return mainWindow.webContents.send("classThread:error", "Error getting note");
+                if (response === false) return mainWindow.webContents.send("classThread:error", "Error getting note");
 
-            mainWindow.webContents.send("getNoteById:response", response);
-        });
+                mainWindow.webContents.send("getNoteById:response", response);
+            });
 
-    }
-    _getSettings() {
-        const ipcMain = this.ipcMain;
-        const settings = this.settings;
-        const mainWindow = this.mainWindow;
+        }
+        /*
+        _getSettings() {
+            const ipcMain = this.ipcMain;
+            const settings = this.settings;
+            const mainWindow = this.mainWindow;
 
-        ipcMain.on("getKeyboard", () => {
-            const keyboard = settings.keyboard();
+            ipcMain.on("getKeyboard", () => {
+                const keyboard = settings.keyboard();
 
-            mainWindow.send("keyboard", keyboard);
-        })
-    }
+                mainWindow.send("keyboard", keyboard);
+            })
+        }*/
 
+    /**
+     * Listens to all events related to saving the note
+     */
     _saveNote() {
-        const ipcMain = this.ipcMain;
-        const storage = this.storage;
-        const mainWindow = this.mainWindow;
+            const ipcMain = this.ipcMain;
+            const storage = this.storage;
+            const mainWindow = this.mainWindow;
 
-        ipcMain.on("saveData", (err, args) => {
-            console.log(`Save data: ${args}`);
-            const response = storage.updateNote(args.id, args.name, args.content, args.className.toLowerCase(), args.unitName.toLowerCase());
+            ipcMain.on("saveData", (err, args) => {
+                const response = storage.updateNote(args.id, args.name, args.content, args.className.toLowerCase(), args.unitName.toLowerCase());
 
-            if (response === false) return mainWindow.send("classThread:error", "Note does not exist!");
-        })
-    }
+                if (response === false) return mainWindow.send("classThread:error", "Note does not exist!");
+            })
+        }
+        /**
+         * Listens to delete note event
+         */
     _deleteNote() {
         const ipcMain = this.ipcMain;
         const storage = this.storage;

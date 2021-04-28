@@ -1,8 +1,9 @@
 import { Quill } from "react-quill";
 
-//CONFIGS
+//CONFIGS AND MODULES
 import quillToolbar, { quillToolbarType } from "./config/toolbar";
 import formats from "./config/formats";
+import registerAllShortcuts from "./helpers/shortcutKeys"
 
 
 //INTERFACES AND TYPES
@@ -14,11 +15,18 @@ interface Modules {
 }
 
 interface CoreInterface {
+    /** Quill modules data */
     modules: Modules,
+    /** Formats available for use */
     formats: string[],
+    /** Quill object, used to perform mutations on the quill editor */
     coreEditor: Quill,
+    /** Simply just the note name, more may be added in the future, but this is mutable information about the note unobtainable from the content */
     infoAboutNote: NoteDetails,
-    noteStore: NoteStoreInterface
+    /** MobX store for note */
+    noteStore: NoteStoreInterface,
+    /** Automatically sets content of quill editor */
+    autoSetEditorContent: () => void
 }
 
 interface NoteDetails {
@@ -59,12 +67,21 @@ class Core implements CoreInterface {
         }, () => {
             const jsonContent = JSON.stringify(this.core.getContents());
             this.store.saveNote(this.store.className, this.store.unitName, this.store.noteId, jsonContent, this.noteDetails.name);
-        })
+        });
+
+        registerAllShortcuts(keyboard);
     }
     
     private setEditorContent() {
+        if(!this.store.noteContent.includes("{")) return this.core.setText("");
+        
         const content = JSON.parse(this.store.noteContent);
         this.core.setContents(content);
+    }
+
+    //PUBLIC
+    public autoSetEditorContent() {
+        this.setEditorContent();
     }
 
 
@@ -72,7 +89,7 @@ class Core implements CoreInterface {
     set coreEditor(q: Quill) {
         this.core = q;
         this.canStart = true;
-        if (typeof q === "object" && q !== null) this.callAll();
+        this.callAll();
     }
     set noteStore(store: NoteStoreInterface) {
         this.store = store;

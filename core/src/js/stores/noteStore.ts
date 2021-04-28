@@ -37,7 +37,8 @@ export default class NotesStore extends DefaultStore implements NoteStoreInterfa
             noteId: observable,
             noteDate: observable,
             noteLoaded: observable,
-            _noteListener: action
+            _noteListener: action,
+            setUnloaded: action
         });
 
         this._noteListener();
@@ -54,8 +55,6 @@ export default class NotesStore extends DefaultStore implements NoteStoreInterfa
                     this.noteDate = args.date;
                     this.noteId = args.id;
 
-                    console.log("res");
-
                     this.noteLoaded = true;
                 });
 
@@ -64,6 +63,13 @@ export default class NotesStore extends DefaultStore implements NoteStoreInterfa
             }
         })
     };
+
+    /**
+     * Gets note by firing an ipcRenderer event to the main process
+     * @param className Name of class
+     * @param unitName Name of unit
+     * @param id Id of note
+     */
 
     public getNote(className: string, unitName: string, id: string) {
         try {
@@ -79,6 +85,15 @@ export default class NotesStore extends DefaultStore implements NoteStoreInterfa
         } 
     }
 
+    /**
+     * Updates the note with the new content 
+     * @param className Name of class {immutable}
+     * @param unitName Name of unit {immutable}
+     * @param id Name of id {immutable}
+     * @param content Content of editor {mutable}
+     * @param name Name of note {mutable}
+     */
+
     public saveNote(className: string, unitName: string, id: string, content: string, name: string) {
         try {
             if(typeof content !== "string" || typeof name !== "string" || typeof id !== "string" || typeof className !== "string" 
@@ -87,10 +102,13 @@ export default class NotesStore extends DefaultStore implements NoteStoreInterfa
             ipcRenderer.send("saveData", {className, unitName, id, content, name})
 
         } catch(e) {
-            console.log(e);
             this._handleError(e);
         }
         
+    }
+
+    public setUnloaded() {
+        this.noteLoaded = false;
     }
 
 }

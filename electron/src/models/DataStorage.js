@@ -258,6 +258,7 @@ class DataStorage {
          * @returns {array} Array of class objects
          */
     getClasses() {
+            if (typeof this.db.classes !== "object") return [];
             return Object.values(this.db.classes);
         }
         /**

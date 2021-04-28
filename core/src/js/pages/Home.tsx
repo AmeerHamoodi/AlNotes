@@ -18,12 +18,9 @@ import { ClassesStoreInterface } from "../stores/interfaces";
 const classesStore: ClassesStoreInterface = new ClassesStore();
 
 const Home = observer((props) => {
-    const [toReload, setToReload] = useState(false);
-
-
     useEffect(() => {
         classesStore.getClasses();
-    }, [toReload]);
+    }, []);
 
     const createClass = () => {
         const className = $("#classname").val().toString();
@@ -39,7 +36,7 @@ const Home = observer((props) => {
             {
                 classesStore.classesLoaded ?
                     <CardsContainer data={classesStore.classes} emptyMessage="No classes."></CardsContainer> :
-                    <h1 style={{ textAlign: "center" }}>Loading...</h1>
+                    <h3 style={{textAlign: "center"}}>Loading classes...</h3>
             }
             <CreateNew title="Create new class" onClick={createClass}
                 creationText="Create class">

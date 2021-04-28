@@ -32,16 +32,25 @@ const Note = observer(({ match }: RouteComponentProps<RouteDetails>) => {
 
     useEffect(() => {
         noteStore.getNote(className, unitName, id);
+
+        return () => {
+            noteStore.setUnloaded();
+        }
     }, []);
 
-    return noteStore.noteLoaded ? (
+    return (
         <>
-                <TopBar backLink={`/class/${match.params.className}/unit/${match.params.unitName}`}
-                unitName={match.params.unitName} name={noteName} core={core}
-                ></TopBar> 
-                <Editor content={noteContent} store={noteStore} core={core}></Editor>
+            <TopBar backLink={`/class/${match.params.className}/unit/${match.params.unitName}`}
+            unitName={match.params.unitName} name={noteName || "Note name"} core={core}
+            ></TopBar> 
+            {
+                noteStore.noteLoaded ? <Editor content={noteContent} store={noteStore} core={core}></Editor>
+                : <div className="ui active dimmer massive inverted">
+                    <div className="ui text loader">Loading</div>
+                </div>
+            }
         </>
-    ) : <h1 style={{textAlign: "center"}}>Loading...</h1>
+    );
 
 });
 

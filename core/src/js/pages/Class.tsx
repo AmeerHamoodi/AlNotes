@@ -35,22 +35,22 @@ const Class = observer(({ match }: RouteComponentProps<RouteDetails>) => {
             <h1 style={{ textAlign: "center" }}>{match.params.name}</h1>
             {
                 unitsStore.unitsLoaded ? <Units unitsData={unitsStore.units} unitsStore={unitsStore} className={match.params.name}></Units>
-                    : <h3 style={{ textAlign: "center" }}>Loading units</h3>
+                    : <div className="ui active centered inline loader"></div>
             }
             <Error toShow={unitsStore.errorContent.occured} textToShow={unitsStore.errorContent.data}></Error>
             {
                 classItemsStore.contentLoaded ? <Textbooks classItemsStore={classItemsStore} className={match.params.name}></Textbooks>
-                    : <h3 style={{ textAlign: "center" }}>Loading textbooks</h3>
+                    : <div className="ui active centered inline loader"></div>
             }
             <Error toShow={classItemsStore.errorContent.occured} textToShow={classItemsStore.errorContent.data}></Error>
             {
                 classItemsStore.contentLoaded ? <Labs classItemsStore={classItemsStore} className={match.params.name}></Labs>
-                    : <h3 style={{ textAlign: "center" }}>Loading labs</h3>
+                    : <div className="ui active centered inline loader"></div>
             }
             <Error toShow={classItemsStore.errorContent.occured} textToShow={classItemsStore.errorContent.data}></Error>
             {
                 classItemsStore.contentLoaded ? <Meetings classItemsStore={classItemsStore} className={match.params.name}></Meetings>
-                    : <h3 style={{ textAlign: "center" }}>Loading meetings</h3>
+                    : <div className="ui active centered inline loader"></div>
             }
             <Error toShow={classItemsStore.errorContent.occured} textToShow={classItemsStore.errorContent.data}></Error>
         </>

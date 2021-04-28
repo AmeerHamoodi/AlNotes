@@ -89,7 +89,8 @@ interface NoteStoreInterface {
     _errorListener: () => void,
     _handleError: (e: Error) => void,
     getNote: (className: string, unitName: string, id: string) => void,
-    saveNote: (className: string, unitName: string, id: string, content: string, name: string) => void
+    saveNote: (className: string, unitName: string, id: string, content: string, name: string) => void,
+    setUnloaded: () => void
 }
 
 
