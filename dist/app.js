@@ -111,7 +111,6 @@ class Main {
             store.set("version", app.getVersion());
         }
     }
-
     autoupdate() {
         const sendStatusToWindow = (message) => {
             this.mainWindow.webContents.send("updateMessage", message);

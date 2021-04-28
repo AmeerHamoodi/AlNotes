@@ -26,7 +26,7 @@ export default class NotesStore extends DefaultStore implements NoteStoreInterfa
 
         this.noteContent = "";
         this.noteId = "";
-        this.noteName = "Loading name...";
+        this.noteName = "";
         this.noteDate = "";
         this.unitName = "";
         this.className = "";

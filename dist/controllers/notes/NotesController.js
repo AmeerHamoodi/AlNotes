@@ -13,7 +13,7 @@ class NotesController {
             this._saveData();
             this._deleteNote();
             this._getNotes();
-            this._getSettings();
+            //this._getSettings();
             this._saveNote();
         }
         /**

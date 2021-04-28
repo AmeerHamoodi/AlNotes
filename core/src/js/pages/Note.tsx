@@ -40,11 +40,14 @@ const Note = observer(({ match }: RouteComponentProps<RouteDetails>) => {
 
     return (
         <>
-            <TopBar backLink={`/class/${match.params.className}/unit/${match.params.unitName}`}
-            unitName={match.params.unitName} name={noteName || "Note name"} core={core}
-            ></TopBar> 
             {
-                noteStore.noteLoaded ? <Editor content={noteContent} store={noteStore} core={core}></Editor>
+                noteStore.noteLoaded ? 
+                <>
+                    <TopBar backLink={`/class/${match.params.className}/unit/${match.params.unitName}`}
+                    unitName={match.params.unitName} name={noteName} core={core}
+                    ></TopBar> 
+                    <Editor content={noteContent} store={noteStore} core={core}></Editor>
+                </>
                 : <div className="ui active dimmer massive inverted">
                     <div className="ui text loader">Loading</div>
                 </div>
