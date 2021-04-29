@@ -6,6 +6,7 @@ declare global {
     interface Window {
         jQuery: any;
         $: any;
+        katex: any;
     }
 }
 

@@ -54,11 +54,14 @@ class Core implements CoreInterface {
     }
 
     //PRIVATE METHODS
+    /** Just calls all methods needed to initialize an editor */
     private callAll() {
         this.setAllKeyEvents();
         this.setEditorContent();
     }
 
+
+    /** Sets all listeners and CBs for keyboard */
     private setAllKeyEvents() {
         const { keyboard } = this.core;
         keyboard.addBinding({
@@ -72,6 +75,8 @@ class Core implements CoreInterface {
         registerAllShortcuts(keyboard);
     }
     
+    /** Sets the editor content with the content loaded from the store */
+
     private setEditorContent() {
         if(!this.store.noteContent.includes("{")) return this.core.setText("");
         
@@ -80,6 +85,7 @@ class Core implements CoreInterface {
     }
 
     //PUBLIC
+    /** Public method for setEditorContent */
     public autoSetEditorContent() {
         this.setEditorContent();
     }

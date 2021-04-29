@@ -13,7 +13,8 @@ const formats = [
     "align",
     "code-block",
     "script",
-    "color"
+    "color",
+    "formula"
 ];
 
 export default formats;

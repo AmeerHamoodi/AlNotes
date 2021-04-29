@@ -13,10 +13,16 @@
       "allowSyntheticDefaultImports": true,
       "experimentalDecorators": true,
       "emitDecoratorMetadata": true,
-      "useDefineForClassFields": true
+      "useDefineForClassFields": true,
+      "typeRoots": [
+        "node_modules/@types"
+      ]
   },
+  "include": [
+    "./core/src/js/**/*"
+  ],
   "exclude": [
     "electron",
     "node_modules"
-  ]
+  ],
 }

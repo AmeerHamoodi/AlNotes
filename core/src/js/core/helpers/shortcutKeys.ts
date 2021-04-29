@@ -17,11 +17,13 @@
  *      - Add shortcut key for formula
  */
 
-import { KeyboardStatic, RangeStatic } from "quill";
+import { RangeStatic, KeyboardStatic, Key } from "quill";
+
+import inlineMathUpdater from "../inline/inlineMath";
 
 type staticShortCut = {
     shortcut: {
-        metaKey?: boolean,
+        shortKey?: boolean,
         shiftKey?: boolean,
         key: string
     },
@@ -33,41 +35,43 @@ const shortcutFunctions: staticShortCut[] = [
     /** CTRL+SHIFT+S strikethrough */
     {
         shortcut: {
-            metaKey: true,
+            shortKey: true,
             shiftKey: true,
             key: "S"
         },
         cb: function (range: RangeStatic, context: any) {
-            this.quill.formatText(range, "strike", !context.format.strike);
+            this.quill.format("strike", !context.format.strike);
         }
     },
     /** CTRL+H H1 */
     {
         shortcut: {
-            metaKey: true,
+            shortKey: true,
             key: "H"
         },
         cb: function (range: RangeStatic, context: any) {
-            this.quill.formatText(range, "header", context.header == 1 ? false : 1);
+            this.quill.format("header", context.format.header == 1 ? false : 1);
         }
     },
     /** CTRL+SHIFT+H H2 */
     {
         shortcut: {
-            metaKey: true,
+            shortKey: true,
             shiftKey: true,
             key: "H"
         },
         cb: function (range: RangeStatic, context: any) {
-            this.quill.formatText(range, "header", context.header == 2 ? false : 2);
+            this.quill.format("header", context.format.header == 2 ? false : 2);
         }
     }
 ]
 
 const registerAllShortcuts = (keyboard: KeyboardStatic) => {
-    shortcutFunctions.forEach((shortCutFunction: staticShortCut) => {
-        keyboard.addBinding(shortCutFunction.shortcut, shortCutFunction.cb);
+
+    shortcutFunctions.forEach((item: staticShortCut) => {
+        keyboard.addBinding(item.shortcut, item.cb);
     });
+    
 };
 
 export default registerAllShortcuts;
