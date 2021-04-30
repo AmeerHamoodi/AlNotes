@@ -3,7 +3,8 @@ import { Quill } from "react-quill";
 //CONFIGS AND MODULES
 import quillToolbar, { quillToolbarType } from "./config/toolbar";
 import formats from "./config/formats";
-import registerAllShortcuts from "./helpers/shortcutKeys"
+import registerAllShortcuts, { patchListeners } from "./helpers/shortcutKeys";
+import Inline, { InlineStatic } from "./inline";
 
 
 //INTERFACES AND TYPES
@@ -38,6 +39,7 @@ class Core implements CoreInterface {
     private core: Quill;
     private toolbar: quillToolbarType = quillToolbar;
     private canStart: boolean = false;
+    private inlineHandler: InlineStatic;
     private store: NoteStoreInterface;
     private noteDetails: NoteDetails;
 
@@ -56,6 +58,7 @@ class Core implements CoreInterface {
     //PRIVATE METHODS
     /** Just calls all methods needed to initialize an editor */
     private callAll() {
+        this.setInlineHandler();
         this.setAllKeyEvents();
         this.setEditorContent();
     }
@@ -64,6 +67,7 @@ class Core implements CoreInterface {
     /** Sets all listeners and CBs for keyboard */
     private setAllKeyEvents() {
         const { keyboard } = this.core;
+        //SAVE
         keyboard.addBinding({
             key: "S",
             shortKey: true
@@ -71,8 +75,11 @@ class Core implements CoreInterface {
             const jsonContent = JSON.stringify(this.core.getContents());
             this.store.saveNote(this.store.className, this.store.unitName, this.store.noteId, jsonContent, this.noteDetails.name);
         });
+        //FORMAT SHORTCUTS
+        registerAllShortcuts(keyboard, this.inlineHandler);
 
-        registerAllShortcuts(keyboard);
+        //PATCHES
+        patchListeners(this.inlineHandler);
     }
     
     /** Sets the editor content with the content loaded from the store */
@@ -82,6 +89,11 @@ class Core implements CoreInterface {
         
         const content = JSON.parse(this.store.noteContent);
         this.core.setContents(content);
+    }
+
+    private setInlineHandler() {
+        this.inlineHandler = new Inline(this.core);
+        console.log("Inline handler set...", this.inlineHandler)
     }
 
     //PUBLIC

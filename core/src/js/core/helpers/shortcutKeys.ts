@@ -18,16 +18,15 @@
  */
 
 import { RangeStatic, KeyboardStatic, Key } from "quill";
-
-import inlineMathUpdater from "../inline/inlineMath";
+import Inline, { InlineStatic } from "../inline/";
 
 type staticShortCut = {
     shortcut: {
         shortKey?: boolean,
         shiftKey?: boolean,
-        key: string
+        key: string | number
     },
-    cb: (range: RangeStatic, context: any) => void
+    cb: (range?: RangeStatic, context?: any, inlineHandler?:InlineStatic) => void
 }
 
 
@@ -63,16 +62,59 @@ const shortcutFunctions: staticShortCut[] = [
         cb: function (range: RangeStatic, context: any) {
             this.quill.format("header", context.format.header == 2 ? false : 2);
         }
+    },
+    /** CTRL+SHIFT+M
+     * Enables math watch, i.e., start typing in MathJAX
+     * Hit enter to execute and Esc to stop
+     */
+    {
+        shortcut: {
+            shortKey: true,
+            shiftKey: true,
+            key: "M"
+        },
+        cb: function(range: RangeStatic, context: any, inlineHandler: InlineStatic) {
+            inlineHandler.selectMath();
+            inlineHandler.initializeSelector();
+        }
+    },
+    {
+        shortcut: {
+            key: 13
+        },
+        cb: function (range: RangeStatic, context: any, inlineHandler: InlineStatic) {
+            console.log("evaluating")
+            inlineHandler.evaluateGeneral();
+        }
     }
 ]
 
-const registerAllShortcuts = (keyboard: KeyboardStatic) => {
+const registerAllShortcuts = (keyboard: KeyboardStatic, inlineHandler: InlineStatic) => {
 
     shortcutFunctions.forEach((item: staticShortCut) => {
-        keyboard.addBinding(item.shortcut, item.cb);
+        if(item.shortcut.key == "M") {
+            keyboard.addBinding(item.shortcut, function (range: RangeStatic, context: any) {
+                const cb = item.cb;
+                const attachedCb = cb.bind(this);
+                
+                attachedCb(range, context, inlineHandler);
+            });
+        } else {
+            keyboard.addBinding(item.shortcut, item.cb);
+        }
     });
-    
 };
 
+/** See: https://github.com/zenoamaro/react-quill/issues/22#issuecomment-128286775 */
+const patchListeners = (inlineHandler: InlineStatic) => {
+    document.getElementsByClassName("ql-editor")[0].addEventListener("keyup", (e: KeyboardEvent) => {
+        if(e.code == "Enter"){
+            console.log("evaluating")
+            inlineHandler.evaluateGeneral();
+        }
+    })
+}
+
+
 export default registerAllShortcuts;
-export { staticShortCut };
+export { staticShortCut, patchListeners };
