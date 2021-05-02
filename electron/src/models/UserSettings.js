@@ -10,21 +10,43 @@ class UserSettings {
     _init() {
         const settings = typeof store.get("userSettings") == "undefined" ? undefined : JSON.parse(store.get("userSettings"));
 
-        if (typeof settings == "undefined" || !settings.hasOwnProperty("sizeSettings") || !settings.hasOwnProperty("keyboardSettings")) {
+        if (typeof settings == "undefined" || !settings.hasOwnProperty("sizeSettings") || !settings.hasOwnProperty("keyboardSettings") | true) {
             this.settings = {
                 keyboardSettings: {
-                    strike: "CTRL+SHIFT+S",
-                    superScript: "CTRL+O",
-                    subScript: "CTRL+P",
-                    center: "CTRL+SHIFT+E",
-                    right: "CTRL+SHIFT+R",
-                    left: "CTRL+SHIFT+L",
-                    header1: "CTRL+H",
-                    header2: "CTRL+SHIFT+H",
-                    anki: "CTRL+SHIFT+A",
-                    submitAnki: "CTRL+Q",
-                    save: "CTRL+S",
-                    codeBlock: "CTRL+SHIFT+B"
+                    strike: {
+                        key: 83,
+                        shiftKey: true,
+                        shortKey: true
+                    },
+                    superScript: {
+                        key: 187,
+                        shiftKey: true,
+                        shortKey: true
+                    },
+                    subScript: {
+                        key: 189,
+                        shiftKey: true,
+                        shortKey: true
+                    },
+                    align: {
+                        key: 65,
+                        shiftKey: true,
+                        shortKey: true
+                    },
+                    header1: {
+                        key: 72,
+                        shortKey: true
+                    },
+                    header2: {
+                        key: 72,
+                        shortKey: true,
+                        shiftKey: true
+                    },
+                    codeBlock: {
+                        key: 66,
+                        shortKey: true,
+                        shiftKey: true
+                    }
                 },
                 sizeSettings: {
                     width: 1800,
@@ -43,7 +65,7 @@ class UserSettings {
         this.settings.keyboardSettings = newKeyboard;
     }
     keyboard() {
-        return this.settings.keyboardSettings;
+        return Object.values(this.settings.keyboardSettings);
     }
     updateSize(newSize) {
         this.settings.sizeSettings = newSize;

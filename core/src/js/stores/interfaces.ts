@@ -91,7 +91,22 @@ interface NoteStoreInterface {
     getNote: (className: string, unitName: string, id: string) => void,
     saveNote: (className: string, unitName: string, id: string, content: string, name: string) => void,
     setUnloaded: () => void
+};
+
+interface SettingsStoreInterface {
+    keyboardSettings: any,
+    errorContent: {
+        occured: boolean,
+        data: any
+    },
+    keyboardSettingsLoaded: boolean,
+    newKeyboardSettings: any[],
+    _listenKeyboardSettings: () => void,
+    _errorListener: () => void,
+    _handleError: (e: Error) => void,
+    getKeyboard: () => void,
+    setKeyboardReady: (keyData: string, func: string) => void
 }
 
 
-export { ClassesStoreInterface, UnitsStoreInterface, ClassItemsInterface, ClassItem, NotesStoreInterface, getNoteByIdResponse, NoteStoreInterface };
+export { ClassesStoreInterface, UnitsStoreInterface, ClassItemsInterface, ClassItem, NotesStoreInterface, getNoteByIdResponse, NoteStoreInterface, SettingsStoreInterface };

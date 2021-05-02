@@ -65,18 +65,6 @@ class NotesController {
             });
 
         }
-        /*
-        _getSettings() {
-            const ipcMain = this.ipcMain;
-            const settings = this.settings;
-            const mainWindow = this.mainWindow;
-
-            ipcMain.on("getKeyboard", () => {
-                const keyboard = settings.keyboard();
-
-                mainWindow.send("keyboard", keyboard);
-            })
-        }*/
 
     /**
      * Listens to all events related to saving the note

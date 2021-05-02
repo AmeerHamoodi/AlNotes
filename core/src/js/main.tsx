@@ -7,6 +7,8 @@ declare global {
         jQuery: any;
         $: any;
         katex: any;
+        mathquill4quill: any;
+        MathQuill: any;
     }
 }
 

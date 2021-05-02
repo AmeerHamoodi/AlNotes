@@ -47,7 +47,6 @@ class ClassesStore extends DefaultStore implements ClassesStoreInterface {
      * Listens to the getAllClasses:response data
      */
     _classListener() {
-        console.log("listening");
         ipcRenderer.on("getAllClasses:response", (event: object, data: object[]) => {
             try {
                 if (!Array.isArray(data)) throw new ResponseError("Invalid response data");
@@ -78,7 +77,6 @@ class ClassesStore extends DefaultStore implements ClassesStoreInterface {
      * Sends request to electron backend for class data
      */
     public getClasses() {
-        console.log("get")
         ipcRenderer.send("getAllClasses");
     }
 

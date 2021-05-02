@@ -44,6 +44,7 @@
         "jquery": "^3.6.0",
         "mobx": "^6.2.0",
         "mobx-react-lite": "^3.2.0",
+        "parchment": "^2.0.0-dev.2",
         "quill-delta": "^4.2.2",
         "react": "^17.0.2",
         "react-dom": "^17.0.2",

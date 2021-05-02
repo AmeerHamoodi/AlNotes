@@ -3,9 +3,8 @@ import { Quill } from "react-quill";
 //CONFIGS AND MODULES
 import quillToolbar, { quillToolbarType } from "./config/toolbar";
 import formats from "./config/formats";
-import registerAllShortcuts, { patchListeners } from "./helpers/shortcutKeys";
-import Inline, { InlineStatic } from "./inline";
-
+import registerAllShortcuts from "./helpers/shortcutKeys";
+import UTILS from "./utils";
 
 //INTERFACES AND TYPES
 import { NoteStoreInterface } from "../stores/interfaces";
@@ -27,7 +26,9 @@ interface CoreInterface {
     /** MobX store for note */
     noteStore: NoteStoreInterface,
     /** Automatically sets content of quill editor */
-    autoSetEditorContent: () => void
+    autoSetEditorContent: () => void,
+    /** Attaches the react setSaveState to the core to allow the state to be elegantely updated */
+    attachSaveState: (setSaveState: any) => void
 }
 
 interface NoteDetails {
@@ -39,13 +40,13 @@ class Core implements CoreInterface {
     private core: Quill;
     private toolbar: quillToolbarType = quillToolbar;
     private canStart: boolean = false;
-    private inlineHandler: InlineStatic;
     private store: NoteStoreInterface;
     private noteDetails: NoteDetails;
 
     //PUBLIC
     public modules: Modules;
     public formats: string[];
+    public setSaveState: (newData: string) => void;
 
     constructor() {
         this.modules = {
@@ -58,7 +59,6 @@ class Core implements CoreInterface {
     //PRIVATE METHODS
     /** Just calls all methods needed to initialize an editor */
     private callAll() {
-        this.setInlineHandler();
         this.setAllKeyEvents();
         this.setEditorContent();
     }
@@ -74,16 +74,13 @@ class Core implements CoreInterface {
         }, () => {
             const jsonContent = JSON.stringify(this.core.getContents());
             this.store.saveNote(this.store.className, this.store.unitName, this.store.noteId, jsonContent, this.noteDetails.name);
+            this.setSaveState(`Last saved: ${UTILS.getTime()}`)
         });
         //FORMAT SHORTCUTS
-        registerAllShortcuts(keyboard, this.inlineHandler);
-
-        //PATCHES
-        patchListeners(this.inlineHandler);
+        //registerAllShortcuts(keyboard);
     }
-    
-    /** Sets the editor content with the content loaded from the store */
 
+    /** Sets the editor content with the content loaded from the store */
     private setEditorContent() {
         if(!this.store.noteContent.includes("{")) return this.core.setText("");
         
@@ -91,15 +88,15 @@ class Core implements CoreInterface {
         this.core.setContents(content);
     }
 
-    private setInlineHandler() {
-        this.inlineHandler = new Inline(this.core);
-        console.log("Inline handler set...", this.inlineHandler)
-    }
 
     //PUBLIC
     /** Public method for setEditorContent */
     public autoSetEditorContent() {
         this.setEditorContent();
+    }
+
+    public attachSaveState(setSaveState: (data: string) => void) {
+        this.setSaveState = setSaveState;
     }
 
 

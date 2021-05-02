@@ -10,111 +10,78 @@
  * Subcript: Ctrl+Shift+_
  * Superscript: Ctrl+Shift++
  * Remove selected formating: CTRL+`
- * 
- * TODOS:
- *  - Add better formula entering
- *      - I.E. not using the input box bc bad UX
- *      - Add shortcut key for formula
+ * Code block: CTRL+SHIFT+Q
+ * Shift alignment: LEFT -> CENTER -> RIGHT | CTRL+SHIFT+A
+ *                   ^----------------------
  */
 
 import { RangeStatic, KeyboardStatic, Key } from "quill";
-import Inline, { InlineStatic } from "../inline/";
 
 type staticShortCut = {
-    shortcut: {
-        shortKey?: boolean,
-        shiftKey?: boolean,
-        key: string | number
-    },
-    cb: (range?: RangeStatic, context?: any, inlineHandler?:InlineStatic) => void
+    func: "strike" | "heading1" | "heading2" | "super" | "sub" | "removeFormat" | "codeBlock" | "align",
+    keys: Key
 }
 
+type shortCutFunction = (range?: RangeStatic, context?: any) => void;
 
-const shortcutFunctions: staticShortCut[] = [
-    /** CTRL+SHIFT+S strikethrough */
-    {
-        shortcut: {
-            shortKey: true,
-            shiftKey: true,
-            key: "S"
-        },
-        cb: function (range: RangeStatic, context: any) {
-            this.quill.format("strike", !context.format.strike);
-        }
+
+interface shortcutFunctionsInterface {
+    strike: (range: RangeStatic, context: any) => void,
+    heading1: (range: RangeStatic, context: any) => void,
+    heading2: (range: RangeStatic, context: any) => void,
+    super: (range: RangeStatic, context: any) => void,
+    sub: (range: RangeStatic, context: any) => void,
+    removeFormat: (range: RangeStatic, context: any) => void,
+    codeBlock: (range: RangeStatic, context: any) => void,
+    align: (range: RangeStatic, context: any) => void,
+}
+
+const shortcutFunctionsDictionary = {
+    strike: function (range: RangeStatic, context: any) {
+        this.quill.format("strike", !context.format.strike);
     },
-    /** CTRL+H H1 */
-    {
-        shortcut: {
-            shortKey: true,
-            key: "H"
-        },
-        cb: function (range: RangeStatic, context: any) {
-            this.quill.format("header", context.format.header == 1 ? false : 1);
-        }
+    heading1: function (range: RangeStatic, context: any) {
+        this.quill.format("header", context.format.header == 1 ? false : 1);
     },
-    /** CTRL+SHIFT+H H2 */
-    {
-        shortcut: {
-            shortKey: true,
-            shiftKey: true,
-            key: "H"
-        },
-        cb: function (range: RangeStatic, context: any) {
-            this.quill.format("header", context.format.header == 2 ? false : 2);
-        }
+    heading2: function (range: RangeStatic, context: any) {
+        this.quill.format("header", context.format.header == 2 ? false : 2);
     },
-    /** CTRL+SHIFT+M
-     * Enables math watch, i.e., start typing in MathJAX
-     * Hit enter to execute and Esc to stop
-     */
-    {
-        shortcut: {
-            shortKey: true,
-            shiftKey: true,
-            key: "M"
-        },
-        cb: function(range: RangeStatic, context: any, inlineHandler: InlineStatic) {
-            inlineHandler.selectMath();
-            inlineHandler.initializeSelector();
-        }
+    super: function (range: RangeStatic, context: any) {
+        this.quill.format("script", context.format.script == "super" ? null : "super");
     },
-    {
-        shortcut: {
-            key: 13
-        },
-        cb: function (range: RangeStatic, context: any, inlineHandler: InlineStatic) {
-            console.log("evaluating")
-            inlineHandler.evaluateGeneral();
+    sub: function (range: RangeStatic, context: any) {
+        this.quill.format("script", context.format.script == "sub" ? null : "sub");
+    },
+    removeFormat: function (range: RangeStatic, context: any) {
+        this.quill.removeFormat(range);
+    },
+    codeBlock: function (range: RangeStatic, context: any) {
+        this.quill.format("code-block", context.format.codeBlock ? false : true);
+    },
+    align: function (range: RangeStatic, context: any) {
+        switch(context.format.align) {
+            case "left":
+                this.quill.format("align", "center");
+                break;
+            case "center":
+                this.quill.format("align", "right");
+                break;
+            case "right":
+                this.quill.format("align", "");
+                break;
+            default:
+                this.quill.format("align", "center");
+                break;
         }
     }
-]
+}
 
-const registerAllShortcuts = (keyboard: KeyboardStatic, inlineHandler: InlineStatic) => {
-
-    shortcutFunctions.forEach((item: staticShortCut) => {
-        if(item.shortcut.key == "M") {
-            keyboard.addBinding(item.shortcut, function (range: RangeStatic, context: any) {
-                const cb = item.cb;
-                const attachedCb = cb.bind(this);
-                
-                attachedCb(range, context, inlineHandler);
-            });
-        } else {
-            keyboard.addBinding(item.shortcut, item.cb);
-        }
+const registerAllShortcuts = (keyboard: KeyboardStatic, shortCuts: staticShortCut[]) => {
+    shortCuts.forEach((item: staticShortCut) => {
+        keyboard.addBinding(item.keys, shortcutFunctionsDictionary[item.func]);
     });
-};
-
-/** See: https://github.com/zenoamaro/react-quill/issues/22#issuecomment-128286775 */
-const patchListeners = (inlineHandler: InlineStatic) => {
-    document.getElementsByClassName("ql-editor")[0].addEventListener("keyup", (e: KeyboardEvent) => {
-        if(e.code == "Enter"){
-            console.log("evaluating")
-            inlineHandler.evaluateGeneral();
-        }
-    })
 }
 
 
 export default registerAllShortcuts;
-export { staticShortCut, patchListeners };
+export { staticShortCut };

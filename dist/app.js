@@ -12,6 +12,7 @@ const path = require("path");
 const DataStorage = require("./models/DataStorage");
 const NotesController = require("./controllers/notes/NotesController");
 const ClassController = require("./controllers/class/ClassController");
+const SettingsController = require("./controllers/settings/SettingsController");
 const UserSettings = require("./models/UserSettings");
 
 const storage = new DataStorage();
@@ -72,9 +73,11 @@ class Main {
 
         this.notesController = new NotesController(ipcMain, this.mainWindow, storage, settings);
         this.classController = new ClassController(ipcMain, this.mainWindow, storage, settings);
+        this.settingsController = new SettingsController(ipcMain, this.mainWindow, settings);
 
         this.notesController.setAll();
         this.classController.setAll();
+        this.settingsController.setAll();
 
         this.mainWindow.on("close", () => {
             this.mainWindow.webContents.send("closing");

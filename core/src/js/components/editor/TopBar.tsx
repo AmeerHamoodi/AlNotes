@@ -13,6 +13,7 @@ type TopBarProps = {
 
 const TopBar: FC<TopBarProps> = observer(({ name, backLink, core }) => {
     const [nameContent,setNoteName] = useState(name);
+    const [saveNote, setSaveNote] = useState("Not saved...");
 
     const handleChange = (content: string) => {
         setNoteName(content);
@@ -21,7 +22,8 @@ const TopBar: FC<TopBarProps> = observer(({ name, backLink, core }) => {
     useEffect(() => {
         core.infoAboutNote = {
             name: nameContent
-        }
+        };
+        core.attachSaveState(setSaveNote);
     }, [nameContent]);
 
     return (
@@ -39,6 +41,7 @@ const TopBar: FC<TopBarProps> = observer(({ name, backLink, core }) => {
             </div>
             <Link to="/" className="ui icon item"><i className="home icon"></i></Link>
             <Link to={backLink || "404"} className="ui icon item"><i className="folder icon"></i></Link>
+            <div className="ui icon item"><i className="save icon"></i> <span style={{fontSize: "0.9em", marginLeft:"5px"}}>{saveNote}</span> </div>
         </nav>
     )
 });
