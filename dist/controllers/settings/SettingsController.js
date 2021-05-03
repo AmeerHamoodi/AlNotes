@@ -14,9 +14,20 @@ class SettingsController {
         const mainWindow = this.mainWindow;
 
         ipcMain.on("keyboardSettings", (event, args) => {
-            console.log("got", JSON.stringify(this.settings.keyboard()));
             mainWindow.webContents.send("keyboardSettings:response", this.settings.keyboard());
         });
+
+        //New keyboard settings
+        ipcMain.on("newKeyboardData", (event, args) => {
+            console.log("got new keybaord", JSON.stringify(args));
+            const keyboard = {};
+            args.forEach(item => {
+                keyboard[item.func] = item.keyData;
+            });
+
+            this.settings.updateKeyboard(keyboard);
+            mainWindow.webContents.send("keyboardSettings:response", this.settings.keyboard());
+        })
     }
 };
 

@@ -20,9 +20,13 @@ const Settings = observer(() => {
     }, [])
 
     const data = settingsStore.keyboardSettingsLoaded ? settingsStore.keyboardSettings.map((item: keyboardSetting) => {
-        return <Display name={item.func} keyCode={item.keyData.keyData} key={`display_${Math.random()}`}/>
+        return <Display name={item.func} keyCode={item.keyData.keyData} key={`display_${Math.random()}`} store={settingsStore}/>
     }) : [];
 
+
+    const saveKeyboard = () => {
+        settingsStore.queueAllKeyboardSettings();
+    };
 
     return (
         <>
@@ -32,6 +36,7 @@ const Settings = observer(() => {
             <div className="items ms5">
                 {data}
             </div>
+            <div className="ui button primary" onClick={saveKeyboard}>Save keyboard settings</div>
             <Error toShow={settingsStore.errorContent.occured} textToShow={settingsStore.errorContent.data}></Error>
         </>
     )

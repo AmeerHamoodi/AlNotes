@@ -32,7 +32,7 @@ class DefaultStore {
      * Handles error by setting the error message.
      * @param e Error content
      */
-    _handleError(e: Error) {
+    _handleError(e: Error, methodName?: string) {
         console.log(e);
         switch (e.name) {
             case "Store Response Error":
@@ -45,7 +45,7 @@ class DefaultStore {
                 break;
             default:
                 this.errorContent.occured = true;
-                this.errorContent.data = "Unknown error occurred with classesStore.createClass!";
+                this.errorContent.data = `Unknown error occurred ${typeof methodName === "string" ? "with " + methodName : "with the store"}`;
         }
     }
     /**

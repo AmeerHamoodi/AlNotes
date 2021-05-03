@@ -100,12 +100,15 @@ interface SettingsStoreInterface {
         data: any
     },
     keyboardSettingsLoaded: boolean,
-    newKeyboardSettings: any[],
+    newKeyboardSettingsQueue: any[],
+    /** Setting this to true will auto queue all keyboard settings */
+    toQueueKeyboard: boolean,
     _listenKeyboardSettings: () => void,
     _errorListener: () => void,
     _handleError: (e: Error) => void,
     getKeyboard: () => void,
-    setKeyboardReady: (keyData: string, func: string) => void
+    addKeyDataToNewQueue: (keyData: string, func: string) => void,
+    queueAllKeyboardSettings: () => void
 }
 
 

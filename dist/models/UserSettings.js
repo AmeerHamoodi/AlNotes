@@ -43,7 +43,7 @@ class UserSettings {
                         shiftKey: true
                     },
                     codeBlock: {
-                        key: 66,
+                        key: 81,
                         shortKey: true,
                         shiftKey: true
                     }
@@ -63,6 +63,7 @@ class UserSettings {
     }
     updateKeyboard(newKeyboard) {
         this.settings.keyboardSettings = newKeyboard;
+        store.set("userSettings", JSON.stringify(this.settings));
     }
     keyboard() {
         return Object.values(this.settings.keyboardSettings);

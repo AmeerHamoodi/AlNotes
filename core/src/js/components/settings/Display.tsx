@@ -1,19 +1,31 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
+import { observer } from "mobx-react-lite";
+import { reaction, autorun } from "mobx";
+
+import { SettingsStoreInterface } from "../../stores/interfaces";
 
 type props = {
     name: string,
-    keyCode: string
+    keyCode: string,
+    store: SettingsStoreInterface
 }
 
-const Display = ({ name, keyCode }: props) => {
+const Display = observer(({ name, keyCode, store }: props) => {
     const [keyCodeValue, setKeyCodeValue] = useState(keyCode);
 
+    const { toQueueKeyboard } = store;
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement> | React.KeyboardEvent<HTMLInputElement>) => {
         const target = e.target as HTMLInputElement;
-        console.log(target.value);
         setKeyCodeValue(target.value);
-    }
+        disposer();
+        console.log("change...");
+    };
+
+    const disposer = autorun(() => {
+        console.log(keyCodeValue);
+        if(toQueueKeyboard) store.addKeyDataToNewQueue(keyCodeValue, name);
+    })
 
     return (
         <div className="ui item grid" style={{alignItems: "center", justifyContent:"center"}}>
@@ -24,17 +36,14 @@ const Display = ({ name, keyCode }: props) => {
                 <div className="column">
                     <div className="ui form">
                         <div className="field">
-                            <input type="text" placeholder="Hit the 'meta keys' (like CTRL, ALT, SHIFT ...) and key involved in your shortkey" 
-                            value={keyCodeValue} onChange={handleChange} /*onKeyUp={(e) => {
-                                const target = e.target as HTMLInputElement;
-                                setKeyCodeValue(target.value);
-                            }}*//>
+                            <input type="text" placeholder="Type the 'meta keys' (like CTRL, ALT, SHIFT ...) and key involved in your shortkey" 
+                            value={keyCodeValue} onChange={handleChange} /*onKeyUp={handleChange} onKeyDown={handleChange} *//>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     )
-};
+});
 
 export default Display;

@@ -1,9 +1,9 @@
-import { action, observable, makeObservable, runInAction } from "mobx";
+import { action, observable, makeObservable, runInAction, toJS } from "mobx";
 
 //LIBS
 import DefaultStore from "./DefaultStore";
 import KeyboardSettingFront from "./helpers/fronts/KeyboardSettingFront";
-import keys from "./helpers/keys";
+import keys, { getKeyByText } from "./helpers/keys";
 const { ipcRenderer } = window.require("electron");
 
 //ERRORS
@@ -31,25 +31,32 @@ type newKeyboardSettings = {
     keyData: keyboardResponse
 }
 
+type keyString = keyof typeof keys;
+
 const functionNames: string[] = ["Strikethrough", "Superscript", "Subscript", "Align", "Header 1", "Header 2", "Code-block"];
 const formattedNames: string[] = ["strike", "super", "sub", "align", "header1", "header2", "codeBlock"];
 
 class SettingsStore extends DefaultStore implements SettingsStoreInterface {
     keyboardSettings: keyboardSetting[];
     keyboardSettingsLoaded: boolean;
-    newKeyboardSettings: newKeyboardSettings[];
+    newKeyboardSettingsQueue: newKeyboardSettings[];
+    toQueueKeyboard: boolean;
 
     constructor() {
         super();
         this.keyboardSettings = [];
         this.keyboardSettingsLoaded = false;
-        this.newKeyboardSettings = [];
+        this.newKeyboardSettingsQueue = [];
+        this.toQueueKeyboard = false;
 
         makeObservable(this, {
             keyboardSettings: observable,
             keyboardSettingsLoaded: observable,
-            newKeyboardSettings: observable,
-            setKeyboardReady: action
+            toQueueKeyboard: observable,
+            addKeyDataToNewQueue: action,
+            queueAllKeyboardSettings: action,
+            newKeyboard: action
+
         });
         this._listenKeyboardSettings();
     }
@@ -74,6 +81,7 @@ class SettingsStore extends DefaultStore implements SettingsStoreInterface {
                         }
                     });
                     this.keyboardSettingsLoaded = true;
+                    this.toQueueKeyboard = false;
                 })
 
             } catch(e) {
@@ -93,32 +101,52 @@ class SettingsStore extends DefaultStore implements SettingsStoreInterface {
     /** Send new keyboard data */
     public newKeyboard() {
         try {
-            //if(!Array.from(this.newKeyboardReady).every((val) => val) || this.newKeyboardReady.length !== 7) throw new StoreError("Could not save all keys, try again!");
+            if(this.newKeyboardSettingsQueue.length !== 7) throw new StoreError("Could not save all keys, try again!");
 
-            ipcRenderer.send("newKeyboardData", )
+            console.log(this.newKeyboardSettingsQueue);
+
+            const newKeyboardSettingsQueueArray = toJS(this.newKeyboardSettingsQueue);
+
+            console.log(newKeyboardSettingsQueueArray);
+
+            ipcRenderer.send("newKeyboardData", newKeyboardSettingsQueueArray);
+            this.newKeyboardSettingsQueue = []; //empty queue for requeue;
 
         } catch(e) {
-
+            console.log(e);
+            this._handleError(e);
         }
     }
+    /**  Adds keys to the new key queue, once queue is full, will send an event to update the keyboard settings*/
+    public addKeyDataToNewQueue(keyData: keyString, func: string) {
+        const args: keyString[] = keyData.split("+") as keyString[];
 
-    public setKeyboardReady(keyData: string, func: string) {
-        const args: string[] = keyData.split("+");
         args.forEach((item: string) => {
-            if(item.length > 1 && !["ALT", "CTRL", "SHIFT"].includes(item)) throw new StoreError(`Invalid command '${item}', if you are on a mac and want to use the command button, just put CTRL instead.`)        
+            try {
+                if(item.length > 1 && !["ALT", "CTRL", "SHIFT"].includes(item)) throw new StoreError(`Invalid command '${item}', if you are on a mac and want to use the command button, just put CTRL instead.`)
+            } catch(e) {
+                console.log(e);
+                this._handleError(e);
+            }
         });
 
         const formattedName = formattedNames[functionNames.indexOf(func)];
 
-        this.newKeyboardSettings.push({
+        this.newKeyboardSettingsQueue.push({
             func: formattedName,
             keyData: {
-                key: keys[args[args.length - 1].toString()],
+                key: getKeyByText(args[args.length - 1]),
                 shortKey: args.includes("CTRL"),
                 shiftKey: args.includes("SHIFT"),
 
             }
-        })
+        });
+
+        if(this.newKeyboardSettingsQueue.length >= 7) this.newKeyboard();
+    }
+
+    public queueAllKeyboardSettings() {
+        this.toQueueKeyboard = true;
     }
 };
 
