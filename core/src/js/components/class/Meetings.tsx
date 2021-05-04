@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { observer } from "mobx-react-lite";
 
 import List from "../List";
@@ -19,18 +19,18 @@ interface UnitsPropsInterface {
 }
 
 const Meetings = observer(({ classItemsStore, className }: UnitsPropsInterface) => {
+    const [meetingName, setMeetingName] = useState("");
+    const [meetingLink, setMeetingLink] = useState("");
+
 
     const createMeetingInternal = () => {
-        const name = $("#meetingName").val().toString();
-        const link = $("#meetingLink").val().toString();
-
         classItemsStore.createClassItem(className, "meeting", {
-            name,
-            link
+            name: meetingName,
+            link: meetingLink
         });
 
-        $("#meetingName").val("");
-        $("#meetingLink").val("");
+        setMeetingName("");
+        setMeetingLink("");
     }
 
     const meetings = classItemsStore.meetings.map((item: ClassItem) => {
@@ -38,6 +38,16 @@ const Meetings = observer(({ classItemsStore, className }: UnitsPropsInterface) 
 
         return item;
     });
+
+    const handleChangeName = (el: React.ChangeEvent<HTMLInputElement>) => {
+        const input = el.target as HTMLInputElement;
+        setMeetingName(input.value);   
+    };
+
+    const handleChangeLink = (el: React.ChangeEvent<HTMLInputElement>) => {
+        const input = el.target as HTMLInputElement;
+        setMeetingLink(input.value);   
+    };
 
     return (
         <>
@@ -48,11 +58,11 @@ const Meetings = observer(({ classItemsStore, className }: UnitsPropsInterface) 
             <CreateNew title="Create new unit" creationText="Create unit" onClick={createMeetingInternal}>
                 <div className="field">
                     <label>Meeting name:</label>
-                    <input type="text" id="meetingName" placeholder="Enter the meeting name" />
+                    <input type="text" id="meetingName" placeholder="Enter the meeting name" value={meetingName} onChange={handleChangeName} />
                 </div>
                 <div className="field">
                     <label>Meeting link:</label>
-                    <input type="text" id="meetingLink" placeholder="Enter the link of the meeting" />
+                    <input type="text" id="meetingLink" placeholder="Enter the link of the meeting" value={meetingLink} onChange={handleChangeLink} />
                 </div>
             </CreateNew>
         </>

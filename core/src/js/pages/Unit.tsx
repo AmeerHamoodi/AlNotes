@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import { observer } from "mobx-react-lite";
 import { RouteComponentProps } from "react-router-dom";
 
@@ -22,6 +22,9 @@ type RouteDetails = {
 const notesStore: NotesStoreInterface = new NotesStore();
 
 const Unit = observer(({ match }: RouteComponentProps<RouteDetails>) => {
+    const [unitName, setUnitName] = useState("");
+
+
     useEffect(() => {
         notesStore.getNotes(match.params.className, match.params.unitName);
     }, []);
@@ -31,6 +34,11 @@ const Unit = observer(({ match }: RouteComponentProps<RouteDetails>) => {
         const value = $("#notename").val().toString();
         notesStore.createNote(match.params.className, match.params.unitName, value);
         $("#notename").val("");
+    }
+
+    const handleChange = (el: React.ChangeEvent<HTMLInputElement>) => {
+        const input = el.target as HTMLInputElement;
+        setUnitName(input.value);
     }
 
     return (
@@ -48,7 +56,7 @@ const Unit = observer(({ match }: RouteComponentProps<RouteDetails>) => {
                 <CreateNew title="New note" creationText="Create new note" onClick={createNote}>
                     <div className="field">
                         <label>Note name:</label>
-                        <input type="text" id="notename" placeholder="Enter name of note"/>
+                        <input type="text" id="notename" placeholder="Enter name of note" value={unitName} onChange={handleChange} />
                     </div>
                 </CreateNew>
             </div>

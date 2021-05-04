@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { observer } from "mobx-react-lite";
 
 import List from "../List";
@@ -19,24 +19,36 @@ interface UnitsPropsInterface {
 }
 
 const Textbooks = observer(({ classItemsStore, className }: UnitsPropsInterface) => {
+    const [textbookName, setTextbookName] = useState("");
+    const [textbookLink, setTextbookLink] = useState("");
+
 
     const createTextbookinternal = () => {
-        const name = $("#textbookName").val().toString();
-        const link = $("#textbookLink").val().toString();
-
         classItemsStore.createClassItem(className, "textbook", {
-            name,
-            link
+            name: textbookName,
+            link: textbookLink
         });
 
-        $("#textbookName").val("");
-        $("#textbookLink").val("");
+        setTextbookLink("");
+        setTextbookName("");
     }
 
     const textbooks = classItemsStore.textbooks.map((item: ClassItem) => {
         item.icon = "book";
         return item;
     });
+
+
+    const handleChangeName = (el: React.ChangeEvent<HTMLInputElement>) => {
+        const input = el.target as HTMLInputElement;
+        setTextbookName(input.value);
+    };
+
+    const handleChangeLink = (el: React.ChangeEvent<HTMLInputElement>) => {
+        const input = el.target as HTMLInputElement;
+        setTextbookLink(input.value);
+    }
+
 
     return (
         <>
@@ -47,11 +59,11 @@ const Textbooks = observer(({ classItemsStore, className }: UnitsPropsInterface)
             <CreateNew title="Create new unit" creationText="Create unit" onClick={createTextbookinternal}>
                 <div className="field">
                     <label>Textbook name:</label>
-                    <input type="text" id="textbookName" placeholder="Enter the textbook name" />
+                    <input type="text" id="textbookName" placeholder="Enter the textbook name" value={textbookName} onChange={handleChangeName} />
                 </div>
                 <div className="field">
                     <label>Textbook link:</label>
-                    <input type="text" id="textbookLink" placeholder="Enter the link of the textbook" />
+                    <input type="text" id="textbookLink" placeholder="Enter the link of the textbook" value={textbookLink} onChange={handleChangeLink} />
                 </div>
             </CreateNew>
         </>

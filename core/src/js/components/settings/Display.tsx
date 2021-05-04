@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from "react";
 import { observer } from "mobx-react-lite";
-import { reaction, autorun } from "mobx";
+import { autorun } from "mobx";
 
 import { SettingsStoreInterface } from "../../stores/interfaces";
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { observer } from "mobx-react-lite";
 
 import List from "../List";
@@ -19,18 +19,17 @@ interface UnitsPropsInterface {
 }
 
 const Labs = observer(({ classItemsStore, className }: UnitsPropsInterface) => {
+    const [labName, setLabName] = useState("");
+    const [labLink, setLabLink] = useState("");
 
     const createLabInternal = () => {
-        const name = $("#labName").val().toString();
-        const link = $("#labLink").val().toString();
-
         classItemsStore.createClassItem(className, "lab", {
-            name,
-            link
+            name: labName,
+            link: labLink
         });
 
-        $("#labName").val("");
-        $("#labLink").val("");
+        setLabName("");
+        setLabLink("");
     };
 
     const labs = classItemsStore.labs.map((item: ClassItem) => {
@@ -38,6 +37,17 @@ const Labs = observer(({ classItemsStore, className }: UnitsPropsInterface) => {
 
         return item;
     });
+
+    const handleChangeName = (el: React.ChangeEvent<HTMLInputElement>) => {
+        const input = el.target as HTMLInputElement;
+        setLabName(input.value);
+    };
+
+
+    const handleChangeLink = (el: React.ChangeEvent<HTMLInputElement>) => {
+        const input = el.target as HTMLInputElement;
+        setLabLink(input.value);
+    };
 
     return (
         <>
@@ -48,11 +58,11 @@ const Labs = observer(({ classItemsStore, className }: UnitsPropsInterface) => {
             <CreateNew title="Create new unit" creationText="Create unit" onClick={createLabInternal}>
                 <div className="field">
                     <label>Lab name:</label>
-                    <input type="text" id="labName" placeholder="Enter the lab name" />
+                    <input type="text" id="labName" placeholder="Enter the lab name" value={labName} onChange={handleChangeName} />
                 </div>
                 <div className="field">
                     <label>Lab link:</label>
-                    <input type="text" id="labLink" placeholder="Enter the link of the lab" />
+                    <input type="text" id="labLink" placeholder="Enter the link of the lab" value={labLink} onChange={handleChangeLink} />
                 </div>
             </CreateNew>
         </>

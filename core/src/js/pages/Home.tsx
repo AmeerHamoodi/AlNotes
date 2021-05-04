@@ -18,16 +18,20 @@ import { ClassesStoreInterface } from "../stores/interfaces";
 const classesStore: ClassesStoreInterface = new ClassesStore();
 
 const Home = observer((props) => {
+    const [className, setClassName] = useState("");
     useEffect(() => {
         classesStore.getClasses();
     }, []);
 
     const createClass = () => {
-        const className = $("#classname").val().toString();
         classesStore.createClass(className);
-        $("#classname").val("");
-        //! REFACTOR
+        setClassName("");
     };
+
+    const handleChange = (el: React.ChangeEvent<HTMLInputElement>) => {
+        const input = el.target as HTMLInputElement;
+        setClassName(input.value);
+    }
 
 
     return (
@@ -43,7 +47,7 @@ const Home = observer((props) => {
                 creationText="Create class">
                 <div className="field">
                     <label>Class name:</label>
-                    <input type="text" id="classname" placeholder="Enter class name" />
+                    <input type="text" id="classname" placeholder="Enter class name" value={className} onChange={handleChange} />
                 </div>
                 <Error toShow={classesStore.errorContent.occured}
                     textToShow={classesStore.errorContent.data}></Error>

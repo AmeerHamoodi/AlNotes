@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import List from "../List";
 import CreateNew from "../CreateNew";
@@ -19,17 +19,22 @@ interface UnitsInterface {
 }
 
 const Units = ({ unitsData, unitsStore, className }: UnitsInterface) => {
+    const [unitName, setUnitName] = useState("");
 
     const createUnit = () => {
-        const unitName = $("#unitname").val();
-        unitsStore.createUnit(className, unitName.toString());
-        $("#unitname").val("");
+        unitsStore.createUnit(className, unitName);
+        setUnitName("");
     }
 
     unitsData = unitsData.map(item => {
         item.icon = "folder";
         return item;
     });
+
+    const handleChange = (el: React.ChangeEvent<HTMLInputElement>) => {
+        const input = el.target as HTMLInputElement;
+        setUnitName(input.value);
+    }
 
     return (
         <>
@@ -38,7 +43,7 @@ const Units = ({ unitsData, unitsStore, className }: UnitsInterface) => {
             <CreateNew title="Create new unit" creationText="Create unit" onClick={createUnit}>
                 <div className="field">
                     <label>Unit name:</label>
-                    <input type="text" id="unitname" placeholder="Enter the unit name" />
+                    <input type="text" id="unitname" placeholder="Enter the unit name" onChange={handleChange} value={unitName} />
                 </div>
             </CreateNew>
         </>
