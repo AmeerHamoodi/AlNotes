@@ -6,7 +6,7 @@ import Error from "../components/Error";
 import Display from "../components/settings/Display";
 
 //STORES
-import SettingsStore, { keyboardSetting } from "../stores/settingsStore";
+import SettingsStore, { keyboardSettingFront } from "../stores/settingsStore";
 
 //INTERFACES
 import { SettingsStoreInterface } from "../stores/interfaces";
@@ -19,7 +19,7 @@ const Settings = observer(() => {
         settingsStore.getKeyboard();
     }, [])
 
-    const data = settingsStore.keyboardSettingsLoaded ? settingsStore.keyboardSettings.map((item: keyboardSetting) => {
+    const data = settingsStore.keyboardSettingsLoaded ? settingsStore.keyboardSettings.map((item: keyboardSettingFront) => {
         return <Display name={item.func} keyCode={item.keyData.keyData} key={`display_${Math.random()}`} store={settingsStore}/>
     }) : [];
 

@@ -30,7 +30,9 @@ class Main {
         this._init();
 
     }
-
+    /**
+     * Calls all necessary methods for initialization
+     */
     _init() {
         app.whenReady().then(() => {
             this.setWindowMain();
@@ -47,16 +49,20 @@ class Main {
         });
         this.beforeCloseFunctions();
     }
-
+    /**
+     * Sets all functions before closing window
+     */
     beforeCloseFunctions() {
         app.once("before-quit", () => {
             storage.saveAll();
         });
         app.on('window-all-closed', function() {
-            if (process.platform !== 'darwin') app.quit()
+            if (process.platform !== 'darwin') app.quit() //Mac patch
         })
     }
-
+    /**
+     * Creates and sets main browser window
+     */
     setWindowMain() {
         this.mainWindow = new BrowserWindow({
             width: settings.size.width || 1800,
@@ -71,10 +77,16 @@ class Main {
         this.mainWindow.loadURL(path.join(__dirname, "/public/index.html"));
         this.mainWindow.removeMenu();
 
+        /**
+         * Where the controllers get initialized
+         */
         this.notesController = new NotesController(ipcMain, this.mainWindow, storage, settings);
         this.classController = new ClassController(ipcMain, this.mainWindow, storage, settings);
         this.settingsController = new SettingsController(ipcMain, this.mainWindow, settings);
 
+        /**
+         * Sets all of the controller listeners
+         */
         this.notesController.setAll();
         this.classController.setAll();
         this.settingsController.setAll();
@@ -88,9 +100,13 @@ class Main {
             settings.updateSize({ width: size[0], height: size[1] });
         });
 
-        this.mainWindow.webContents.openDevTools();
+        this.mainWindow.webContents.openDevTools(); //Comment this line out for production 
+        // ! ADD DEV ENV CHECK HERE
     }
 
+    /**
+     * Old loading window/splash screen method, not used anymore
+     */
     setLoadingWindow() {
         this.loadingWindow = new BrowserWindow({
             width: 400,
@@ -99,11 +115,16 @@ class Main {
         });
         this.loadingWindow.loadURL(path.join(__dirname, "../devBuild/loading.html"));
     }
-
+    /**
+     * Initializes the context menu method here
+     */
     setSpellChecking() {
         contextMenu({ showInspectElement: false });
     }
 
+    /**
+     * Checks user storage and compares versions to see whether or not to show the update message or not
+     */
     showUpdateMessage() {
         const currentVersion = store.get("version");
 
@@ -114,6 +135,9 @@ class Main {
             store.set("version", app.getVersion());
         }
     }
+    /**
+     * Checcks if there's an update and proceeds with the update
+     */
     autoupdate() {
         const sendStatusToWindow = (message) => {
             this.mainWindow.webContents.send("updateMessage", message);
@@ -150,7 +174,9 @@ class Main {
             sendStatusToWindow('Update downloaded');
         });
     }
-
+    /**
+     * Registers all functional localShortcuts
+     */
     registerAutoShortcut() {
         localShortcut.register(this.mainWindow, "CommandOrControl+R", () => {
             this.mainWindow.reload();
@@ -166,3 +192,4 @@ class Main {
 }
 
 new Main();
+//No need to store in a variable

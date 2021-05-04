@@ -11,7 +11,6 @@ import ResponseError from "./helpers/errors/ResponseError";
 //INTERFACES
 import { NoteStoreInterface, getNoteByIdResponse} from "./interfaces"
 
-
 export default class NotesStore extends DefaultStore implements NoteStoreInterface {
     public noteLoaded: boolean;
     public noteContent: string;
@@ -106,7 +105,9 @@ export default class NotesStore extends DefaultStore implements NoteStoreInterfa
         }
         
     }
-
+    /**
+     * Unloads note, i.e. sets noteloaded to false
+     */
     public setUnloaded() {
         this.noteLoaded = false;
     }

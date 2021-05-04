@@ -46,6 +46,9 @@ class UserSettings {
                         key: 81,
                         shortKey: true,
                         shiftKey: true
+                    },
+                    removeFormat: {
+                        key: 27
                     }
                 },
                 sizeSettings: {

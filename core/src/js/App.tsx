@@ -15,8 +15,8 @@ const App = () => {
     return (
         <HashRouter>
             <Switch>
-                <Route path="/" exact render={params => <Home {...params}></Home>} />
-                <Route path="/class/:name" exact render={params => <Class {...params}></Class>} />
+                <Route path="/" exact component={withRouter(Home)} />
+                <Route path="/class/:name" exact component={withRouter(Class)} />
                 <Route path="/class/:className/unit/:unitName" exact component={withRouter(Unit)}></Route>
                 <Route path="/class/:className/unit/:unitName/note/:id" exact component={withRouter(Note)}></Route>
                 <Route path="/settings" exact component={withRouter(Settings)}></Route>

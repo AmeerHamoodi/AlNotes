@@ -1,4 +1,8 @@
 import { Quill } from "react-quill";
+import { autorun } from "mobx";
+
+//STORES
+import SettingsStore, { keyboardSettingRaw } from "../stores/settingsStore";
 
 //CONFIGS AND MODULES
 import quillToolbar, { quillToolbarType } from "./config/toolbar";
@@ -7,7 +11,7 @@ import registerAllShortcuts from "./helpers/shortcutKeys";
 import UTILS from "./utils";
 
 //INTERFACES AND TYPES
-import { NoteStoreInterface } from "../stores/interfaces";
+import { NoteStoreInterface, SettingsStoreInterface } from "../stores/interfaces";
 
 interface Modules {
     syntax: boolean,
@@ -35,6 +39,9 @@ interface NoteDetails {
     name: string,
 }
 
+
+const settingsStore: SettingsStoreInterface = new SettingsStore();
+
 class Core implements CoreInterface {
     //PRIVATE
     private core: Quill;
@@ -58,16 +65,17 @@ class Core implements CoreInterface {
 
     //PRIVATE METHODS
     /** Just calls all methods needed to initialize an editor */
-    private callAll() {
-        this.setAllKeyEvents();
+    private callAll(keyboardSettings: keyboardSettingRaw[]) {
+        this.setAllKeyEvents(keyboardSettings);
         this.setEditorContent();
     }
 
 
     /** Sets all listeners and CBs for keyboard */
-    private setAllKeyEvents() {
+    private setAllKeyEvents(keyboardSettings: keyboardSettingRaw[]) {
         const { keyboard } = this.core;
         //SAVE
+        //Have to set save keybinding here for obvious reasons
         keyboard.addBinding({
             key: "S",
             shortKey: true
@@ -77,7 +85,7 @@ class Core implements CoreInterface {
             this.setSaveState(`Last saved: ${UTILS.getTime()}`)
         });
         //FORMAT SHORTCUTS
-        //registerAllShortcuts(keyboard);
+        registerAllShortcuts(keyboard, keyboardSettings);
     }
 
     /** Sets the editor content with the content loaded from the store */
@@ -94,7 +102,7 @@ class Core implements CoreInterface {
     public autoSetEditorContent() {
         this.setEditorContent();
     }
-
+    /** Connects the state from the core react componenet to the core class */
     public attachSaveState(setSaveState: (data: string) => void) {
         this.setSaveState = setSaveState;
     }
@@ -104,7 +112,13 @@ class Core implements CoreInterface {
     set coreEditor(q: Quill) {
         this.core = q;
         this.canStart = true;
-        this.callAll();
+        settingsStore.getKeyboard();
+
+        autorun(() => {
+            if(settingsStore.keyboardSettingsLoaded) {
+                this.callAll(settingsStore.rawKeyboardSettings);
+            }
+        })
     }
     set noteStore(store: NoteStoreInterface) {
         this.store = store;

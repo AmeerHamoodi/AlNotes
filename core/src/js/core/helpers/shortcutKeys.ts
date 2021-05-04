@@ -16,10 +16,11 @@
  */
 
 import { RangeStatic, KeyboardStatic, Key } from "quill";
+import { toJS } from "mobx";
 
 type staticShortCut = {
-    func: "strike" | "heading1" | "heading2" | "super" | "sub" | "removeFormat" | "codeBlock" | "align",
-    keys: Key
+    func: keyof typeof shortcutFunctionsDictionary,
+    keyData: Key
 }
 
 type shortCutFunction = (range?: RangeStatic, context?: any) => void;
@@ -27,8 +28,8 @@ type shortCutFunction = (range?: RangeStatic, context?: any) => void;
 
 interface shortcutFunctionsInterface {
     strike: (range: RangeStatic, context: any) => void,
-    heading1: (range: RangeStatic, context: any) => void,
-    heading2: (range: RangeStatic, context: any) => void,
+    header1: (range: RangeStatic, context: any) => void,
+    header2: (range: RangeStatic, context: any) => void,
     super: (range: RangeStatic, context: any) => void,
     sub: (range: RangeStatic, context: any) => void,
     removeFormat: (range: RangeStatic, context: any) => void,
@@ -40,10 +41,10 @@ const shortcutFunctionsDictionary = {
     strike: function (range: RangeStatic, context: any) {
         this.quill.format("strike", !context.format.strike);
     },
-    heading1: function (range: RangeStatic, context: any) {
+    header1: function (range: RangeStatic, context: any) {
         this.quill.format("header", context.format.header == 1 ? false : 1);
     },
-    heading2: function (range: RangeStatic, context: any) {
+    header2: function (range: RangeStatic, context: any) {
         this.quill.format("header", context.format.header == 2 ? false : 2);
     },
     super: function (range: RangeStatic, context: any) {
@@ -78,7 +79,9 @@ const shortcutFunctionsDictionary = {
 
 const registerAllShortcuts = (keyboard: KeyboardStatic, shortCuts: staticShortCut[]) => {
     shortCuts.forEach((item: staticShortCut) => {
-        keyboard.addBinding(item.keys, shortcutFunctionsDictionary[item.func]);
+        const realItem = toJS(item)
+        console.log(realItem)
+        keyboard.addBinding(realItem.keyData, shortcutFunctionsDictionary[realItem.func]);
     });
 }
 

@@ -9,6 +9,8 @@ const quillToolbar = [
     ["clean"]
 ];
 
+//Order of the toolbar content
+
 type quillToolbarType = object|string[][];
 
 export default quillToolbar;

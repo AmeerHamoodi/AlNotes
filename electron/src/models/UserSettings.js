@@ -7,6 +7,10 @@ class UserSettings {
         this.settings = null;
         this._init();
     }
+    /**
+     * Fetches and sets all settings objects
+     * ! CURRENTLY DOESN'T FETCH NEWLY SAVED SETTINGS DUE TO BEING IN ALPHA
+     */
     _init() {
         const settings = typeof store.get("userSettings") == "undefined" ? undefined : JSON.parse(store.get("userSettings"));
 
@@ -46,6 +50,9 @@ class UserSettings {
                         key: 81,
                         shortKey: true,
                         shiftKey: true
+                    },
+                    removeFormat: {
+                        key: 27
                     }
                 },
                 sizeSettings: {
@@ -61,13 +68,25 @@ class UserSettings {
     get size() {
         return this.settings.sizeSettings;
     }
+    /**
+     * Updates the keyboard settings i.e. shortkeys and their functions
+     * @param {object} newKeyboard The new keyboard object
+     */
     updateKeyboard(newKeyboard) {
         this.settings.keyboardSettings = newKeyboard;
         store.set("userSettings", JSON.stringify(this.settings));
     }
+    /**
+     * Informal getter that returns all of the keyboard items as an array
+     * @returns {array} All of the keyboard settings
+     */
     keyboard() {
         return Object.values(this.settings.keyboardSettings);
     }
+    /**
+     * Updates the screen size stored as a preferencee
+     * @param {object} newSize Should contain an integer new width and height
+     */
     updateSize(newSize) {
         this.settings.sizeSettings = newSize;
         store.set("userSettings", JSON.stringify(this.settings));

@@ -41,7 +41,7 @@ const TopBar: FC<TopBarProps> = observer(({ name, backLink, core }) => {
             </div>
             <Link to="/" className="ui icon item"><i className="home icon"></i></Link>
             <Link to={backLink || "404"} className="ui icon item"><i className="folder icon"></i></Link>
-            <div className="ui icon item"><i className="save icon"></i> <span style={{fontSize: "0.9em", marginLeft:"5px"}}>{saveNote}</span> </div>
+            <div className="ui icon item"><i className="save icon"></i> <span style={{fontSize: "0.7em", marginLeft:"5px"}}>{saveNote}</span> </div>
         </nav>
     )
 });

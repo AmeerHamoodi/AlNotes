@@ -26,6 +26,7 @@ const Home = observer((props) => {
         const className = $("#classname").val().toString();
         classesStore.createClass(className);
         $("#classname").val("");
+        //! REFACTOR
     };
 
 

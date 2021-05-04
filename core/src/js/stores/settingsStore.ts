@@ -14,6 +14,8 @@ import ResponseError from "./helpers/errors/ResponseError";
 import { SettingsStoreInterface } from "./interfaces";
 import { KeyboardSettingFrontInterface, KeyboardData } from "./helpers/fronts/KeyboardSettingFront";
 
+type funcString = "strike" | "super" | "sub" | "align" | "header1" | "header2" | "codeBlock" | "removeFormat";
+
 type keyboardResponse = {
     key: number,
     shortKey?: boolean,
@@ -21,30 +23,32 @@ type keyboardResponse = {
     shiftKey?: boolean
 }
 
-type keyboardSetting = {
+type keyboardSettingFront = {
     func: string,
     keyData: KeyboardSettingFront
 }
 
-type newKeyboardSettings = {
-    func: string,
+type keyboardSettingRaw = {
+    func: funcString,
     keyData: keyboardResponse
 }
 
 type keyString = keyof typeof keys;
 
 const functionNames: string[] = ["Strikethrough", "Superscript", "Subscript", "Align", "Header 1", "Header 2", "Code-block"];
-const formattedNames: string[] = ["strike", "super", "sub", "align", "header1", "header2", "codeBlock"];
+const formattedNames: funcString[] = ["strike", "super", "sub", "align", "header1", "header2", "codeBlock", "removeFormat"];
 
 class SettingsStore extends DefaultStore implements SettingsStoreInterface {
-    keyboardSettings: keyboardSetting[];
+    keyboardSettings: keyboardSettingFront[];
     keyboardSettingsLoaded: boolean;
-    newKeyboardSettingsQueue: newKeyboardSettings[];
+    newKeyboardSettingsQueue: keyboardSettingRaw[];
+    rawKeyboardSettings: keyboardSettingRaw[];
     toQueueKeyboard: boolean;
 
     constructor() {
         super();
         this.keyboardSettings = [];
+        this.rawKeyboardSettings = [];
         this.keyboardSettingsLoaded = false;
         this.newKeyboardSettingsQueue = [];
         this.toQueueKeyboard = false;
@@ -53,6 +57,7 @@ class SettingsStore extends DefaultStore implements SettingsStoreInterface {
             keyboardSettings: observable,
             keyboardSettingsLoaded: observable,
             toQueueKeyboard: observable,
+            rawKeyboardSettings: observable,
             addKeyDataToNewQueue: action,
             queueAllKeyboardSettings: action,
             newKeyboard: action
@@ -66,8 +71,6 @@ class SettingsStore extends DefaultStore implements SettingsStoreInterface {
             try {
                 if(!Array.isArray(args)) throw new ResponseError("Invalid response from keyboardSettings:response");
 
-                console.log("got");
-
                 const temp: KeyboardSettingFrontInterface[] = [];
                 args.forEach((item: KeyboardData) => {
                     temp.push(new KeyboardSettingFront(item));
@@ -78,6 +81,12 @@ class SettingsStore extends DefaultStore implements SettingsStoreInterface {
                         return {
                             keyData: item,
                             func: functionNames[i]
+                        }
+                    });
+                    this.rawKeyboardSettings = args.map((item: keyboardResponse, i: number) => {
+                        return {
+                            keyData: item,
+                            func: formattedNames[i]
                         }
                     });
                     this.keyboardSettingsLoaded = true;
@@ -101,7 +110,7 @@ class SettingsStore extends DefaultStore implements SettingsStoreInterface {
     /** Send new keyboard data */
     public newKeyboard() {
         try {
-            if(this.newKeyboardSettingsQueue.length !== 7) throw new StoreError("Could not save all keys, try again!");
+            if(this.newKeyboardSettingsQueue.length !== 8) throw new StoreError("Could not save all keys, try again!");
 
             console.log(this.newKeyboardSettingsQueue);
 
@@ -111,6 +120,7 @@ class SettingsStore extends DefaultStore implements SettingsStoreInterface {
 
             ipcRenderer.send("newKeyboardData", newKeyboardSettingsQueueArray);
             this.newKeyboardSettingsQueue = []; //empty queue for requeue;
+            this.toQueueKeyboard = false;
 
         } catch(e) {
             console.log(e);
@@ -118,7 +128,7 @@ class SettingsStore extends DefaultStore implements SettingsStoreInterface {
         }
     }
     /**  Adds keys to the new key queue, once queue is full, will send an event to update the keyboard settings*/
-    public addKeyDataToNewQueue(keyData: keyString, func: string) {
+    public addKeyDataToNewQueue(keyData: keyString, func: funcString) {
         const args: keyString[] = keyData.split("+") as keyString[];
 
         args.forEach((item: string) => {
@@ -142,7 +152,7 @@ class SettingsStore extends DefaultStore implements SettingsStoreInterface {
             }
         });
 
-        if(this.newKeyboardSettingsQueue.length >= 7) this.newKeyboard();
+        if(this.newKeyboardSettingsQueue.length === 8) this.newKeyboard();
     }
 
     public queueAllKeyboardSettings() {
@@ -151,4 +161,4 @@ class SettingsStore extends DefaultStore implements SettingsStoreInterface {
 };
 
 export default SettingsStore;
-export { keyboardSetting };
+export { keyboardSettingRaw, keyboardSettingFront };

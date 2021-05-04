@@ -25,8 +25,8 @@ const classItemsStore = new ClassItemsStore();
 const Class = observer(({ match }: RouteComponentProps<RouteDetails>) => {
 
     useEffect(() => {
-        unitsStore.getUnits(match.params.name);
-        classItemsStore.getClassContent(match.params.name);
+        unitsStore.getUnits(match.params.name); //gets all units
+        classItemsStore.getClassContent(match.params.name); //gets all textbooks, meetings, labs etc.
     }, []);
 
     return (

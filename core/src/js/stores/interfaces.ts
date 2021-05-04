@@ -100,6 +100,7 @@ interface SettingsStoreInterface {
         data: any
     },
     keyboardSettingsLoaded: boolean,
+    rawKeyboardSettings: any[],
     newKeyboardSettingsQueue: any[],
     /** Setting this to true will auto queue all keyboard settings */
     toQueueKeyboard: boolean,

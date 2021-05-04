@@ -4,11 +4,14 @@ class SettingsController {
         this.mainWindow = mainWindow;
         this.settings = settings;
     }
-
+    /**
+     * Sets all of the listeners
+     */
     setAll() {
         this._listenForKeyboard();
     }
 
+    /** Private method that listens for all keyboard calls */
     _listenForKeyboard() {
         const ipcMain = this.ipcMain;
         const mainWindow = this.mainWindow;

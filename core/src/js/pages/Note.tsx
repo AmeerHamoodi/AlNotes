@@ -35,6 +35,7 @@ const Note = observer(({ match }: RouteComponentProps<RouteDetails>) => {
 
         return () => {
             noteStore.setUnloaded();
+            //Prevents render issue
         }
     }, []);
 
