@@ -1,12 +1,12 @@
 {
     "name": "alnotes_final",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "description": "",
     "main": "./dist/app.js",
     "scripts": {
-        "start": "electron . && NODE_ENV='development'",
+        "start": "set NODE_ENV=development && electron .",
         "test": "mocha ./e2e/index.test.js",
-        "build": "electron-builder --publish always && NODE_ENV='production'"
+        "build": "set NODE_ENV=production && electron-builder --publish always"
     },
     "keywords": [],
     "author": "",

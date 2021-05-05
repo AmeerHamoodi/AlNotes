@@ -102,7 +102,26 @@ const registerAllShortcuts = (keyboard: KeyboardStatic, shortCuts: staticShortCu
         altKey: true
     }, function(range: RangeStatic, context: any) {
         defaultTemplates.PROC(this.quill);
-    })
+    });
+    keyboard.addBinding({
+        key: 84,
+        altKey: true
+    }, function(range: RangeStatic, content: any) {
+        defaultTemplates.TED(this.quill);
+    });
+    keyboard.addBinding({
+        key: 67,
+        altKey: true
+    }, function(range: RangeStatic, content: any) {
+        defaultTemplates.CS(this.quill);
+    });
+    keyboard.addBinding({
+        key: 67,
+        altKey: true,
+        shiftKey: true
+    }, function(range: RangeStatic, content: any) {
+        defaultTemplates.SC(this.quill);
+    });
 }
 
 

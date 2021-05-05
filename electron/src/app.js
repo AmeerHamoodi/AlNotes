@@ -99,7 +99,6 @@ class Main {
             const size = this.mainWindow.getSize();
             settings.updateSize({ width: size[0], height: size[1] });
         });
-
         if(process.env.NODE_ENV === "development") this.mainWindow.webContents.openDevTools(); //Comment this line out for production 
     }
 

@@ -70,6 +70,12 @@ const defaultTemplates = {
 
         quill.setSelection(oldSelection.index, oldSelection.length + "Name of item".length);
     },
+    /**
+     * Definition
+     * **Name of item:**
+     *  - **Definition:** some stuff
+     * @param quill Quill object
+     */
     DEF: (quill: Quill) => {
         let currentSelection: RangeStatic = quill.getSelection();
         let oldSelection = currentSelection;
@@ -88,6 +94,14 @@ const defaultTemplates = {
 
         quill.setSelection(oldSelection.index, oldSelection.length + "Name of item".length);        
     },
+    /**
+     * Process:
+     * **Name of process:**
+     *  - **Description:** some stuff
+     *  - **Steps:**
+     *      a. Step content
+     * @param quill Quill object
+     */
     PROC: (quill: Quill) => {
         let currentSelection: RangeStatic = quill.getSelection();
         let oldSelection = currentSelection;
@@ -116,6 +130,77 @@ const defaultTemplates = {
         quill.insertText(currentSelection.index, "First step");
 
         quill.setSelection(oldSelection.index, oldSelection.length + "Name of process".length);
+    },
+    /**
+     * Theory Evidence Description
+     * **Name of theory:**
+     *  - **Evidence:**
+     *      - some evidence
+     *  - **Details:**
+     *      - Some details
+     * @param quill Quill object
+     */
+    TED: (quill: Quill) => {
+        let currentSelection: RangeStatic = quill.getSelection();
+        let oldSelection = currentSelection;
+        quill.format("header", 3);
+        quill.insertText(currentSelection.index, "Name of theory:\n");
+        quill.format("header", false);
+
+        currentSelection = quill.getSelection();
+        quill.format("list", "bullet");
+        quill.format("bold", true);
+        quill.insertText(currentSelection.index, "Evidence:\n");
+
+        currentSelection = quill.getSelection();
+        quill.format("bold", false);
+        quill.format("indent", "+1");
+        quill.insertText(currentSelection.index, "first piece of evidence\n");
+
+        currentSelection = quill.getSelection();
+        quill.format("bold", true);
+        quill.format("indent", "-1");
+        quill.insertText(currentSelection.index, "Details:\n");
+        quill.format("bold", false);
+        
+        currentSelection = quill.getSelection();
+        quill.format("bold", false);
+        quill.format("indent", "+1");
+        quill.insertText(currentSelection.index, "Some details");
+
+        quill.setSelection(oldSelection.index, oldSelection.length + "Name of theory".length);
+    },
+    CS: (quill: Quill) => {
+        let currentSelection: RangeStatic = quill.getSelection();
+        let oldSelection = currentSelection;
+        quill.format("header", 3);
+        quill.insertText(currentSelection.index, "Name of concept:\n");
+        quill.format("header", false);
+
+        currentSelection = quill.getSelection();
+        quill.format("list", "bullet");
+        quill.format("bold", true);
+        quill.insertText(currentSelection.index, "Sub-concept name:\n");
+
+        currentSelection = quill.getSelection();
+        quill.format("bold", false);
+        quill.format("indent", "+1");
+
+        quill.setSelection(oldSelection.index, oldSelection.length + "Name of concept".length);
+    },
+    SC: (quill: Quill) => {
+        let currentSelection: RangeStatic = quill.getSelection();
+        let oldSelection = currentSelection;
+
+        quill.format("list", "bullet");
+        quill.format("bold", true);
+        quill.insertText(currentSelection.index, "Sub-concept name:\n");
+
+        currentSelection = quill.getSelection();
+        quill.format("bold", false);
+        quill.format("indent", "+1");
+
+        quill.setSelection(oldSelection.index, oldSelection.length + "Sub-concept name".length);
     }
 }
 
