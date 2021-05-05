@@ -1,15 +1,18 @@
 import { NoteFrontInterface } from "./helpers/fronts/interfaces";
 
-interface ClassesStoreInterface {
-    classes: object[],
-    classesLoaded: boolean,
+interface DefaultInterface {
     errorContent: {
         occured: boolean,
         data: any
     },
-    _classListener: () => void,
     _errorListener: () => void,
-    _handleError: (e: Error) => void,
+    _handleError: (e: Error) => void
+}
+
+interface ClassesStoreInterface extends DefaultInterface {
+    classes: object[],
+    classesLoaded: boolean,
+    _classListener: () => void,
     getClasses: () => void,
     createClass: (className: string) => void,
     deleteClass: (className: string) => void
@@ -110,7 +113,14 @@ interface SettingsStoreInterface {
     getKeyboard: () => void,
     addKeyDataToNewQueue: (keyData: string, func: string) => void,
     queueAllKeyboardSettings: () => void
+};
+
+interface UpdateStoreInterface extends DefaultInterface {
+    updateOccurred: boolean,
+    updateContent: {
+        progress: string,
+    }
 }
 
 
-export { ClassesStoreInterface, UnitsStoreInterface, ClassItemsInterface, ClassItem, NotesStoreInterface, getNoteByIdResponse, NoteStoreInterface, SettingsStoreInterface };
+export { ClassesStoreInterface, UnitsStoreInterface, ClassItemsInterface, ClassItem, NotesStoreInterface, getNoteByIdResponse,  UpdateStoreInterface, NoteStoreInterface, SettingsStoreInterface };

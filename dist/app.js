@@ -16,7 +16,7 @@ const SettingsController = require("./controllers/settings/SettingsController");
 const UserSettings = require("./models/UserSettings");
 
 const storage = new DataStorage();
-const settings = new UserSettings();
+const settings = new UserSettings(true);
 const store = new Store();
 
 autoUpdater.logger = log;
@@ -100,8 +100,7 @@ class Main {
             settings.updateSize({ width: size[0], height: size[1] });
         });
 
-        this.mainWindow.webContents.openDevTools(); //Comment this line out for production 
-        // ! ADD DEV ENV CHECK HERE
+        if(process.env.NODE_ENV === "development") this.mainWindow.webContents.openDevTools(); //Comment this line out for production 
     }
 
     /**

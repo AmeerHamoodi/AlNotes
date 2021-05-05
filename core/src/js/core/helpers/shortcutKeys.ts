@@ -86,11 +86,22 @@ const registerAllShortcuts = (keyboard: KeyboardStatic, shortCuts: staticShortCu
     });
 
     keyboard.addBinding({
-        key: 79,
-        shortKey: true,
-        shiftKey: true
+        key: 83,
+        altKey: true
     }, function (range: RangeStatic, context: any) {
         defaultTemplates.ISF(this.quill);
+    });
+    keyboard.addBinding({
+        key: 68,
+        altKey: true
+    }, function (range: RangeStatic, context: any) {
+        defaultTemplates.DEF(this.quill);
+    });
+    keyboard.addBinding({
+        key: 80,
+        altKey: true
+    }, function(range: RangeStatic, context: any) {
+        defaultTemplates.PROC(this.quill);
     })
 }
 
