@@ -35,7 +35,7 @@ type keyboardSettingRaw = {
 
 type keyString = keyof typeof keys;
 
-const functionNames: string[] = ["Strikethrough", "Superscript", "Subscript", "Align", "Header 1", "Header 2", "Code-block"];
+const functionNames: string[] = ["Strikethrough", "Superscript", "Subscript", "Align", "Header 1", "Header 2", "Code-block", "Remove Format"];
 const formattedNames: funcString[] = ["strike", "super", "sub", "align", "header1", "header2", "codeBlock", "removeFormat"];
 
 class SettingsStore extends DefaultStore implements SettingsStoreInterface {
@@ -127,13 +127,22 @@ class SettingsStore extends DefaultStore implements SettingsStoreInterface {
             this._handleError(e);
         }
     }
+    /**
+     * Fixes the invisible character issue with plus
+     */
+    private betterSplit(keyData: keyString) {
+        if(keyData.split("").pop() === "+") return keyData.split("+").push("+");
+
+        else return keyData.split("+");
+    }
+
     /**  Adds keys to the new key queue, once queue is full, will send an event to update the keyboard settings*/
     public addKeyDataToNewQueue(keyData: keyString, func: funcString) {
-        const args: keyString[] = keyData.split("+") as keyString[];
+        const args: keyString[] = this.betterSplit(keyData) as keyString[];
 
         args.forEach((item: string) => {
             try {
-                if(item.length > 1 && !["ALT", "CTRL", "SHIFT"].includes(item)) throw new StoreError(`Invalid command '${item}', if you are on a mac and want to use the command button, just put CTRL instead.`)
+                if(item.length > 1 && !["ALT", "CTRL", "SHIFT", "ESC"].includes(item)) throw new StoreError(`Invalid command '${item}', if you are on a mac and want to use the command button, just put CTRL instead.`)
             } catch(e) {
                 console.log(e);
                 this._handleError(e);
@@ -141,6 +150,8 @@ class SettingsStore extends DefaultStore implements SettingsStoreInterface {
         });
 
         const formattedName = formattedNames[functionNames.indexOf(func)];
+
+        if(args[args.length - 1] === "+") console.log("+", getKeyByText(args[args.length - 1]))
 
         this.newKeyboardSettingsQueue.push({
             func: formattedName,

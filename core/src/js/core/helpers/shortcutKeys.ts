@@ -17,6 +17,7 @@
 
 import { RangeStatic, KeyboardStatic, Key } from "quill";
 import { toJS } from "mobx";
+import defaultTemplates, { defaulTemplateStatic } from "./templateParser";
 
 type staticShortCut = {
     func: keyof typeof shortcutFunctionsDictionary,
@@ -83,6 +84,14 @@ const registerAllShortcuts = (keyboard: KeyboardStatic, shortCuts: staticShortCu
         console.log(realItem)
         keyboard.addBinding(realItem.keyData, shortcutFunctionsDictionary[realItem.func]);
     });
+
+    keyboard.addBinding({
+        key: 79,
+        shortKey: true,
+        shiftKey: true
+    }, function (range: RangeStatic, context: any) {
+        defaultTemplates.ISF(this.quill);
+    })
 }
 
 

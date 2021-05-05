@@ -9,7 +9,23 @@ interface KeyboardSettingFrontInterface {
     keyData: string
 }
 
-const getRealChar = (keyCode: number) => String.fromCharCode((96 <= keyCode) ? (keyCode - 48 * Math.floor(keyCode / 48)): keyCode);
+const known = {
+    27: "ESC",
+    112: "F1",
+    113: "F2",
+    114: "F3",
+    115: "F4",
+    116: "F5",
+    117: "F6",
+    118: "F7",
+    119: "F8",
+    120: "F9",
+    121: "F10",
+    122: "F11",
+    123: "F12"
+}
+//@ts-ignore
+const getRealChar = (keyCode: number | any) =>  keyCode in known ? known[keyCode] : String.fromCharCode((96 <= keyCode) ? (keyCode - 48 * Math.floor(keyCode / 48)): keyCode)
 
 class KeyboardSettingFront implements KeyboardSettingFrontInterface {
     private key: number;

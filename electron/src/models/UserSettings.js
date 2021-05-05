@@ -3,18 +3,17 @@ const Store = require('electron-store');
 const store = new Store();
 
 class UserSettings {
-    constructor() {
+    constructor(override) {
         this.settings = null;
-        this._init();
+        this._init(override);
     }
     /**
      * Fetches and sets all settings objects
-     * ! CURRENTLY DOESN'T FETCH NEWLY SAVED SETTINGS DUE TO BEING IN ALPHA
      */
-    _init() {
+    _init(override) {
         const settings = typeof store.get("userSettings") == "undefined" ? undefined : JSON.parse(store.get("userSettings"));
 
-        if (typeof settings == "undefined" || !settings.hasOwnProperty("sizeSettings") || !settings.hasOwnProperty("keyboardSettings") | true) {
+        if (typeof settings == "undefined" || !settings.hasOwnProperty("sizeSettings") || !settings.hasOwnProperty("keyboardSettings") || override) {
             this.settings = {
                 keyboardSettings: {
                     strike: {
