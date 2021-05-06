@@ -15,9 +15,9 @@
  *                   ^----------------------
  */
 
-import { RangeStatic, KeyboardStatic, Key } from "quill";
+import { RangeStatic, KeyboardStatic, Key, Quill } from "quill";
 import { toJS } from "mobx";
-import defaultTemplates, { defaulTemplateStatic } from "./templateParser";
+import defaultTemplates from "./templateParser";
 
 type staticShortCut = {
     func: keyof typeof shortcutFunctionsDictionary,
@@ -25,6 +25,12 @@ type staticShortCut = {
 }
 
 type shortCutFunction = (range?: RangeStatic, context?: any) => void;
+
+interface templatesViewInt {
+    name: string;
+    example: string;
+    func: () => void;
+}
 
 
 interface shortcutFunctionsInterface {
@@ -77,6 +83,7 @@ const shortcutFunctionsDictionary = {
         }
     }
 }
+const templatesView: templatesViewInt[] = [];
 
 const registerAllShortcuts = (keyboard: KeyboardStatic, shortCuts: staticShortCut[]) => {
     shortCuts.forEach((item: staticShortCut) => {
@@ -85,10 +92,13 @@ const registerAllShortcuts = (keyboard: KeyboardStatic, shortCuts: staticShortCu
         keyboard.addBinding(realItem.keyData, shortcutFunctionsDictionary[realItem.func]);
     });
 
+    let quill: Quill;
+
     keyboard.addBinding({
         key: 83,
         altKey: true
     }, function (range: RangeStatic, context: any) {
+        quill = this.quill;
         defaultTemplates.ISF(this.quill);
     });
     keyboard.addBinding({
@@ -122,6 +132,39 @@ const registerAllShortcuts = (keyboard: KeyboardStatic, shortCuts: staticShortCu
     }, function(range: RangeStatic, content: any) {
         defaultTemplates.SC(this.quill);
     });
+    keyboard.addBinding({
+        key: 69,
+        altKey: true
+    }, function(range: RangeStatic, content: any) {
+        defaultTemplates.EX(this.quill);
+    });
+
+
+    templatesView.push({
+            name: "Item Structure Function",
+            example: `
+            **Name of item:**
+                - **Structure:**
+                    - 
+                - **Function:**
+                    -
+            `,
+            func: () => {
+                defaultTemplates.ISF(quill);
+            }
+        });
+    templatesView.push({
+        name: "Definition",
+        example: `
+        **Name of item:**
+            - **Definition:** 
+        `,
+        func: () => {
+            defaultTemplates.DEF(quill)
+        }
+    });
+
+    
 }
 
 

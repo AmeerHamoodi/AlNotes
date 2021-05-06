@@ -29,10 +29,20 @@ interface CoreInterface {
     infoAboutNote: NoteDetails,
     /** MobX store for note */
     noteStore: NoteStoreInterface,
+    /** Actual templates */
+    templates: templatesView[],
     /** Automatically sets content of quill editor */
     autoSetEditorContent: () => void,
     /** Attaches the react setSaveState to the core to allow the state to be elegantely updated */
-    attachSaveState: (setSaveState: any) => void
+    attachSaveState: (setSaveState: any) => void,
+    /** Attaches the templates to core object */
+    attachTemplates:(templates: templatesView[]) => void
+}
+
+interface templatesView {
+    name: string;
+    example: string;
+    func: () => void;
 }
 
 interface NoteDetails {
@@ -54,6 +64,7 @@ class Core implements CoreInterface {
     public modules: Modules;
     public formats: string[];
     public setSaveState: (newData: string) => void;
+    public templates: templatesView[];
 
     constructor() {
         this.modules = {
@@ -61,6 +72,7 @@ class Core implements CoreInterface {
             syntax: true
         };
         this.formats = formats;
+        this.templates = [];
     }
 
     //PRIVATE METHODS
@@ -102,9 +114,14 @@ class Core implements CoreInterface {
     public autoSetEditorContent() {
         this.setEditorContent();
     }
+
     /** Connects the state from the core react componenet to the core class */
     public attachSaveState(setSaveState: (data: string) => void) {
         this.setSaveState = setSaveState;
+    }
+
+    public attachTemplates(templates: templatesView[]) {
+        this.templates = templates;
     }
 
 

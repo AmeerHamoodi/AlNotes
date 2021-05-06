@@ -53,7 +53,7 @@ const defaultTemplates = {
         currentSelection = quill.getSelection();
         quill.format("bold", false);
         quill.format("indent", "+1");
-        quill.insertText(currentSelection.index, "Some stuff\n");
+        quill.insertText(currentSelection.index, "\n");
 
         currentSelection = quill.getSelection();
         quill.format("list", "bullet");
@@ -64,7 +64,7 @@ const defaultTemplates = {
         currentSelection = quill.getSelection();
         quill.format("bold", false);
         quill.format("indent", "+1");
-        quill.insertText(currentSelection.index, "Some stuff\n");
+        quill.insertText(currentSelection.index, "\n");
         quill.format("indent", "-1");
         quill.format("list", false);
 
@@ -89,7 +89,7 @@ const defaultTemplates = {
         quill.insertText(currentSelection.index, "Definition:");
         currentSelection = quill.getSelection();
         quill.format("bold", false);
-        quill.insertText(currentSelection.index, " definition contents go here\n");
+        quill.insertText(currentSelection.index, "\n");
         quill.format("list", false);
 
         quill.setSelection(oldSelection.index, oldSelection.length + "Name of item".length);        
@@ -116,7 +116,7 @@ const defaultTemplates = {
 
         currentSelection = quill.getSelection();
         quill.format("bold", false);
-        quill.insertText(currentSelection.index, " description contents go here\n");
+        quill.insertText(currentSelection.index, "\n");
 
         currentSelection = quill.getSelection();
         quill.format("bold", true);
@@ -127,7 +127,7 @@ const defaultTemplates = {
         quill.format("bold", false);
         quill.format("indent", "+1");
         quill.format("list", "ordered");
-        quill.insertText(currentSelection.index, "First step");
+        quill.insertText(currentSelection.index, "");
 
         quill.setSelection(oldSelection.index, oldSelection.length + "Name of process".length);
     },
@@ -155,7 +155,7 @@ const defaultTemplates = {
         currentSelection = quill.getSelection();
         quill.format("bold", false);
         quill.format("indent", "+1");
-        quill.insertText(currentSelection.index, "first piece of evidence\n");
+        quill.insertText(currentSelection.index, "\n");
 
         currentSelection = quill.getSelection();
         quill.format("bold", true);
@@ -166,10 +166,17 @@ const defaultTemplates = {
         currentSelection = quill.getSelection();
         quill.format("bold", false);
         quill.format("indent", "+1");
-        quill.insertText(currentSelection.index, "Some details");
+        quill.insertText(currentSelection.index, "");
 
         quill.setSelection(oldSelection.index, oldSelection.length + "Name of theory".length);
     },
+    /**
+     * Concept sub concept
+     * **Concept name:**
+     *  - **Sub concept:**
+     *      - 
+     * @param quill 
+     */
     CS: (quill: Quill) => {
         let currentSelection: RangeStatic = quill.getSelection();
         let oldSelection = currentSelection;
@@ -188,6 +195,12 @@ const defaultTemplates = {
 
         quill.setSelection(oldSelection.index, oldSelection.length + "Name of concept".length);
     },
+    /**
+     * Sub concept
+     * - **Sub concept:**
+     *      - 
+     * @param quill 
+     */
     SC: (quill: Quill) => {
         let currentSelection: RangeStatic = quill.getSelection();
         let oldSelection = currentSelection;
@@ -201,6 +214,28 @@ const defaultTemplates = {
         quill.format("indent", "+1");
 
         quill.setSelection(oldSelection.index, oldSelection.length + "Sub-concept name".length);
+    },
+    /**
+     * Example:
+     *  - **Example [details]:**
+     *      - 
+     * @param quill 
+     */
+    EX: (quill: Quill) => {
+        let currentSelection: RangeStatic = quill.getSelection();
+        let oldSelection = currentSelection;
+
+        const exampleDetails = "Example [details]:";
+
+        quill.format("list", "bullet");
+        quill.format("bold", true);
+        quill.insertText(currentSelection.index, "Example [details]:\n");
+
+        currentSelection = quill.getSelection();
+        quill.format("bold", false);
+        quill.format("indent", "+1");
+
+        quill.setSelection(oldSelection.index + 9, oldSelection.length + "details".length);
     }
 }
 

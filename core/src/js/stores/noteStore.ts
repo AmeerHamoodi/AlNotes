@@ -11,6 +11,12 @@ import ResponseError from "./helpers/errors/ResponseError";
 //INTERFACES
 import { NoteStoreInterface, getNoteByIdResponse} from "./interfaces"
 
+interface templatesView {
+    name: string;
+    example: string;
+    func: () => void;
+}
+
 export default class NotesStore extends DefaultStore implements NoteStoreInterface {
     public noteLoaded: boolean;
     public noteContent: string;
@@ -19,6 +25,8 @@ export default class NotesStore extends DefaultStore implements NoteStoreInterfa
     public noteName: string;
     public unitName: string;
     public className: string;
+    public showTemplateSearch: boolean;
+    public templateSearch: templatesView[];
 
     constructor() {
         super();
@@ -30,12 +38,15 @@ export default class NotesStore extends DefaultStore implements NoteStoreInterfa
         this.unitName = "";
         this.className = "";
         this.noteLoaded = false;
+        this.showTemplateSearch = false;
+        this.templateSearch = [];
 
         makeObservable(this, {
             noteContent: observable,
             noteId: observable,
             noteDate: observable,
             noteLoaded: observable,
+            showTemplateSearch: observable,
             _noteListener: action,
             setUnloaded: action
         });
@@ -110,6 +121,10 @@ export default class NotesStore extends DefaultStore implements NoteStoreInterfa
      */
     public setUnloaded() {
         this.noteLoaded = false;
+    }
+
+    public showSearch() {
+        this.showTemplateSearch = true;
     }
 
 }
