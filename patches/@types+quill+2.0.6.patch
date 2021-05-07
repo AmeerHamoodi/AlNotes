@@ -1,0 +1,15 @@
+diff --git a/node_modules/@types/quill/index.d.ts b/node_modules/@types/quill/index.d.ts
+index 516add3..3181f4f 100644
+--- a/node_modules/@types/quill/index.d.ts
++++ b/node_modules/@types/quill/index.d.ts
+@@ -29,7 +29,9 @@ export type Sources = 'api' | 'user' | 'silent';
+ 
+ export interface Key {
+     key: string | number;
+-    shortKey?: boolean;
++    shortKey?: boolean | null;
++    shiftKey?: boolean | null;
++    altKey?: boolean | null;
+ }
+ 
+ export interface StringMap {

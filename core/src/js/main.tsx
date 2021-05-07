@@ -13,8 +13,8 @@ declare global {
     }
 }
 
-window.jQuery = window.require("jquery");
-window.$ = window.require("jquery");
+window.jQuery = require("jquery");
+window.$ = require("jquery");
 
 const { remote } = window.require("electron");
 

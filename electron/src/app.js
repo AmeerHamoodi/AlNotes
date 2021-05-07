@@ -6,6 +6,7 @@ const { autoUpdater } = require("electron-updater")
 const localShortcut = require("electron-localshortcut");
 const Store = require("electron-store");
 const path = require("path");
+const isDev = require("electron-is-dev");
 
 
 //INTERNALS
@@ -21,6 +22,7 @@ const store = new Store();
 
 autoUpdater.logger = log;
 
+//if(isDev) require("electron-reload")(path.join(__dirname, "./electron/src/"))
 
 class Main {
     constructor() {
@@ -99,7 +101,7 @@ class Main {
             const size = this.mainWindow.getSize();
             settings.updateSize({ width: size[0], height: size[1] });
         });
-        if(process.env.NODE_ENV === "development") this.mainWindow.webContents.openDevTools(); //Comment this line out for production 
+        if(isDev) this.mainWindow.webContents.openDevTools(); //Comment this line out for production 
     }
 
     /**

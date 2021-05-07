@@ -138,6 +138,12 @@ const registerAllShortcuts = (keyboard: KeyboardStatic, shortCuts: staticShortCu
     }, function(range: RangeStatic, content: any) {
         defaultTemplates.EX(this.quill);
     });
+    keyboard.addBinding({
+        key: 70,
+        altKey: true
+    }, function(range: RangeStatic, content: any) {
+        defaultTemplates.FC(this.quill);
+    });
 
 
     templatesView.push({

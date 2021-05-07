@@ -225,8 +225,6 @@ const defaultTemplates = {
         let currentSelection: RangeStatic = quill.getSelection();
         let oldSelection = currentSelection;
 
-        const exampleDetails = "Example [details]:";
-
         quill.format("list", "bullet");
         quill.format("bold", true);
         quill.insertText(currentSelection.index, "Example [details]:\n");
@@ -236,6 +234,36 @@ const defaultTemplates = {
         quill.format("indent", "+1");
 
         quill.setSelection(oldSelection.index + 9, oldSelection.length + "details".length);
+    },
+    /**
+     * Figure caption:
+     *  - **Figure:**
+     *      - 
+     *  - **Caption:**
+     *      -
+     * @param quill 
+     */
+    FC: (quill: Quill) => {
+        let currentSelection: RangeStatic = quill.getSelection();
+
+        quill.format("list", "bullet");
+        quill.format("bold", true);
+        quill.insertText(currentSelection.index, "Figure:\n");
+
+        currentSelection = quill.getSelection();
+        quill.format("bold", false);
+        quill.format("indent", "+1");
+        quill.insertText(currentSelection.index, "\n");
+        let oldSelection = currentSelection;
+
+        currentSelection = quill.getSelection();
+        quill.format("bold", true);
+        quill.format("indent", "-1");
+        quill.insertText(currentSelection.index, "Caption:\n");
+        quill.format("indent", "+1");
+
+
+        quill.setSelection(oldSelection.index, oldSelection.length);
     }
 }
 
