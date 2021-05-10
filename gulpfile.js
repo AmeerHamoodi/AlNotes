@@ -8,66 +8,77 @@ sass.compiler = require("node-sass");
 const run = [0, 0, 0, 0];
 
 const js = () => {
-  run[0] == 0 && gulp.watch("./core/src/js/**", js);
+    run[0] == 0 && gulp.watch("./core/src/js/**", js);
 
-  run[0] = 1;
+    run[0] = 1;
 
-  return gulp
-    .src("./core/src/js/main.tsx")
-    .pipe(webpack(require("./webpack.config.js")))
-    .pipe(gulp.dest("./dist/public/"));
+    return gulp
+        .src("./core/src/js/main.tsx")
+        .pipe(webpack(require("./webpack.config.js")))
+        .pipe(gulp.dest("./dist/public/"));
 };
 
 const html = () => {
-  run[1] == 0 && gulp.watch("./core/src/*.html", html);
-  run[1] = 1;
+    run[1] == 0 && gulp.watch("./core/src/*.html", html);
+    run[1] = 1;
 
-  return gulp.src("./core/src/*.html").pipe(gulp.dest("./dist/public/"));
+    return gulp.src("./core/src/*.html").pipe(gulp.dest("./dist/public/"));
 };
 
 const css = () => {
-  run[2] == 0 && gulp.watch("./core/src/css/**", css);
+    run[2] == 0 && gulp.watch("./core/src/css/**", css);
 
-  run[2] = 1;
+    run[2] = 1;
 
-  return gulp
-    .src("./core/src/css/*.scss")
-    .pipe(sass().on("error", sass.logError))
-    .pipe(gulp.dest("./dist/public/css/"));
+    return gulp
+        .src("./core/src/css/*.scss")
+        .pipe(sass().on("error", sass.logError))
+        .pipe(gulp.dest("./dist/public/css/"));
 };
 
 const fonts = () => {
-  return gulp.src("./core/src/css/*.ttf").pipe(gulp.dest("./dist/public/css"));
+    return gulp
+        .src("./core/src/css/*.ttf")
+        .pipe(gulp.dest("./dist/public/css"));
 };
 
 const image = () => {
-  return gulp.src("./core/src/imgs/**").pipe(gulp.dest("./dist/public/imgs"));
+    return gulp.src("./core/src/imgs/**").pipe(gulp.dest("./dist/public/imgs"));
 };
 
 const vendor = () => {
-  return gulp
-    .src("./core/src/vendor/**")
-    .pipe(gulp.dest("./dist/public/vendor"));
+    return gulp
+        .src("./core/src/vendor/**")
+        .pipe(gulp.dest("./dist/public/vendor"));
 };
 
 const electronPipe = () => {
-  return gulp.src("./electron/src/**").pipe(gulp.dest("./dist/"));
+    return gulp.src("./electron/src/**").pipe(gulp.dest("./dist/"));
 };
 
 const electron = () => {
-  exec("npm start", { maxBuffer: 1024 * 500 }, (error, output) => {
-    if (error) throw error;
+    exec("npm start", { maxBuffer: 1024 * 500 }, (error, output) => {
+        if (error) throw error;
 
-    console.log(output);
-  });
+        console.log(output);
+    });
+};
+
+const build = () => {
+    process.env.NODE_ENV = "production";
+    return gulp
+        .src("./core/src/js/main.tsx")
+        .pipe(webpack(require("./webpack.config.js")));
 };
 
 module.exports.default = gulp.parallel(
-  vendor,
-  fonts,
-  js,
-  html,
-  css,
-  image,
-  gulp.series(electronPipe, electron)
+    vendor,
+    fonts,
+    js,
+    html,
+    css,
+    image,
+    gulp.series(electronPipe, electron)
 );
+
+module.exports.build = gulp.parallel(build);

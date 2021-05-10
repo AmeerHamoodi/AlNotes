@@ -37,7 +37,11 @@ const App = () => {
                     exact
                     component={withRouter(Note)}
                 ></Route>
-                {/* <Route path="/settings" exact component={withRouter(Settings)}></Route> */}
+                {/* <Route
+                    path="/settings"
+                    exact
+                    component={withRouter(Settings)}
+                ></Route> */}
                 <Route path="/404" component={FOF}></Route>
                 <Redirect from="*" to="/404"></Redirect>
             </Switch>

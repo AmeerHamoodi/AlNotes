@@ -114,7 +114,8 @@ interface NoteStoreInterface {
         name: string
     ) => void;
     setUnloaded: () => void;
-    showSearch: (templates: templatesViewInt[]) => void;
+    toggleSearch: () => void;
+    addSearch: (templateData: templatesViewInt[]) => void;
 }
 
 interface SettingsStoreInterface {

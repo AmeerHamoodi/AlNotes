@@ -109,6 +109,16 @@ const registerAllShortcuts = (
         );
     });
 
+    keyboard.addBinding(
+        {
+            key: "S",
+            altKey: true
+        },
+        (range: RangeStatic, context: any) => {
+            core.noteStore.toggleSearch();
+        }
+    );
+
     let quill: Quill = core.coreEditor;
 
     templatesView.push({

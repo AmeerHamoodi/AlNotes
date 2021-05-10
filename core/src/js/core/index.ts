@@ -132,7 +132,7 @@ class Core implements CoreInterface {
 
     public attachTemplates(templates: templatesViewInt[]) {
         this.templates = templates;
-        this.store.showSearch(templates);
+        this.store.addSearch(templates);
     }
 
     //SETTERS
@@ -159,8 +159,11 @@ class Core implements CoreInterface {
     }
 
     get coreEditor() {
-        console.log(this.core);
         return this.core;
+    }
+
+    get noteStore() {
+        return this.store;
     }
 }
 

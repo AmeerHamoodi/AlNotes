@@ -51,7 +51,8 @@ export default class NotesStore
             noteLoaded: observable,
             showTemplateSearch: observable,
             _noteListener: action,
-            setUnloaded: action
+            setUnloaded: action,
+            toggleSearch: action
         });
 
         this._noteListener();
@@ -151,8 +152,11 @@ export default class NotesStore
         this.noteLoaded = false;
     }
 
-    public showSearch(templateData: templatesViewInt[]) {
-        this.showTemplateSearch = true;
+    public toggleSearch() {
+        this.showTemplateSearch = !this.showTemplateSearch;
+    }
+
+    public addSearch(templateData: templatesViewInt[]) {
         this.templateSearch = templateData;
     }
 }

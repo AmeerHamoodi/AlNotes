@@ -32,7 +32,6 @@ const TemplateSearch = observer(
             const selected = searchItems.find((item) => {
                 return item.text === value;
             });
-            console.log(typeof selected);
             if (selected !== null && typeof selected !== "undefined")
                 selected.func();
         };
