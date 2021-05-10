@@ -8,7 +8,8 @@
         "postinstall": "patch-package",
         "test": "echo Sucess",
         "build": "set NODE_ENV=production && electron-builder --publish always",
-        "start:dev": "set NODE_ENV=development && gulp"
+        "start:dev": "set NODE_ENV=development && gulp",
+        "release": "set NODE_ENV=production && electron-builder --publish always"
     },
     "keywords": [],
     "author": "Ameer Hamoodi",
