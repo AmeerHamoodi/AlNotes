@@ -1,4 +1,4 @@
-const Store = require('electron-store');
+const Store = require("electron-store");
 
 const store = new Store();
 
@@ -11,9 +11,17 @@ class UserSettings {
      * Fetches and sets all settings objects
      */
     _init(override) {
-        const settings = typeof store.get("userSettings") == "undefined" ? undefined : JSON.parse(store.get("userSettings"));
+        const settings =
+            typeof store.get("userSettings") == "undefined"
+                ? undefined
+                : JSON.parse(store.get("userSettings"));
 
-        if (typeof settings == "undefined" || !settings.hasOwnProperty("sizeSettings") || !settings.hasOwnProperty("keyboardSettings") || override) {
+        if (
+            typeof settings == "undefined" ||
+            !settings.hasOwnProperty("sizeSettings") ||
+            !settings.hasOwnProperty("keyboardSettings") ||
+            override
+        ) {
             this.settings = {
                 keyboardSettings: {
                     strike: {

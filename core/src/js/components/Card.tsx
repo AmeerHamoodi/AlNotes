@@ -1,38 +1,50 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { Card, Button, Icon } from "semantic-ui-react";
 
 interface CardPropsInterface {
-    name?: string,
-    openMessage?: string,
-    deleteMessage?: string,
-    link?: string,
-    deleteFunction?: () => void
+    name?: string;
+    openMessage?: string;
+    deleteMessage?: string;
+    link?: string;
+    deleteFunction?: () => void;
 }
 
-const Card = ({ name, openMessage, deleteMessage, link, deleteFunction }: CardPropsInterface) => {
-
+const CardInternal = ({
+    name,
+    openMessage,
+    deleteMessage,
+    link,
+    deleteFunction
+}: CardPropsInterface) => {
     const deleteInternal = () => {
-        if(typeof deleteFunction == "function" && confirm("Are you sure you want to delete this? Please note this process is irreversible")) deleteFunction();
-    }
+        if (
+            typeof deleteFunction == "function" &&
+            confirm(
+                "Are you sure you want to delete this? Please note this process is irreversible"
+            )
+        )
+            deleteFunction();
+    };
     return (
-        <div className="ui card mt">
-            <div className="content">
-                <Link to={link || "/404"} className="header">
+        <Card className="mt">
+            <Card.Content>
+                <Card.Header as={Link} to={link || "/404"}>
                     {name || "No name"}
-                </Link>
-            </div>
-            <div className="extra content">
-                <Link className="ui bottom attached button primary" to={link || "/404"}>
-                    <i className="add icon"></i>
+                </Card.Header>
+            </Card.Content>
+            <Card.Content extra>
+                <Button primary as={Link} to={link || "/404"} attached="bottom">
+                    <Icon name="add"></Icon>
                     {openMessage || "Open"}
-                </Link>
-                <div className="ui bottom attached button red" onClick={deleteInternal}>
-                    <i className="trash alternate icon"></i>
+                </Button>
+                <Button negative onClick={deleteInternal} attached="bottom">
+                    <Icon name="trash alternate"></Icon>
                     {deleteMessage || "Delete"}
-                </div>
-            </div>
-        </div >
-    )
+                </Button>
+            </Card.Content>
+        </Card>
+    );
 };
 
-export default Card;
+export default CardInternal;

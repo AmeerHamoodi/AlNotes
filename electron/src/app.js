@@ -1,13 +1,12 @@
 //LIBS
 const { app, BrowserWindow, ipcMain } = require("electron");
 const log = require("electron-log");
-const contextMenu = require("electron-context-menu")
-const { autoUpdater } = require("electron-updater")
+const contextMenu = require("electron-context-menu");
+const { autoUpdater } = require("electron-updater");
 const localShortcut = require("electron-localshortcut");
 const Store = require("electron-store");
 const path = require("path");
 const isDev = require("electron-is-dev");
-
 
 //INTERNALS
 const DataStorage = require("./models/DataStorage");
@@ -17,7 +16,7 @@ const SettingsController = require("./controllers/settings/SettingsController");
 const UserSettings = require("./models/UserSettings");
 
 const storage = new DataStorage();
-const settings = new UserSettings(true);
+const settings = new UserSettings(false);
 const store = new Store();
 
 autoUpdater.logger = log;
@@ -30,7 +29,6 @@ class Main {
         this.loadingWindow = null;
 
         this._init();
-
     }
     /**
      * Calls all necessary methods for initialization
@@ -47,7 +45,7 @@ class Main {
                 this.autoupdate();
                 this.registerAutoShortcut();
                 this.setSpellChecking();
-            })
+            });
         });
         this.beforeCloseFunctions();
     }
@@ -58,9 +56,9 @@ class Main {
         app.once("before-quit", () => {
             storage.saveAll();
         });
-        app.on('window-all-closed', function() {
-            if (process.platform !== 'darwin') app.quit() //Mac patch
-        })
+        app.on("window-all-closed", function () {
+            if (process.platform !== "darwin") app.quit(); //Mac patch
+        });
     }
     /**
      * Creates and sets main browser window
@@ -82,9 +80,23 @@ class Main {
         /**
          * Where the controllers get initialized
          */
-        this.notesController = new NotesController(ipcMain, this.mainWindow, storage, settings);
-        this.classController = new ClassController(ipcMain, this.mainWindow, storage, settings);
-        this.settingsController = new SettingsController(ipcMain, this.mainWindow, settings);
+        this.notesController = new NotesController(
+            ipcMain,
+            this.mainWindow,
+            storage,
+            settings
+        );
+        this.classController = new ClassController(
+            ipcMain,
+            this.mainWindow,
+            storage,
+            settings
+        );
+        this.settingsController = new SettingsController(
+            ipcMain,
+            this.mainWindow,
+            settings
+        );
 
         /**
          * Sets all of the controller listeners
@@ -101,7 +113,7 @@ class Main {
             const size = this.mainWindow.getSize();
             settings.updateSize({ width: size[0], height: size[1] });
         });
-        if(isDev) this.mainWindow.webContents.openDevTools(); //Comment this line out for production 
+        if (isDev) this.mainWindow.webContents.openDevTools(); //Comment this line out for production
     }
 
     /**
@@ -113,7 +125,9 @@ class Main {
             height: 300,
             frame: false
         });
-        this.loadingWindow.loadURL(path.join(__dirname, "../devBuild/loading.html"));
+        this.loadingWindow.loadURL(
+            path.join(__dirname, "../devBuild/loading.html")
+        );
     }
     /**
      * Initializes the context menu method here
@@ -128,7 +142,8 @@ class Main {
     showUpdateMessage() {
         const currentVersion = store.get("version");
 
-        if (typeof currentVersion == "undefined") store.set("version", app.getVersion());
+        if (typeof currentVersion == "undefined")
+            store.set("version", app.getVersion());
 
         if (currentVersion !== app.getVersion()) {
             this.mainWindow.webContents.send("showJustUpdated");
@@ -141,37 +156,47 @@ class Main {
     autoupdate() {
         const sendStatusToWindow = (message) => {
             this.mainWindow.webContents.send("updateMessage", message);
-        }
+        };
         autoUpdater.checkForUpdatesAndNotify();
 
-        autoUpdater.on('update-available', () => {
-            this.mainWindow.webContents.send("updateMessage", "Update available!");
-        })
+        autoUpdater.on("update-available", () => {
+            this.mainWindow.webContents.send(
+                "updateMessage",
+                "Update available!"
+            );
+        });
 
-        autoUpdater.on('update-downloaded', () => {
+        autoUpdater.on("update-downloaded", () => {
             autoUpdater.quitAndInstall();
-        })
+        });
 
-        autoUpdater.on('checking-for-update', () => {
-            sendStatusToWindow('Checking for update...');
-        })
-        autoUpdater.on('update-available', (info) => {
-            sendStatusToWindow('Update available.');
-        })
-        autoUpdater.on('update-not-available', (info) => {
-            sendStatusToWindow('Update not available.');
-        })
-        autoUpdater.on('error', (err) => {
-            sendStatusToWindow('Error in auto-updater. ' + err);
-        })
-        autoUpdater.on('download-progress', (progressObj) => {
+        autoUpdater.on("checking-for-update", () => {
+            sendStatusToWindow("Checking for update...");
+        });
+        autoUpdater.on("update-available", (info) => {
+            sendStatusToWindow("Update available.");
+        });
+        autoUpdater.on("update-not-available", (info) => {
+            sendStatusToWindow("Update not available.");
+        });
+        autoUpdater.on("error", (err) => {
+            sendStatusToWindow("Error in auto-updater. " + err);
+        });
+        autoUpdater.on("download-progress", (progressObj) => {
             let log_message = "Download speed: " + progressObj.bytesPerSecond;
-            log_message = log_message + ' - Downloaded ' + progressObj.percent + '%';
-            log_message = log_message + ' (' + Math.round(progressObj.transferred) + "/" + Math.round(progressObj.total) + ')';
+            log_message =
+                log_message + " - Downloaded " + progressObj.percent + "%";
+            log_message =
+                log_message +
+                " (" +
+                Math.round(progressObj.transferred) +
+                "/" +
+                Math.round(progressObj.total) +
+                ")";
             sendStatusToWindow(log_message);
-        })
-        autoUpdater.on('update-downloaded', (info) => {
-            sendStatusToWindow('Update downloaded');
+        });
+        autoUpdater.on("update-downloaded", (info) => {
+            sendStatusToWindow("Update downloaded");
         });
     }
     /**
@@ -186,9 +211,8 @@ class Main {
         });
         localShortcut.register(this.mainWindow, "CommandOrControl+F", () => {
             this.mainWindow.webContents.send("on-find");
-        })
+        });
     }
-
 }
 
 new Main();

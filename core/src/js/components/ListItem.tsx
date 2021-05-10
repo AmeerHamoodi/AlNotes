@@ -1,40 +1,55 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { Item, Image, Icon, Button } from "semantic-ui-react";
 
 interface ListItemProps {
-    name: string,
-    link: string,
-    deleteFunction?: () => void,
-    icon?: string | "folder" | "book" | "flask" | "users"
+    name: string;
+    link: string;
+    deleteFunction?: () => void;
+    icon?: "folder" | "book" | "flask" | "users";
 }
 
 const ListItem = ({ name, link, deleteFunction, icon }: ListItemProps) => {
-
     const internalDelete = () => {
-        if (typeof deleteFunction === "function" && confirm("Are you sure you want to delete this item? It's irrverisible")) deleteFunction();
-    }
+        if (
+            typeof deleteFunction === "function" &&
+            confirm(
+                "Are you sure you want to delete this item? It's irrverisible"
+            )
+        )
+            deleteFunction();
+    };
     return (
-        <div className="item">
-            <div className="ui tiny image">
-                <i className={`big icon ${icon || "book"}`} />
-            </div>
-            <div className="middle aligned content">
-                <Link className="header" to={link || "/404"}>
+        <Item>
+            <Image size="tiny">
+                <Icon name={icon || "book"} size="big"></Icon>
+            </Image>
+            <Item.Content verticalAlign="middle">
+                <Item.Header as={Link} to={link || "/404"}>
                     {name || ""}
-                </Link>
-            </div>
-            <div className="right aligned content" style={{ marginRight: "3em" }}>
-                <div className="ui red right floated button" onClick={internalDelete}>
-                    <i className="trash icon"></i>
+                </Item.Header>
+            </Item.Content>
+            <Item.Content style={{ marginRight: "3em" }}>
+                <Button
+                    negative
+                    className="right floated"
+                    onClick={internalDelete}
+                >
+                    <Icon name="trash"></Icon>
                     Delete
-                </div>
-                <Link className="ui primary right floated button" to={link || "/404"}>
-                    <i className="plus icon"></i>
+                </Button>
+                <Button
+                    primary
+                    className="right floated"
+                    as={Link}
+                    to={link || "/404"}
+                >
+                    <Icon name="plus"></Icon>
                     Open
-                </Link>
-            </div>
-        </div>
-    )
+                </Button>
+            </Item.Content>
+        </Item>
+    );
 };
 
 export default ListItem;

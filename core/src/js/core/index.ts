@@ -11,44 +11,47 @@ import registerAllShortcuts from "./helpers/shortcutKeys";
 import UTILS from "./utils";
 
 //INTERFACES AND TYPES
-import { NoteStoreInterface, SettingsStoreInterface } from "../stores/interfaces";
+import {
+    NoteStoreInterface,
+    SettingsStoreInterface
+} from "../stores/interfaces";
 
 interface Modules {
-    syntax: boolean,
-    toolbar: quillToolbarType
+    syntax: boolean;
+    toolbar: quillToolbarType;
 }
 
 interface CoreInterface {
     /** Quill modules data */
-    modules: Modules,
+    modules: Modules;
     /** Formats available for use */
-    formats: string[],
+    formats: string[];
     /** Quill object, used to perform mutations on the quill editor */
-    coreEditor: Quill,
+    coreEditor: Quill;
     /** Simply just the note name, more may be added in the future, but this is mutable information about the note unobtainable from the content */
-    infoAboutNote: NoteDetails,
+    infoAboutNote: NoteDetails;
     /** MobX store for note */
-    noteStore: NoteStoreInterface,
+    noteStore: NoteStoreInterface;
     /** Actual templates */
-    templates: templatesView[],
+    templates: templatesViewInt[];
     /** Automatically sets content of quill editor */
-    autoSetEditorContent: () => void,
+    autoSetEditorContent: () => void;
     /** Attaches the react setSaveState to the core to allow the state to be elegantely updated */
-    attachSaveState: (setSaveState: any) => void,
+    attachSaveState: (setSaveState: any) => void;
     /** Attaches the templates to core object */
-    attachTemplates:(templates: templatesView[]) => void
+    attachTemplates: (templates: templatesViewInt[]) => void;
 }
 
-interface templatesView {
-    name: string;
+interface templatesViewInt {
+    text: string;
     example: string;
     func: () => void;
+    value: string;
 }
 
 interface NoteDetails {
-    name: string,
+    name: string;
 }
-
 
 const settingsStore: SettingsStoreInterface = new SettingsStore();
 
@@ -64,7 +67,7 @@ class Core implements CoreInterface {
     public modules: Modules;
     public formats: string[];
     public setSaveState: (newData: string) => void;
-    public templates: templatesView[];
+    public templates: templatesViewInt[];
 
     constructor() {
         this.modules = {
@@ -82,32 +85,39 @@ class Core implements CoreInterface {
         this.setEditorContent();
     }
 
-
     /** Sets all listeners and CBs for keyboard */
     private setAllKeyEvents(keyboardSettings: keyboardSettingRaw[]) {
         const { keyboard } = this.core;
         //SAVE
         //Have to set save keybinding here for obvious reasons
-        keyboard.addBinding({
-            key: "S",
-            shortKey: true
-        }, () => {
-            const jsonContent = JSON.stringify(this.core.getContents());
-            this.store.saveNote(this.store.className, this.store.unitName, this.store.noteId, jsonContent, this.noteDetails.name);
-            this.setSaveState(`Last saved: ${UTILS.getTime()}`)
-        });
+        keyboard.addBinding(
+            {
+                key: "S",
+                shortKey: true
+            },
+            () => {
+                const jsonContent = JSON.stringify(this.core.getContents());
+                this.store.saveNote(
+                    this.store.className,
+                    this.store.unitName,
+                    this.store.noteId,
+                    jsonContent,
+                    this.noteDetails.name
+                );
+                this.setSaveState(`Last saved: ${UTILS.getTime()}`);
+            }
+        );
         //FORMAT SHORTCUTS
-        registerAllShortcuts(keyboard, keyboardSettings);
+        registerAllShortcuts(keyboard, keyboardSettings, this);
     }
 
     /** Sets the editor content with the content loaded from the store */
     private setEditorContent() {
-        if(!this.store.noteContent.includes("{")) return this.core.setText("");
-        
+        if (!this.store.noteContent.includes("{")) return this.core.setText("");
+
         const content = JSON.parse(this.store.noteContent);
         this.core.setContents(content);
     }
-
 
     //PUBLIC
     /** Public method for setEditorContent */
@@ -120,10 +130,10 @@ class Core implements CoreInterface {
         this.setSaveState = setSaveState;
     }
 
-    public attachTemplates(templates: templatesView[]) {
+    public attachTemplates(templates: templatesViewInt[]) {
         this.templates = templates;
+        this.store.showSearch(templates);
     }
-
 
     //SETTERS
     set coreEditor(q: Quill) {
@@ -132,10 +142,10 @@ class Core implements CoreInterface {
         settingsStore.getKeyboard();
 
         autorun(() => {
-            if(settingsStore.keyboardSettingsLoaded) {
+            if (settingsStore.keyboardSettingsLoaded) {
                 this.callAll(settingsStore.rawKeyboardSettings);
             }
-        })
+        });
     }
     set noteStore(store: NoteStoreInterface) {
         this.store = store;
@@ -148,7 +158,11 @@ class Core implements CoreInterface {
         return this.noteDetails;
     }
 
-};
+    get coreEditor() {
+        console.log(this.core);
+        return this.core;
+    }
+}
 
 export default Core;
 

@@ -1,30 +1,31 @@
 import React from "react";
+import { Segment, Header, Form, Button } from "semantic-ui-react";
 
 interface CreateNewProps {
-    title: string,
-    onClick: any,
-    creationText: string,
-    children: any
+    title: string;
+    onClick: any;
+    creationText: string;
+    children: any;
 }
 
 const CreateNew = (props: CreateNewProps) => {
     return (
-        <div className="ui basic segment mt mb">
-            <div className="ui icon header" style={{ textAlign: "center" }}>
+        <Segment className="mt mb" basic>
+            <Header icon style={{ textAlign: "center" }}>
                 {props.title}
-            </div>
-            <div className="inline">
-                <div className="ui form">{props.children}</div>
-                <div
-                    className="ui button primary"
+            </Header>
+            <Segment.Inline>
+                <Form>{props.children}</Form>
+                <Button
+                    primary
                     style={{ marginTop: "1em" }}
                     onClick={props.onClick}
                     id="createNew"
                 >
                     {props.creationText}
-                </div>
-            </div>
-        </div>
+                </Button>
+            </Segment.Inline>
+        </Segment>
     );
 };
 

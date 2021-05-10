@@ -90,10 +90,10 @@ input {
 
 .ui.top .icon.item {
   font-size: 1.4em;
-  padding: .42857143em 1.14285714em !important; }
+  padding: 0.42857143em 1.14285714em !important; }
 
 .ui.top .item:before {
-  width: 0; }
+  width: 0 !important; }
 
 .ql-container {
   font-size: 1.2em;

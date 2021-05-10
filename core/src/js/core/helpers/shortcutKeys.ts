@@ -15,33 +15,35 @@
  *                   ^----------------------
  */
 
-import { RangeStatic, KeyboardStatic, Key, Quill } from "quill";
+import { RangeStatic, KeyboardStatic, Key } from "quill";
+import { Quill } from "react-quill";
 import { toJS } from "mobx";
+import { CoreInterface } from "../index";
 import defaultTemplates from "./templateParser";
 
 type staticShortCut = {
-    func: keyof typeof shortcutFunctionsDictionary,
-    keyData: Key
-}
+    func: keyof typeof shortcutFunctionsDictionary;
+    keyData: Key;
+};
 
 type shortCutFunction = (range?: RangeStatic, context?: any) => void;
 
 interface templatesViewInt {
-    name: string;
+    text: string;
     example: string;
     func: () => void;
+    value: string;
 }
 
-
 interface shortcutFunctionsInterface {
-    strike: (range: RangeStatic, context: any) => void,
-    header1: (range: RangeStatic, context: any) => void,
-    header2: (range: RangeStatic, context: any) => void,
-    super: (range: RangeStatic, context: any) => void,
-    sub: (range: RangeStatic, context: any) => void,
-    removeFormat: (range: RangeStatic, context: any) => void,
-    codeBlock: (range: RangeStatic, context: any) => void,
-    align: (range: RangeStatic, context: any) => void,
+    strike: (range: RangeStatic, context: any) => void;
+    header1: (range: RangeStatic, context: any) => void;
+    header2: (range: RangeStatic, context: any) => void;
+    super: (range: RangeStatic, context: any) => void;
+    sub: (range: RangeStatic, context: any) => void;
+    removeFormat: (range: RangeStatic, context: any) => void;
+    codeBlock: (range: RangeStatic, context: any) => void;
+    align: (range: RangeStatic, context: any) => void;
 }
 
 const shortcutFunctionsDictionary = {
@@ -55,19 +57,28 @@ const shortcutFunctionsDictionary = {
         this.quill.format("header", context.format.header == 2 ? false : 2);
     },
     super: function (range: RangeStatic, context: any) {
-        this.quill.format("script", context.format.script == "super" ? null : "super");
+        this.quill.format(
+            "script",
+            context.format.script == "super" ? null : "super"
+        );
     },
     sub: function (range: RangeStatic, context: any) {
-        this.quill.format("script", context.format.script == "sub" ? null : "sub");
+        this.quill.format(
+            "script",
+            context.format.script == "sub" ? null : "sub"
+        );
     },
     removeFormat: function (range: RangeStatic, context: any) {
         this.quill.removeFormat(range);
     },
     codeBlock: function (range: RangeStatic, context: any) {
-        this.quill.format("code-block", context.format.codeBlock ? false : true);
+        this.quill.format(
+            "code-block",
+            context.format.codeBlock ? false : true
+        );
     },
     align: function (range: RangeStatic, context: any) {
-        switch(context.format.align) {
+        switch (context.format.align) {
             case "left":
                 this.quill.format("align", "center");
                 break;
@@ -82,97 +93,127 @@ const shortcutFunctionsDictionary = {
                 break;
         }
     }
-}
+};
 const templatesView: templatesViewInt[] = [];
 
-const registerAllShortcuts = (keyboard: KeyboardStatic, shortCuts: staticShortCut[]) => {
+const registerAllShortcuts = (
+    keyboard: KeyboardStatic,
+    shortCuts: staticShortCut[],
+    core: CoreInterface
+) => {
     shortCuts.forEach((item: staticShortCut) => {
-        const realItem = toJS(item)
-        console.log(realItem)
-        keyboard.addBinding(realItem.keyData, shortcutFunctionsDictionary[realItem.func]);
+        const realItem = toJS(item);
+        keyboard.addBinding(
+            realItem.keyData,
+            shortcutFunctionsDictionary[realItem.func]
+        );
     });
 
-    let quill: Quill;
-
-    keyboard.addBinding({
-        key: 83,
-        altKey: true
-    }, function (range: RangeStatic, context: any) {
-        quill = this.quill;
-        defaultTemplates.ISF(this.quill);
-    });
-    keyboard.addBinding({
-        key: 68,
-        altKey: true
-    }, function (range: RangeStatic, context: any) {
-        defaultTemplates.DEF(this.quill);
-    });
-    keyboard.addBinding({
-        key: 80,
-        altKey: true
-    }, function(range: RangeStatic, context: any) {
-        defaultTemplates.PROC(this.quill);
-    });
-    keyboard.addBinding({
-        key: 84,
-        altKey: true
-    }, function(range: RangeStatic, content: any) {
-        defaultTemplates.TED(this.quill);
-    });
-    keyboard.addBinding({
-        key: 67,
-        altKey: true
-    }, function(range: RangeStatic, content: any) {
-        defaultTemplates.CS(this.quill);
-    });
-    keyboard.addBinding({
-        key: 67,
-        altKey: true,
-        shiftKey: true
-    }, function(range: RangeStatic, content: any) {
-        defaultTemplates.SC(this.quill);
-    });
-    keyboard.addBinding({
-        key: 69,
-        altKey: true
-    }, function(range: RangeStatic, content: any) {
-        defaultTemplates.EX(this.quill);
-    });
-    keyboard.addBinding({
-        key: 70,
-        altKey: true
-    }, function(range: RangeStatic, content: any) {
-        defaultTemplates.FC(this.quill);
-    });
-
+    let quill: Quill = core.coreEditor;
 
     templatesView.push({
-            name: "Item Structure Function",
-            example: `
+        text: "Item Structure Function",
+        example: `
             **Name of item:**
                 - **Structure:**
                     - 
                 - **Function:**
                     -
             `,
-            func: () => {
-                defaultTemplates.ISF(quill);
-            }
-        });
+        func: () => {
+            defaultTemplates.ISF(quill);
+        },
+        value: "ISF"
+    });
     templatesView.push({
-        name: "Definition",
+        text: "Definition",
         example: `
         **Name of item:**
             - **Definition:** 
         `,
         func: () => {
-            defaultTemplates.DEF(quill)
-        }
+            defaultTemplates.DEF(quill);
+        },
+        value: "DEF"
+    });
+    templatesView.push({
+        text: "Process",
+        example: `
+        **Name of process:**
+            - **Description:**
+                -
+            - **Steps:**
+                a.
+        `,
+        func: () => {
+            defaultTemplates.PROC(quill);
+        },
+        value: "PROC"
+    });
+    templatesView.push({
+        text: "Theory Evidence Details",
+        example: `
+        **Name of theory:**
+        - **Evidence:**
+            - some evidence
+        - **Details:**
+            - Some details
+        `,
+        func: () => {
+            defaultTemplates.TED(quill);
+        },
+        value: "TED"
+    });
+    templatesView.push({
+        text: "Concept Sub-Concept",
+        example: `
+        **Concept name:**
+            - **Sub concept:**
+                -
+        `,
+        func: () => {
+            defaultTemplates.CS(quill);
+        },
+        value: "CS"
+    });
+    templatesView.push({
+        text: "Sub-Concept",
+        example: `
+            - **Sub concept:**
+                -
+        `,
+        func: () => {
+            defaultTemplates.SC(quill);
+        },
+        value: "SC"
+    });
+    templatesView.push({
+        text: "Example",
+        example: `
+            - **Example [details]:**
+                -
+        `,
+        func: () => {
+            defaultTemplates.EX(quill);
+        },
+        value: "EX"
+    });
+    templatesView.push({
+        text: "Figure Caption",
+        example: `
+            - **Figure:**
+                -
+            - **Caption:**
+                -
+        `,
+        func: () => {
+            defaultTemplates.FC(quill);
+        },
+        value: "FC"
     });
 
-    
-}
-
+    core.attachTemplates(templatesView);
+};
 
 export default registerAllShortcuts;
 export { staticShortCut };

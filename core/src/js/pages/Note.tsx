@@ -5,27 +5,26 @@ import { observer } from "mobx-react-lite";
 //COMPONENTS
 import Editor from "../components/editor/Editor";
 import TopBar from "../components/editor/TopBar";
+import TemplateSearch from "../components/editor/TemplateSearch";
 
 //CORE
 import Core, { CoreInterface } from "../core";
-
 
 //STORES
 import NoteStore from "../stores/noteStore";
 
 //TYPES
 type RouteDetails = {
-    id: string,
-    className: string,
-    unitName: string
-}
+    id: string;
+    className: string;
+    unitName: string;
+};
 
 const noteStore = new NoteStore();
 
 const core: CoreInterface = new Core();
 
 const Note = observer(({ match }: RouteComponentProps<RouteDetails>) => {
-
     const { id, className, unitName } = match.params;
 
     const { noteContent, noteName } = noteStore;
@@ -36,26 +35,36 @@ const Note = observer(({ match }: RouteComponentProps<RouteDetails>) => {
         return () => {
             noteStore.setUnloaded();
             //Prevents render issue
-        }
+        };
     }, []);
 
     return (
         <>
-            {
-                noteStore.noteLoaded ? 
+            {noteStore.noteLoaded ? (
                 <>
-                    <TopBar backLink={`/class/${match.params.className}/unit/${match.params.unitName}`}
-                    unitName={match.params.unitName} name={noteName} core={core}
-                    ></TopBar> 
-                    <Editor content={noteContent} store={noteStore} core={core}></Editor>
+                    <TopBar
+                        backLink={`/class/${match.params.className}/unit/${match.params.unitName}`}
+                        unitName={match.params.unitName}
+                        name={noteName}
+                        core={core}
+                    ></TopBar>
+                    <Editor
+                        content={noteContent}
+                        store={noteStore}
+                        core={core}
+                    ></Editor>
+                    <TemplateSearch
+                        toShow={noteStore.showTemplateSearch}
+                        searchItems={noteStore.templateSearch}
+                    ></TemplateSearch>
                 </>
-                : <div className="ui active dimmer massive inverted">
+            ) : (
+                <div className="ui active dimmer massive inverted">
                     <div className="ui text loader">Loading</div>
                 </div>
-            }
+            )}
         </>
     );
-
 });
 
 export default Note;

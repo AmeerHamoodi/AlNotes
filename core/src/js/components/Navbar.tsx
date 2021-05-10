@@ -1,34 +1,29 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { Menu, Icon } from "semantic-ui-react";
 
 interface NavbarProps {
-    backLink: string,
-    username: string
+  backLink: string;
+  username: string;
 }
 
 const Navbar = (props: NavbarProps) => {
-    return (
-        <nav className="ui top attached menu">
-            <Link to={props.backLink || "/"} className="ui icon item">
-                <i className="icon arrow left"></i>
-            </Link>
-            <Link to="/" className="ui item">
-                <img src="./imgs/logo-plain-desktop_v2.png" alt="Logo" />
-            </Link>
-            <Link className="ui icon item" to="/">
-                <i className="home icon"></i>
-            </Link>
-            <Link className="ui icon item" to="/settings">
-                <i className="cog icon"></i>
-            </Link>
-            <div className="right menu">
-                <div className="ui item">
-                    <i className="icon user"></i>
-                    {props.username}
-                </div>
-            </div>
-        </nav>
-    )
+  return (
+    <Menu attached="top">
+      <Menu.Item as={Link} to={props.backLink || "/"} icon>
+        <Icon name="arrow left"></Icon>
+      </Menu.Item>
+      <Menu.Item as={Link} to={"/"}>
+        <img src="./imgs/logo-plain-desktop_v2.png" alt="Logo" />
+      </Menu.Item>
+      <Menu.Item as={Link} to="/" icon>
+        <Icon name="home"></Icon>
+      </Menu.Item>
+      <Menu.Item as={Link} to="/settings" icon>
+        <Icon name="cog"></Icon>
+      </Menu.Item>
+    </Menu>
+  );
 };
 
 export default Navbar;
