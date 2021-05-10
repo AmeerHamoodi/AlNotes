@@ -5,7 +5,6 @@
     "main": "./dist/app.js",
     "scripts": {
         "start": "set NODE_ENV=development && electron .",
-        "test": "mocha ./e2e/index.test.js",
         "postinstall": "patch-package",
         "build": "set NODE_ENV=production && electron-builder --publish always",
         "start:dev": "set NODE_ENV=development && gulp"
