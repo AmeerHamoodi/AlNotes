@@ -6,6 +6,7 @@
     "scripts": {
         "start": "set NODE_ENV=development && electron .",
         "postinstall": "patch-package",
+        "test": "echo Sucess",
         "build": "set NODE_ENV=production && electron-builder --publish always",
         "start:dev": "set NODE_ENV=development && gulp"
     },
