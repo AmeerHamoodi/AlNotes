@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { observer } from "mobx-react-lite";
 
-import { Dropdown } from "semantic-ui-react";
+import { Dropdown, DropdownProps } from "semantic-ui-react";
+
+import { NoteStoreInterface } from "../../stores/interfaces";
 
 interface templatesView {
     text: string;
@@ -11,30 +13,39 @@ interface templatesView {
 }
 
 type TemplateSearchProps = {
-    searchItems: templatesView[];
+    noteStore: NoteStoreInterface;
     toShow: boolean;
 };
 
 const TemplateSearch = observer(
-    ({ searchItems, toShow }: TemplateSearchProps) => {
-        const dropdownOptions = searchItems.map((item) => {
+    ({ noteStore, toShow }: TemplateSearchProps) => {
+        const [searchItem, setSearchItem] = useState("");
+        let currentSelected: any = null;
+
+        const handleChange = (el: any, data: DropdownProps) => {
+            currentSelected = data.value;
+            setSearchItem(data.searchQuery);
+        };
+
+        const checkEnter = (ev: any) => {
+            if (ev.which === 13) {
+                const selected = noteStore.templateSearch.find((item) => {
+                    return item.value === currentSelected;
+                });
+
+                selected.func();
+                noteStore.toggleSearch();
+                setSearchItem("");
+            }
+        };
+
+        const dropdownOptions = noteStore.templateSearch.map((item) => {
             return {
                 key: `${Math.random()}_template`,
                 text: item.text,
                 value: item.value
             };
         });
-
-        const handleChange = (el: React.SyntheticEvent<HTMLElement, Event>) => {
-            const target = el.target as HTMLElement;
-            const value = target.innerText;
-
-            const selected = searchItems.find((item) => {
-                return item.text === value;
-            });
-            if (selected !== null && typeof selected !== "undefined")
-                selected.func();
-        };
 
         return toShow ? (
             <Dropdown
@@ -53,6 +64,10 @@ const TemplateSearch = observer(
                 onChange={handleChange}
                 noResultsMessage="Template does not exist"
                 value="Item Structure Function"
+                searchInput={{ autoFocus: true }}
+                onSearchChange={(el, val) => setSearchItem(val.searchQuery)}
+                searchQuery={searchItem}
+                onKeyUp={checkEnter}
             ></Dropdown>
         ) : (
             <h1 style={{ textAlign: "center" }}>Loading...</h1>
