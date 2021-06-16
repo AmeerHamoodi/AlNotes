@@ -53,3 +53,7 @@ script:
       else
         yarn test
       fi
+branches:
+  only:
+  - main
+  - stable

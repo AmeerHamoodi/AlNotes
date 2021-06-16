@@ -9,6 +9,7 @@ import quillToolbar, { quillToolbarType } from "./config/toolbar";
 import formats from "./config/formats";
 import registerAllShortcuts from "./helpers/shortcutKeys";
 import UTILS from "./utils";
+import registerEmbeds from "./embeds";
 
 //INTERFACES AND TYPES
 import {
@@ -137,6 +138,7 @@ class Core implements CoreInterface {
 
     //SETTERS
     set coreEditor(q: Quill) {
+        registerEmbeds();
         this.core = q;
         this.canStart = true;
         settingsStore.getKeyboard();

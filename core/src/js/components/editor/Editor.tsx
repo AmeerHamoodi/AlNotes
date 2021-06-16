@@ -26,8 +26,9 @@ const Editor: FC<EditorProps> = observer(({ content, store, core }) => {
 
     useEffect(() => {
         core.noteStore = store;
-        if (typeof editorRef.current.getEditor === "function")
+        if (typeof editorRef.current.getEditor === "function") {
             core.coreEditor = editorRef.current.getEditor();
+        }
     }, []);
 
     return (

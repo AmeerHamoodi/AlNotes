@@ -36,6 +36,14 @@ const TemplateSearch = observer(
                 selected.func();
                 noteStore.toggleSearch();
                 setSearchItem("");
+                const el = document.querySelector(".ql-editor") as HTMLElement;
+                el.focus();
+            }
+
+            if (ev.which === 27) {
+                noteStore.toggleSearch();
+                const el = document.querySelector(".ql-editor") as HTMLElement;
+                el.focus();
             }
         };
 

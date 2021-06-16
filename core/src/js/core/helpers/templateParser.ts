@@ -44,17 +44,20 @@ const defaultTemplates = {
 
         let oldSelection = currentSelection;
         quill.format("bold", true);
+        if (typeof quill.getFormat(currentSelection).list !== "string")
+            quill.format("list", "bullet");
         quill.insertText(currentSelection.index, "Name of item:\n");
-        quill.formatText(
+        quill.formatLine(
             currentSelection.index,
-            "Name of item:\n".length,
+            "Name of item:".length,
             "underline",
             true
         );
 
         quill.focus();
         currentSelection = quill.getSelection();
-        quill.format("indent", "+1");
+        if (typeof quill.getFormat(currentSelection).list === "string")
+            quill.format("indent", "+1");
         quill.format("list", "bullet");
         quill.format("bold", true);
         quill.insertText(currentSelection.index, "Structure:\n");
@@ -107,6 +110,10 @@ const defaultTemplates = {
         quill.focus();
         let currentSelection: RangeStatic = quill.getSelection();
         let oldSelection = currentSelection;
+
+        if (typeof quill.getFormat(currentSelection).list !== "string")
+            quill.format("list", "bullet");
+
         quill.format("bold", true);
         quill.insertText(currentSelection.index, "Name of item:\n");
         quill.formatText(
@@ -115,10 +122,10 @@ const defaultTemplates = {
             "underline",
             true
         );
-        quill.format("bold", true);
 
         quill.focus();
-        quill.format("indent", "+1");
+        if (typeof quill.getFormat(currentSelection).list === "string")
+            quill.format("indent", "+1");
         currentSelection = quill.getSelection();
         quill.format("list", "bullet");
         quill.format("bold", true);
@@ -158,10 +165,13 @@ const defaultTemplates = {
     PROC: (quill: Quill) => {
         quill.focus();
 
-        quill.format("bold", true);
-
         let currentSelection: RangeStatic = quill.getSelection();
         let oldSelection = currentSelection;
+
+        if (typeof quill.getFormat(currentSelection).list !== "string")
+            quill.format("list", "bullet");
+
+        quill.format("bold", true);
 
         quill.insertText(currentSelection.index, "Name of process:\n");
         quill.formatText(
@@ -170,13 +180,12 @@ const defaultTemplates = {
             "underline",
             true
         );
-        quill.format("bold", false);
 
         quill.focus();
         currentSelection = quill.getSelection();
         quill.format("list", "bullet");
-        quill.format("indent", "+1");
-        quill.format("bold", true);
+        if (typeof quill.getFormat(currentSelection).list === "string")
+            quill.format("indent", "+1");
         quill.insertText(currentSelection.index, "Description:");
 
         quill.focus();
@@ -227,7 +236,12 @@ const defaultTemplates = {
         quill.focus();
         let currentSelection: RangeStatic = quill.getSelection();
         let oldSelection = currentSelection;
+
         quill.format("bold", true);
+
+        if (typeof quill.getFormat(currentSelection).list !== "string")
+            quill.format("list", "bullet");
+
         quill.insertText(currentSelection.index, "Name of theory:\n");
         quill.formatText(
             currentSelection.index,
@@ -239,7 +253,8 @@ const defaultTemplates = {
 
         quill.focus();
         currentSelection = quill.getSelection();
-        quill.format("indent", "+1");
+        if (typeof quill.getFormat(currentSelection).list === "string")
+            quill.format("indent", "+1");
         quill.format("list", "bullet");
         quill.format("bold", true);
         quill.insertText(currentSelection.index, "Evidence:\n");
@@ -291,19 +306,18 @@ const defaultTemplates = {
         quill.focus();
         let currentSelection: RangeStatic = quill.getSelection();
         let oldSelection = currentSelection;
-        quill.format("bold", true);
+
+        quill.removeFormat(currentSelection.index, 1);
+
+        quill.format("header", 2, "user");
         quill.insertText(currentSelection.index, "Name of concept:\n");
-        quill.formatText(
-            currentSelection.index,
-            "Name of theory:\n".length,
-            "underline",
-            true
-        );
-        quill.format("bold", false);
 
         quill.focus();
+
         currentSelection = quill.getSelection();
-        quill.format("indent", "+1");
+
+        if (typeof quill.getFormat(currentSelection).list === "string")
+            quill.format("indent", "+1");
         quill.format("list", "bullet");
         quill.format("bold", true);
         quill.insertText(currentSelection.index, "Sub-concept name:\n");
@@ -341,7 +355,8 @@ const defaultTemplates = {
         let currentSelection: RangeStatic = quill.getSelection();
         let oldSelection = currentSelection;
 
-        quill.format("list", "bullet");
+        if (typeof quill.getFormat(currentSelection).list !== "string")
+            quill.format("list", "bullet");
         quill.format("bold", true);
         quill.insertText(currentSelection.index, "Sub-concept name:\n");
 
@@ -380,6 +395,10 @@ const defaultTemplates = {
 
         quill.format("list", "bullet");
         quill.format("bold", true);
+
+        if (typeof quill.getFormat(currentSelection).list !== "string")
+            quill.format("list", "bullet");
+
         quill.insertText(currentSelection.index, "Example [details]:\n");
 
         quill.focus();
@@ -418,6 +437,10 @@ const defaultTemplates = {
 
         quill.format("list", "bullet");
         quill.format("bold", true);
+
+        if (typeof quill.getFormat(currentSelection).list !== "string")
+            quill.format("list", "bullet");
+
         quill.insertText(currentSelection.index, "Figure:\n");
 
         quill.focus();
