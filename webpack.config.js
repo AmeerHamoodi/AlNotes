@@ -28,5 +28,5 @@ module.exports = {
         filename: "bundle.js",
         path: resolve(__dirname, "./dist/public/js")
     },
-    mode: process.env.NODE_ENV
+    mode: "development"
 };

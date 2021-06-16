@@ -111,8 +111,8 @@ const registerAllShortcuts = (
 
     keyboard.addBinding(
         {
-            key: "S",
-            altKey: true
+            key: "Q",
+            shortKey: true
         },
         (range: RangeStatic, context: any) => {
             core.noteStore.toggleSearch();

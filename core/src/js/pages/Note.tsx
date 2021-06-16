@@ -55,7 +55,7 @@ const Note = observer(({ match }: RouteComponentProps<RouteDetails>) => {
                     ></Editor>
                     <TemplateSearch
                         toShow={noteStore.showTemplateSearch}
-                        searchItems={noteStore.templateSearch}
+                        noteStore={noteStore}
                     ></TemplateSearch>
                 </>
             ) : (
