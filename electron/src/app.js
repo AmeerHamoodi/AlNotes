@@ -1,3 +1,4 @@
+require("dotenv").config();
 //LIBS
 const { app, BrowserWindow, ipcMain } = require("electron");
 const log = require("electron-log");
@@ -10,18 +11,28 @@ const isDev = require("electron-is-dev");
 
 //INTERNALS
 const DataStorage = require("./models/DataStorage");
-const NotesController = require("./controllers/notes/NotesController");
-const ClassController = require("./controllers/class/ClassController");
-const SettingsController = require("./controllers/settings/SettingsController");
 const UserSettings = require("./models/UserSettings");
+const StudySheet = require("./models/studySheet");
 
 const storage = new DataStorage();
 const settings = new UserSettings(false);
+const studySheet = new StudySheet();
+studySheet._init();
+
 const store = new Store();
+
+// CONTROLLERS
+const NotesController = require("./controllers/notes/NotesController");
+const ClassController = require("./controllers/class/ClassController");
+const SettingsController = require("./controllers/settings/SettingsController");
+const StudySheetController = require("./controllers/notes/StudySheetController");
 
 autoUpdater.logger = log;
 
-//if(isDev) require("electron-reload")(path.join(__dirname, "./electron/src/"))
+if (isDev)
+    require("electron-reload")(path.join(__dirname, "./electron/src/"), {
+        electron: path.join(__dirname, "node_modules", ".bin", "electron")
+    });
 
 class Main {
     constructor() {
@@ -97,6 +108,12 @@ class Main {
             this.mainWindow,
             settings
         );
+        this.studySheetController = new StudySheetController(
+            ipcMain,
+            this.mainWindow,
+            studySheet,
+            settings
+        );
 
         /**
          * Sets all of the controller listeners
@@ -104,6 +121,7 @@ class Main {
         this.notesController.setAll();
         this.classController.setAll();
         this.settingsController.setAll();
+        this.studySheetController.setAll();
 
         this.mainWindow.on("close", () => {
             this.mainWindow.webContents.send("closing");

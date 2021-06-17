@@ -2,7 +2,9 @@ import { Quill } from "react-quill";
 import { autorun } from "mobx";
 
 //STORES
-import SettingsStore, { keyboardSettingRaw } from "../stores/settingsStore";
+import SettingsStore, {
+    keyboardSettingRaw
+} from "../stores/settingsPage/SettingsStore";
 
 //CONFIGS AND MODULES
 import quillToolbar, { quillToolbarType } from "./config/toolbar";

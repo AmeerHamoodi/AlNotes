@@ -11,7 +11,7 @@ import TemplateSearch from "../components/editor/TemplateSearch";
 import Core, { CoreInterface } from "../core";
 
 //STORES
-import NoteStore from "../stores/noteStore";
+import NoteStore from "../stores/notePage/NoteStore";
 
 //TYPES
 type RouteDetails = {

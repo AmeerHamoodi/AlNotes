@@ -10,7 +10,7 @@ import Error from "../components/Error";
 import { Container } from "semantic-ui-react";
 
 //STORES
-import NotesStore from "../stores/notesStore";
+import NotesStore from "../stores/unitPage/NotesStore";
 
 //TYPES and INTERFACES
 import { NotesStoreInterface } from "../stores/interfaces";

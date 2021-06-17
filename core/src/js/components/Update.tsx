@@ -2,7 +2,7 @@ import React from "react";
 import { observer } from "mobx-react-lite";
 import { Modal } from "semantic-ui-react";
 
-import UpdateStore from "../stores/updateStore";
+import UpdateStore from "../stores/homePage/UpdateStore";
 
 const updateStore = new UpdateStore();
 

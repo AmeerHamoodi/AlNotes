@@ -3,8 +3,8 @@ import { RouteComponentProps } from "react-router-dom";
 import { observer } from "mobx-react-lite";
 
 //STORES
-import UnitsStore from "../stores/unitsStore";
-import ClassItemsStore from "../stores/classItemsStore";
+import UnitsStore from "../stores/classPage/UnitsStore";
+import ClassItemsStore from "../stores/classPage/ClassItemsStore";
 
 //COMPONENTS
 import Navbar from "../components/Navbar";

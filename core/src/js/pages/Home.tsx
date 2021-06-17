@@ -9,7 +9,7 @@ import Error from "../components/Error";
 import { Container } from "semantic-ui-react";
 
 //STORES
-import ClassesStore from "../stores/classesStore";
+import ClassesStore from "../stores/homePage/ClassesStore";
 
 //INTERFACES
 import { ClassesStoreInterface } from "../stores/interfaces";

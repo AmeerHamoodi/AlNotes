@@ -7,7 +7,9 @@ import Display from "../components/settings/Display";
 import { Container, Button } from "semantic-ui-react";
 
 //STORES
-import SettingsStore, { keyboardSettingFront } from "../stores/settingsStore";
+import SettingsStore, {
+    keyboardSettingFront
+} from "../stores/settingsPage/SettingsStore";
 
 //INTERFACES
 import { SettingsStoreInterface } from "../stores/interfaces";

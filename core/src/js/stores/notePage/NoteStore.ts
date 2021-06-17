@@ -1,15 +1,15 @@
 import { observable, action, makeObservable, runInAction } from "mobx";
 
 //LIBS
-import DefaultStore from "./DefaultStore";
+import DefaultStore from "../DefaultStore";
 const { ipcRenderer } = window.require("electron");
 
 //ERRORS
-import StoreError from "./helpers/errors/StoreError";
-import ResponseError from "./helpers/errors/ResponseError";
+import StoreError from "../helpers/errors/StoreError";
+import ResponseError from "../helpers/errors/ResponseError";
 
 //INTERFACES
-import { NoteStoreInterface, getNoteByIdResponse } from "./interfaces";
+import { NoteStoreInterface, getNoteByIdResponse } from "../interfaces";
 
 interface templatesViewInt {
     text: string;

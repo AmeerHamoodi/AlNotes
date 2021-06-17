@@ -1,18 +1,18 @@
 import { action, observable, makeObservable, runInAction } from "mobx";
 
-import DefaultStore from "./DefaultStore";
+import DefaultStore from "../DefaultStore";
 const { ipcRenderer } = window.require("electron");
 
 //INTERFACES
-import { UpdateStoreInterface } from "./interfaces";
+import { UpdateStoreInterface } from "../interfaces";
 
 //ERRORS
-import StoreError from "./helpers/errors/StoreError";
-import ResponseError from "./helpers/errors/ResponseError";
+import StoreError from "../helpers/errors/StoreError";
+import ResponseError from "../helpers/errors/ResponseError";
 
 type updateContent = {
-    progress: string,
-}
+    progress: string;
+};
 
 class UpdateStore extends DefaultStore implements UpdateStoreInterface {
     public updateContent: updateContent;
@@ -37,20 +37,21 @@ class UpdateStore extends DefaultStore implements UpdateStoreInterface {
     public _updateListener() {
         ipcRenderer.on("updateMessage", (event: any, args: string) => {
             try {
-                if(typeof args !== "string") throw new ResponseError("Invalid update response");
-                
+                if (typeof args !== "string")
+                    throw new ResponseError("Invalid update response");
+
                 runInAction(() => {
                     this.updateContent = {
                         progress: args
                     };
                     this.updateOccurred = true;
-                })
-            } catch(e) {
+                });
+            } catch (e) {
                 console.log(e);
                 this._handleError(e);
             }
-        })
+        });
     }
-};
+}
 
 export default UpdateStore;

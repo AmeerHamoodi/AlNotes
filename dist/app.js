@@ -1,3 +1,4 @@
+require("dotenv").config();
 //LIBS
 const { app, BrowserWindow, ipcMain } = require("electron");
 const log = require("electron-log");
@@ -14,14 +15,21 @@ const NotesController = require("./controllers/notes/NotesController");
 const ClassController = require("./controllers/class/ClassController");
 const SettingsController = require("./controllers/settings/SettingsController");
 const UserSettings = require("./models/UserSettings");
+const StudySheet = require("./models/studySheet");
 
 const storage = new DataStorage();
 const settings = new UserSettings(false);
+const studySheet = new StudySheet();
+studySheet._init();
+
 const store = new Store();
 
 autoUpdater.logger = log;
 
-//if(isDev) require("electron-reload")(path.join(__dirname, "./electron/src/"))
+if (isDev)
+    require("electron-reload")(path.join(__dirname, "./electron/src/"), {
+        electron: path.join(__dirname, "node_modules", ".bin", "electron")
+    });
 
 class Main {
     constructor() {
