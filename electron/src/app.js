@@ -46,6 +46,7 @@ class Main {
      */
     _init() {
         app.whenReady().then(() => {
+            this.setLoadingWindow();
             this.setWindowMain();
 
             const webContents = this.mainWindow.webContents;
@@ -85,6 +86,13 @@ class Main {
                 contextIsolation: false
             }
         });
+        this.mainWindow.hide();
+
+        this.mainWindow.webContents.once("dom-ready", () => {
+            this.mainWindow.show();
+            this.loadingWindow.hide();
+        });
+
         this.mainWindow.loadURL(path.join(__dirname, "/public/index.html"));
         this.mainWindow.removeMenu();
 
@@ -131,20 +139,20 @@ class Main {
             const size = this.mainWindow.getSize();
             settings.updateSize({ width: size[0], height: size[1] });
         });
-        if (isDev) this.mainWindow.webContents.openDevTools(); //Comment this line out for production
+        if (isDev) this.mainWindow.webContents.openDevTools();
     }
 
     /**
-     * Old loading window/splash screen method, not used anymore
+     * Loading window/splash screen method
      */
     setLoadingWindow() {
         this.loadingWindow = new BrowserWindow({
-            width: 400,
+            width: 500,
             height: 300,
             frame: false
         });
         this.loadingWindow.loadURL(
-            path.join(__dirname, "../devBuild/loading.html")
+            path.join(__dirname, "/public/loading.html")
         );
     }
     /**

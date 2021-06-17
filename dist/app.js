@@ -11,9 +11,6 @@ const isDev = require("electron-is-dev");
 
 //INTERNALS
 const DataStorage = require("./models/DataStorage");
-const NotesController = require("./controllers/notes/NotesController");
-const ClassController = require("./controllers/class/ClassController");
-const SettingsController = require("./controllers/settings/SettingsController");
 const UserSettings = require("./models/UserSettings");
 const StudySheet = require("./models/studySheet");
 
@@ -23,6 +20,12 @@ const studySheet = new StudySheet();
 studySheet._init();
 
 const store = new Store();
+
+// CONTROLLERS
+const NotesController = require("./controllers/notes/NotesController");
+const ClassController = require("./controllers/class/ClassController");
+const SettingsController = require("./controllers/settings/SettingsController");
+const StudySheetController = require("./controllers/notes/StudySheetController");
 
 autoUpdater.logger = log;
 
@@ -43,6 +46,7 @@ class Main {
      */
     _init() {
         app.whenReady().then(() => {
+            this.setLoadingWindow();
             this.setWindowMain();
 
             const webContents = this.mainWindow.webContents;
@@ -82,6 +86,13 @@ class Main {
                 contextIsolation: false
             }
         });
+        this.mainWindow.hide();
+
+        this.mainWindow.webContents.once("dom-ready", () => {
+            this.mainWindow.show();
+            this.loadingWindow.hide();
+        });
+
         this.mainWindow.loadURL(path.join(__dirname, "/public/index.html"));
         this.mainWindow.removeMenu();
 
@@ -105,6 +116,12 @@ class Main {
             this.mainWindow,
             settings
         );
+        this.studySheetController = new StudySheetController(
+            ipcMain,
+            this.mainWindow,
+            studySheet,
+            settings
+        );
 
         /**
          * Sets all of the controller listeners
@@ -112,6 +129,7 @@ class Main {
         this.notesController.setAll();
         this.classController.setAll();
         this.settingsController.setAll();
+        this.studySheetController.setAll();
 
         this.mainWindow.on("close", () => {
             this.mainWindow.webContents.send("closing");
@@ -121,20 +139,20 @@ class Main {
             const size = this.mainWindow.getSize();
             settings.updateSize({ width: size[0], height: size[1] });
         });
-        if (isDev) this.mainWindow.webContents.openDevTools(); //Comment this line out for production
+        if (isDev) this.mainWindow.webContents.openDevTools();
     }
 
     /**
-     * Old loading window/splash screen method, not used anymore
+     * Loading window/splash screen method
      */
     setLoadingWindow() {
         this.loadingWindow = new BrowserWindow({
-            width: 400,
+            width: 500,
             height: 300,
             frame: false
         });
         this.loadingWindow.loadURL(
-            path.join(__dirname, "../devBuild/loading.html")
+            path.join(__dirname, "/public/loading.html")
         );
     }
     /**

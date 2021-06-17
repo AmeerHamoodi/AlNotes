@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Loading Al Notes</title>
+        <style>
+            @font-face {
+                font-family: "Main";
+                src: url("./css/Poppins-Regular.ttf") format("truetype");
+            }
+            * {
+                font-family: "Main" !important;
+                overflow: hidden;
+                user-drag: none;
+                user-select: none;
+                -moz-user-select: none;
+                -webkit-user-drag: none;
+                -webkit-user-select: none;
+                -ms-user-select: none;
+            }
+            html,
+            body {
+                height: 100%;
+            }
+            .center {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+            }
+            .logo {
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+            }
+            .loading-content {
+                width: 100%;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+            }
+        </style>
+    </head>
+    <body>
+        <span class="loading-content">
+            <div
+                style="
+                    width: 100%;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    height: 70%;
+                "
+            >
+                <img class="logo" src="imgs/icon-v2.png" />
+                <h1 style="display: inline">Al Notes</h1>
+            </div>
+            <span style="font-weight: bold; text-align: center"
+                >Loading...</span
+            >
+            <span style="width: 100%; text-align: center; opacity: 0.5"
+                >created by Ameer Hamoodi</span
+            >
+        </span>
+    </body>
+</html>

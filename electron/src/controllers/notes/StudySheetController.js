@@ -27,13 +27,16 @@ class StudySheetController {
             if (typeof data.className !== "string")
                 return this._errorClient("Class does not exist!");
 
-            const data = storage.getClassStudySheet(data.className);
-            if (!data)
+            const responseData = storage.getClassStudySheet(data.className);
+            if (!responseData)
                 return this._errorClient(
                     "An error with the study sheet model occurred!"
                 );
 
-            mainWindow.webContents.send("fetchStudySheet:response", data);
+            mainWindow.webContents.send(
+                "fetchStudySheet:response",
+                responseData
+            );
         });
     }
 }
