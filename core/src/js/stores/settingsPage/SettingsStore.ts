@@ -83,10 +83,8 @@ class SettingsStore extends DefaultStore implements SettingsStoreInterface {
         this.toQueueKeyboard = false;
 
         makeObservable(this, {
-            keyboardSettings: observable,
             keyboardSettingsLoaded: observable,
             toQueueKeyboard: observable,
-            rawKeyboardSettings: observable,
             addKeyDataToNewQueue: action,
             queueAllKeyboardSettings: action,
             newKeyboard: action

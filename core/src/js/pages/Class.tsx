@@ -13,6 +13,7 @@ import Units from "../components/class/Units";
 import Textbooks from "../components/class/Textbooks";
 import Labs from "../components/class/Labs";
 import Meetings from "../components/class/Meetings";
+import CardsContainer from "../components/CardsContainer";
 import { Container } from "semantic-ui-react";
 
 //TYPES
@@ -29,9 +30,24 @@ const Class = observer(({ match }: RouteComponentProps<RouteDetails>) => {
         classItemsStore.getClassContent(match.params.name); //gets all textbooks, meetings, labs etc.
     }, []);
 
+    const cardsContainerProps = {
+        data: [
+            {
+                name: "Studysheet",
+                link: `/class/${match.params.name}/studysheet`
+            }
+        ],
+        emptyMessage:
+            "This shouldn't be empty! Pres F12 and go to 'Console', click on 'Errors' and take a screenshot. Then open an issue on GitHub!"
+    };
+
     return (
         <>
             <Navbar backLink="/" username={"Development"}></Navbar>
+            <Container className="mt">
+                <h1 style={{ textAlign: "center" }}>Studysheet:</h1>
+                <CardsContainer {...cardsContainerProps}></CardsContainer>
+            </Container>
             <Container className="mt">
                 <h1 style={{ textAlign: "center" }}>{match.params.name}</h1>
                 {unitsStore.unitsLoaded ? (

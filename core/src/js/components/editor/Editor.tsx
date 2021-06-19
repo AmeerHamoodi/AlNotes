@@ -6,15 +6,18 @@ import { observer } from "mobx-react-lite";
 import { CoreInterface } from "../../core";
 
 //INTERFACES AND TYPES
-import { NoteStoreInterface } from "../../stores/interfaces";
+import {
+    NoteStoreInterface,
+    StudySheetStoreInterface
+} from "../../stores/interfaces";
 
 type EditorProps = {
-    content: string;
-    store: NoteStoreInterface;
+    store: NoteStoreInterface | StudySheetStoreInterface;
     core: CoreInterface;
+    isStudySheet?: boolean;
 };
 
-const Editor: FC<EditorProps> = observer(({ content, store, core }) => {
+const Editor: FC<EditorProps> = observer(({ store, core, isStudySheet }) => {
     const [noteValue, setNoteValue] = useState({ editorContent: "" });
     const editorRef: { current: ReactQuill } = useRef();
 
@@ -25,9 +28,24 @@ const Editor: FC<EditorProps> = observer(({ content, store, core }) => {
     };
 
     useEffect(() => {
-        core.noteStore = store;
-        if (typeof editorRef.current.getEditor === "function") {
-            core.coreEditor = editorRef.current.getEditor();
+        if (!isStudySheet) {
+            const noteStore = store as NoteStoreInterface;
+            core.noteStore = noteStore;
+            if (
+                typeof editorRef.current.getEditor === "function" &&
+                typeof core.coreEditor === "undefined"
+            ) {
+                core.coreEditor = editorRef.current.getEditor();
+            }
+        } else {
+            const studySheetStore = store as StudySheetStoreInterface;
+            core.studySheetStore = studySheetStore;
+            if (
+                typeof editorRef.current.getEditor === "function" &&
+                typeof core.coreEditor === "undefined"
+            ) {
+                core.createStudySheet(editorRef.current.getEditor());
+            }
         }
     }, []);
 

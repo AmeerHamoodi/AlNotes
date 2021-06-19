@@ -48,16 +48,6 @@ class Main {
         app.whenReady().then(() => {
             this.setLoadingWindow();
             this.setWindowMain();
-
-            const webContents = this.mainWindow.webContents;
-
-            webContents.once("dom-ready", () => {
-                this.mainWindow.show();
-                this.showUpdateMessage();
-                this.autoupdate();
-                this.registerAutoShortcut();
-                this.setSpellChecking();
-            });
         });
         this.beforeCloseFunctions();
     }
@@ -68,8 +58,8 @@ class Main {
         app.once("before-quit", () => {
             storage.saveAll();
         });
-        app.on("window-all-closed", function () {
-            if (process.platform !== "darwin") app.quit(); //Mac patch
+        app.on("window-all-closed", () => {
+            app.quit();
         });
     }
     /**
@@ -90,7 +80,11 @@ class Main {
 
         this.mainWindow.webContents.once("dom-ready", () => {
             this.mainWindow.show();
-            this.loadingWindow.hide();
+            this.loadingWindow.close();
+            this.showUpdateMessage();
+            this.autoupdate();
+            this.registerAutoShortcut();
+            this.setSpellChecking();
         });
 
         this.mainWindow.loadURL(path.join(__dirname, "/public/index.html"));

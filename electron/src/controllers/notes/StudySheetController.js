@@ -13,7 +13,7 @@ class StudySheetController {
     }
 
     _errorClient(message) {
-        this.mainWindow.webContents.send("studySheetThread:error", {
+        this.mainWindow.webContents.send("classThread:error", {
             message
         });
     }
@@ -27,7 +27,10 @@ class StudySheetController {
             if (typeof data.className !== "string")
                 return this._errorClient("Class does not exist!");
 
-            const responseData = storage.getClassStudySheet(data.className);
+            const responseData = storage.getClassStudySheet(
+                data.className.toLowerCase()
+            );
+
             if (!responseData)
                 return this._errorClient(
                     "An error with the study sheet model occurred!"

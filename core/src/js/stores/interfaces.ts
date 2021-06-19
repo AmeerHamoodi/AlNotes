@@ -1,5 +1,7 @@
 import { NoteFrontInterface } from "./helpers/fronts/interfaces";
 
+import { StudySheetItem } from "../core/studySheet/parseStudySheet";
+
 interface DefaultInterface {
     errorContent: {
         occured: boolean;
@@ -145,6 +147,18 @@ interface UpdateStoreInterface extends DefaultInterface {
     };
 }
 
+interface StudySheetStoreInterface extends DefaultInterface {
+    data: StudySheetItem[];
+    isLoaded: boolean;
+    showTemplateSearch: boolean;
+    templateSearch: templatesViewInt[];
+    _studySheetListener: () => void;
+    setUnloaded: () => void;
+    toggleSearch: () => void;
+    addSearch: (templateData: templatesViewInt[]) => void;
+    getStudySheet: (className: string) => void;
+}
+
 export {
     ClassesStoreInterface,
     UnitsStoreInterface,
@@ -154,5 +168,6 @@ export {
     getNoteByIdResponse,
     UpdateStoreInterface,
     NoteStoreInterface,
-    SettingsStoreInterface
+    SettingsStoreInterface,
+    StudySheetStoreInterface
 };

@@ -113,6 +113,7 @@ class NotesController {
         const mainWindow = this.mainWindow;
 
         ipcMain.on("saveData", (err, args) => {
+            console.log("save");
             const response = storage.updateNote(
                 args.id,
                 args.name,

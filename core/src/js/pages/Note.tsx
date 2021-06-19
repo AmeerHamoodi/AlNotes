@@ -48,14 +48,10 @@ const Note = observer(({ match }: RouteComponentProps<RouteDetails>) => {
                         name={noteName}
                         core={core}
                     ></TopBar>
-                    <Editor
-                        content={noteContent}
-                        store={noteStore}
-                        core={core}
-                    ></Editor>
+                    <Editor store={noteStore} core={core}></Editor>
                     <TemplateSearch
                         toShow={noteStore.showTemplateSearch}
-                        noteStore={noteStore}
+                        store={noteStore}
                     ></TemplateSearch>
                 </>
             ) : (

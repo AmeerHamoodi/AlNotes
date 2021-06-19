@@ -12,6 +12,7 @@ import Home from "./pages/Home";
 import Class from "./pages/Class";
 import Unit from "./pages/Unit";
 import Note from "./pages/Note";
+import StudySheet from "./pages/StudySheet";
 import Settings from "./pages/Settings";
 
 //COMPONENTS
@@ -36,6 +37,11 @@ const App = () => {
                     path="/class/:className/unit/:unitName/note/:id"
                     exact
                     component={withRouter(Note)}
+                ></Route>
+                <Route
+                    path="/class/:className/studysheet"
+                    exact
+                    component={withRouter(StudySheet)}
                 ></Route>
                 {/* <Route
                     path="/settings"

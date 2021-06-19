@@ -1,4 +1,5 @@
 import { Quill } from "react-quill";
+import { Quill as RealQuill } from "quill";
 import { autorun } from "mobx";
 
 //STORES
@@ -9,14 +10,16 @@ import SettingsStore, {
 //CONFIGS AND MODULES
 import quillToolbar, { quillToolbarType } from "./config/toolbar";
 import formats from "./config/formats";
-import registerAllShortcuts from "./helpers/shortcutKeys";
+import registerAllShortcuts from "./keyboard/shortcutKeys";
 import UTILS from "./utils";
 import registerEmbeds from "./embeds";
+import parseStudySheet, { StudySheetItem } from "./studySheet/parseStudySheet";
 
 //INTERFACES AND TYPES
 import {
     NoteStoreInterface,
-    SettingsStoreInterface
+    SettingsStoreInterface,
+    StudySheetStoreInterface
 } from "../stores/interfaces";
 
 interface Modules {
@@ -35,6 +38,8 @@ interface CoreInterface {
     infoAboutNote: NoteDetails;
     /** MobX store for note */
     noteStore: NoteStoreInterface;
+    /** MobX store for studysheet */
+    studySheetStore: StudySheetStoreInterface;
     /** Actual templates */
     templates: templatesViewInt[];
     /** Automatically sets content of quill editor */
@@ -43,6 +48,8 @@ interface CoreInterface {
     attachSaveState: (setSaveState: any) => void;
     /** Attaches the templates to core object */
     attachTemplates: (templates: templatesViewInt[]) => void;
+    /** Creates studysheet based editor */
+    createStudySheet: (q: Quill) => void;
 }
 
 interface templatesViewInt {
@@ -63,7 +70,7 @@ class Core implements CoreInterface {
     private core: Quill;
     private toolbar: quillToolbarType = quillToolbar;
     private canStart: boolean = false;
-    private store: NoteStoreInterface;
+    private store: NoteStoreInterface | StudySheetStoreInterface;
     private noteDetails: NoteDetails;
 
     //PUBLIC
@@ -83,42 +90,72 @@ class Core implements CoreInterface {
 
     //PRIVATE METHODS
     /** Just calls all methods needed to initialize an editor */
-    private callAll(keyboardSettings: keyboardSettingRaw[]) {
-        this.setAllKeyEvents(keyboardSettings);
-        this.setEditorContent();
+    private callAll(
+        keyboardSettings: keyboardSettingRaw[],
+        isStudysheet: boolean = false
+    ) {
+        this.setAllKeyEvents(keyboardSettings, isStudysheet);
+
+        if (isStudysheet) {
+            const studySheetStore = this.store as StudySheetStoreInterface;
+
+            parseStudySheet(studySheetStore.data, this.core);
+        } else {
+            this.setEditorContent();
+        }
     }
 
     /** Sets all listeners and CBs for keyboard */
-    private setAllKeyEvents(keyboardSettings: keyboardSettingRaw[]) {
+    private setAllKeyEvents(
+        keyboardSettings: keyboardSettingRaw[],
+        isStudysheet: boolean
+    ) {
         const { keyboard } = this.core;
         //SAVE
         //Have to set save keybinding here for obvious reasons
-        keyboard.addBinding(
-            {
-                key: "S",
-                shortKey: true
-            },
-            () => {
-                const jsonContent = JSON.stringify(this.core.getContents());
-                this.store.saveNote(
-                    this.store.className,
-                    this.store.unitName,
-                    this.store.noteId,
-                    jsonContent,
-                    this.noteDetails.name
-                );
-                this.setSaveState(`Last saved: ${UTILS.getTime()}`);
-            }
-        );
+
+        if (!isStudysheet) {
+            console.log("Aye yo, we here!");
+            keyboard.addBinding(
+                {
+                    key: "S",
+                    shortKey: true
+                },
+                () => {
+                    const jsonContent = JSON.stringify(this.core.getContents());
+                    const store = this.store as NoteStoreInterface;
+                    store.saveNote(
+                        store.className,
+                        store.unitName,
+                        store.noteId,
+                        jsonContent,
+                        this.noteDetails.name
+                    );
+                    this.setSaveState(`Last saved: ${UTILS.getTime()}`);
+                }
+            );
+        } else {
+            keyboard.addBinding(
+                {
+                    key: "S",
+                    shortKey: true
+                },
+                () => {
+                    console.log("Under development");
+                }
+            );
+        }
+
         //FORMAT SHORTCUTS
         registerAllShortcuts(keyboard, keyboardSettings, this);
     }
 
     /** Sets the editor content with the content loaded from the store */
     private setEditorContent() {
-        if (!this.store.noteContent.includes("{")) return this.core.setText("");
+        const store = this.store as NoteStoreInterface;
+        if (!store.noteContent.includes("{")) return this.core.setText("");
 
-        const content = JSON.parse(this.store.noteContent);
+        const content = JSON.parse(store.noteContent);
         this.core.setContents(content);
     }
 
@@ -138,11 +175,28 @@ class Core implements CoreInterface {
         this.store.addSearch(templates);
     }
 
+    // parseStudySheet(studySheetData, realQuill);
+
+    /** Creates studysheet based on data (studysheet data is different than regular content) */
+    public createStudySheet(q: Quill) {
+        registerEmbeds();
+        this.core = q;
+        this.canStart = true;
+        console.log("MAKING");
+        settingsStore.getKeyboard();
+
+        autorun(() => {
+            if (settingsStore.keyboardSettingsLoaded)
+                this.callAll(settingsStore.keyboardSettings, true);
+        });
+    }
+
     //SETTERS
     set coreEditor(q: Quill) {
         registerEmbeds();
         this.core = q;
         this.canStart = true;
+        console.log("MAKING");
         settingsStore.getKeyboard();
 
         autorun(() => {
@@ -152,6 +206,9 @@ class Core implements CoreInterface {
         });
     }
     set noteStore(store: NoteStoreInterface) {
+        this.store = store;
+    }
+    set studySheetStore(store: StudySheetStoreInterface) {
         this.store = store;
     }
     set infoAboutNote(data: NoteDetails) {
@@ -167,7 +224,7 @@ class Core implements CoreInterface {
     }
 
     get noteStore() {
-        return this.store;
+        return this.store as NoteStoreInterface;
     }
 }
 

@@ -17,7 +17,8 @@ class StudySheetStorage {
 
     _init() {
         const data = store.get("studySheet");
-        if (typeof data !== "undefined") this.db = data;
+        if (typeof data !== "undefined" && process.env.RESET_STUDYSHEET !== "1")
+            this.db = data;
         else this._createStudySheetFromStoredNotes(datastorage.db);
     }
     /**
@@ -52,15 +53,30 @@ class StudySheetStorage {
                             index + 1 < content.ops.length
                                 ? content.ops[index + 1]
                                 : {};
+
                         if (
                             typeof next.attributes !== "undefined" &&
                             typeof next.attributes.header !== "undefined" &&
                             (next.attributes.header == 1 ||
                                 next.attributes.header == 2)
                         ) {
-                            total.push(current);
+                            if (!!current.header) total.push(current);
+
+                            // Check if item is "weird formatted"
+                            // This basically means that the actual header is merged with some other test and is split via a "\n"
+                            // This part fixes that
+
+                            const nSplitArray = item.insert.split("\n");
+
+                            const realHeader =
+                                nSplitArray.filter(
+                                    (content) => content.length > 0
+                                ).length > 1
+                                    ? nSplitArray[nSplitArray.length - 1]
+                                    : item.insert;
+
                             current = {
-                                header: item.insert + "\n",
+                                header: realHeader + "\n",
                                 content: []
                             };
                             content.ops.splice(index + 1, 1);
@@ -68,7 +84,6 @@ class StudySheetStorage {
                             if (!!current.header) current.content.push(item);
                         }
                     });
-                    console.log(current);
                 }
             }
             classStudyNotes[classKey] = {};
@@ -87,11 +102,12 @@ class StudySheetStorage {
     }
 
     getClassStudySheet(className) {
+        console.log(this.db);
         if (typeof className !== "string") return false;
 
-        if (typeof this.db.studyNoteData[className] !== "object") return false;
+        if (typeof this.db[className].studyNoteData !== "object") return false;
 
-        return this.db.studyNoteData[className];
+        return this.db[className].studyNoteData;
     }
 }
 
