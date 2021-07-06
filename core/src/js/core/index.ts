@@ -50,6 +50,8 @@ interface CoreInterface {
     attachTemplates: (templates: templatesViewInt[]) => void;
     /** Creates studysheet based editor */
     createStudySheet: (q: Quill) => void;
+    /** Unsets all listeners and core from base editor */
+    unsetAll: () => void;
 }
 
 interface templatesViewInt {
@@ -115,7 +117,6 @@ class Core implements CoreInterface {
         //Have to set save keybinding here for obvious reasons
 
         if (!isStudysheet) {
-            console.log("Aye yo, we here!");
             keyboard.addBinding(
                 {
                     key: "S",
@@ -141,7 +142,10 @@ class Core implements CoreInterface {
                     shortKey: true
                 },
                 () => {
-                    console.log("Under development");
+                    const store = this.store as StudySheetStoreInterface;
+                    const jsonContent = JSON.stringify(this.core.getContents());
+                    store.saveStudySheet(store.className, jsonContent);
+                    this.setSaveState(`Last saved: ${UTILS.getTime()}`);
                 }
             );
         }
@@ -174,6 +178,12 @@ class Core implements CoreInterface {
         this.templates = templates;
         this.store.addSearch(templates);
     }
+    /** Function to make the core functional between re-renders */
+    public unsetAll() {
+        this.core.keyboard = null;
+        this.core = undefined;
+        this.canStart = false;
+    }
 
     // parseStudySheet(studySheetData, realQuill);
 
@@ -182,12 +192,11 @@ class Core implements CoreInterface {
         registerEmbeds();
         this.core = q;
         this.canStart = true;
-        console.log("MAKING");
         settingsStore.getKeyboard();
 
         autorun(() => {
-            if (settingsStore.keyboardSettingsLoaded)
-                this.callAll(settingsStore.keyboardSettings, true);
+            if (settingsStore.keyboardSettingsLoaded && this.canStart)
+                this.callAll(settingsStore.rawKeyboardSettings, true);
         });
     }
 
@@ -196,7 +205,6 @@ class Core implements CoreInterface {
         registerEmbeds();
         this.core = q;
         this.canStart = true;
-        console.log("MAKING");
         settingsStore.getKeyboard();
 
         autorun(() => {

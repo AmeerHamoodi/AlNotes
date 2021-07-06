@@ -17,8 +17,9 @@ class StudySheetStorage {
 
     _init() {
         const data = store.get("studySheet");
+
         if (typeof data !== "undefined" && process.env.RESET_STUDYSHEET !== "1")
-            this.db = data;
+            this.db = JSON.parse(data);
         else this._createStudySheetFromStoredNotes(datastorage.db);
     }
     /**
@@ -26,8 +27,6 @@ class StudySheetStorage {
      * @param {datastorage.db} DB Database property from datastorage object
      */
     _createStudySheetFromStoredNotes(DB) {
-        // Generate study sheet from notes, lol this should be fun
-        // Well that wasn't that bad, just can't wait to see how slow this is with more than 3 notes
         const classes = DB.classes;
 
         const classStudyNotes = {};
@@ -44,7 +43,10 @@ class StudySheetStorage {
 
                 for (let noteKey in notes) {
                     const note = notes[noteKey];
-                    const content = JSON.parse(note.content);
+                    const content =
+                        note.content.length > 0
+                            ? JSON.parse(note.content)
+                            : { ops: [] };
 
                     let current = { header: null, content: [] };
 
@@ -63,7 +65,7 @@ class StudySheetStorage {
                             if (!!current.header) total.push(current);
 
                             // Check if item is "weird formatted"
-                            // This basically means that the actual header is merged with some other test and is split via a "\n"
+                            // This basically means that the actual header is merged with some other text and is split via a "\n"
                             // This part fixes that
 
                             const nSplitArray = item.insert.split("\n");
@@ -93,21 +95,86 @@ class StudySheetStorage {
         this.db = classStudyNotes;
         this.save();
     }
+    /**
+     * Creates/updates studysheet based on content that was sent from studysheet
+     * @param {string} className Name of class
+     * @param {object} content Study note content (quill export)
+     */
+    _createStudySheetFromStudySheetContent(className, content) {
+        const parsed = JSON.parse(content);
+        const total = [];
+
+        let current = { header: null, content: [] };
+
+        parsed.ops.forEach((item, index) => {
+            const next =
+                index + 1 < parsed.ops.length ? parsed.ops[index + 1] : {};
+
+            if (
+                typeof next.attributes !== "undefined" &&
+                typeof next.attributes.header !== "undefined" &&
+                (next.attributes.header == 1 || next.attributes.header == 2)
+            ) {
+                if (!!current.header) total.push(current);
+
+                // Check if item is "weird formatted"
+                // This basically means that the actual header is merged with some other test and is split via a "\n"
+                // This part fixes that
+
+                const nSplitArray = item.insert.split("\n");
+
+                const realHeader =
+                    nSplitArray.filter((textContent) => textContent.length > 0)
+                        .length > 1
+                        ? nSplitArray[nSplitArray.length - 1]
+                        : item.insert;
+
+                current = {
+                    header: realHeader + "\n",
+                    content: []
+                };
+                parsed.ops.splice(index + 1, 1);
+            } else {
+                if (!!current.header) current.content.push(item);
+
+                if (index === parsed.ops.length - 1) total.push(current);
+            }
+        });
+
+        this.db[className.toLowerCase()].studyNoteData = total;
+        this.save();
+    }
 
     /**
      * Saves current db object to storage
      */
     save() {
-        store.set("studySheet", this.db);
+        store.set("studySheet", JSON.stringify(this.db));
     }
-
+    /**
+     * Gets studysheet by class name
+     * @param {string} className Name of class
+     * @returns {boolean | object} False if fails studynote if successful
+     */
     getClassStudySheet(className) {
-        console.log(this.db);
         if (typeof className !== "string") return false;
 
-        if (typeof this.db[className].studyNoteData !== "object") return false;
+        if (typeof this.db[className.toLowerCase()].studyNoteData !== "object")
+            return false;
 
-        return this.db[className].studyNoteData;
+        return this.db[className.toLowerCase()].studyNoteData;
+    }
+
+    updateStudySheet(className, newData) {
+        if (typeof className !== "string" || typeof newData !== "string")
+            return false;
+
+        if (typeof this.db[className.toLowerCase()].studyNoteData !== "object")
+            return false;
+
+        this._createStudySheetFromStudySheetContent(className, newData);
+
+        return true;
     }
 }
 

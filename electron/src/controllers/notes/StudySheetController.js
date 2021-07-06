@@ -9,7 +9,8 @@ class StudySheetController {
      * Registers all listeners
      */
     setAll() {
-        this.getStudySheetListener();
+        this._getStudySheetListener();
+        this._saveStudySheetListener();
     }
 
     _errorClient(message) {
@@ -18,7 +19,7 @@ class StudySheetController {
         });
     }
 
-    getStudySheetListener() {
+    _getStudySheetListener() {
         const ipcMain = this.ipcMain;
         const mainWindow = this.mainWindow;
         const storage = this.storage;
@@ -40,6 +41,32 @@ class StudySheetController {
                 "fetchStudySheet:response",
                 responseData
             );
+        });
+    }
+
+    _saveStudySheetListener() {
+        const ipcMain = this.ipcMain;
+        const mainWindow = this.mainWindow;
+        const storage = this.storage;
+
+        ipcMain.on("saveStudySheet", (event, data) => {
+            if (
+                typeof data.className !== "string" ||
+                typeof data.newData !== "string"
+            )
+                return this._errorClient("Invalid save data!");
+
+            const responseData = storage.updateStudySheet(
+                data.className,
+                data.newData
+            );
+
+            if (!responseData)
+                return this._errorClient(
+                    "An error with the study sheet model occurred!"
+                );
+
+            mainWindow.webContents.send("saveStudySheet:response", "Success!");
         });
     }
 }

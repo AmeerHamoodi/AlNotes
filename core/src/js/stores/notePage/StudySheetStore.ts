@@ -26,6 +26,7 @@ export default class StudySheetStore
     public showTemplateSearch: boolean;
     public templateSearch: templatesViewInt[];
     public isLoaded: boolean;
+    public className: string;
 
     constructor() {
         super();
@@ -36,7 +37,6 @@ export default class StudySheetStore
         this.templateSearch = [];
 
         makeObservable(this, {
-            data: observable,
             isLoaded: observable,
             showTemplateSearch: observable,
             templateSearch: observable,
@@ -53,13 +53,11 @@ export default class StudySheetStore
         ipcRenderer.on(
             "fetchStudySheet:response",
             (event: object, args: StudySheetItem[]) => {
-                console.log(args);
                 try {
                     if (!Array.isArray(args))
                         throw new ResponseError(
                             "Invalid response from 'fetchStudySheet:response'!"
                         );
-                    console.log(args);
 
                     runInAction(() => {
                         this.data = args;
@@ -78,6 +76,8 @@ export default class StudySheetStore
             if (typeof className !== "string")
                 throw new StoreError("Invalid class name!");
 
+            this.className = className;
+
             ipcRenderer.send("fetchStudySheet", { className });
         } catch (e) {
             this._handleError(e);
@@ -94,5 +94,9 @@ export default class StudySheetStore
 
     public addSearch(templateData: templatesViewInt[]) {
         this.templateSearch = templateData;
+    }
+
+    public saveStudySheet(className: string, newData: string) {
+        ipcRenderer.send("saveStudySheet", { className, newData });
     }
 }

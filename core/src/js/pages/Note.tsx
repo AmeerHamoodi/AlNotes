@@ -27,7 +27,7 @@ const core: CoreInterface = new Core();
 const Note = observer(({ match }: RouteComponentProps<RouteDetails>) => {
     const { id, className, unitName } = match.params;
 
-    const { noteContent, noteName } = noteStore;
+    const { noteName } = noteStore;
 
     useEffect(() => {
         noteStore.getNote(className, unitName, id);

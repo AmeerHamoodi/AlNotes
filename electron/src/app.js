@@ -17,7 +17,6 @@ const StudySheet = require("./models/studySheet");
 const storage = new DataStorage();
 const settings = new UserSettings(false);
 const studySheet = new StudySheet();
-studySheet._init();
 
 const store = new Store();
 
@@ -47,6 +46,7 @@ class Main {
     _init() {
         app.whenReady().then(() => {
             this.setLoadingWindow();
+            studySheet._init();
             this.setWindowMain();
         });
         this.beforeCloseFunctions();

@@ -152,11 +152,13 @@ interface StudySheetStoreInterface extends DefaultInterface {
     isLoaded: boolean;
     showTemplateSearch: boolean;
     templateSearch: templatesViewInt[];
+    className: string;
     _studySheetListener: () => void;
     setUnloaded: () => void;
     toggleSearch: () => void;
     addSearch: (templateData: templatesViewInt[]) => void;
     getStudySheet: (className: string) => void;
+    saveStudySheet: (className: string, newData: string) => void;
 }
 
 export {

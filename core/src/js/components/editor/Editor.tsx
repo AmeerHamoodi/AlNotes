@@ -47,6 +47,10 @@ const Editor: FC<EditorProps> = observer(({ store, core, isStudySheet }) => {
                 core.createStudySheet(editorRef.current.getEditor());
             }
         }
+
+        return () => {
+            core.unsetAll();
+        };
     }, []);
 
     return (
