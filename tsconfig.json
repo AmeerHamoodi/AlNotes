@@ -1,28 +1,22 @@
 {
-  "compilerOptions": {
-      "jsx": "react",
-      "module": "commonjs",
-      "noImplicitAny": true,
-      "outDir": "./dist/public/",
-      "preserveConstEnums": true,
-      "removeComments": true,
-      "sourceMap": true,
-      "target": "es5",
-      "incremental": true,
-      "esModuleInterop": true,
-      "allowSyntheticDefaultImports": true,
-      "experimentalDecorators": true,
-      "emitDecoratorMetadata": true,
-      "useDefineForClassFields": true,
-      "typeRoots": [
-        "node_modules/@types"
-      ]
-  },
-  "include": [
-    "./core/src/js/**/*"
-  ],
-  "exclude": [
-    "electron",
-    "node_modules"
-  ],
+    "compilerOptions": {
+        "jsx": "react",
+        "module": "commonjs",
+        "noImplicitAny": true,
+        "outDir": "./dist/public/",
+        "preserveConstEnums": true,
+        "removeComments": true,
+        "sourceMap": true,
+        "target": "es5",
+        "incremental": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "useDefineForClassFields": true,
+        "typeRoots": ["node_modules/@types"],
+        "skipLibCheck": true
+    },
+    "include": ["./core/src/js/**/*"],
+    "exclude": ["electron", "node_modules"]
 }

@@ -43,12 +43,21 @@ const defaultTemplates = {
         let currentSelection: RangeStatic = quill.getSelection();
 
         let oldSelection = currentSelection;
-        quill.format("header", 3);
+        quill.format("bold", true);
+        if (typeof quill.getFormat(currentSelection).list !== "string")
+            quill.format("list", "bullet");
         quill.insertText(currentSelection.index, "Name of item:\n");
-        quill.format("header", false);
+        quill.formatLine(
+            currentSelection.index,
+            "Name of item:".length,
+            "underline",
+            true
+        );
 
         quill.focus();
         currentSelection = quill.getSelection();
+        if (typeof quill.getFormat(currentSelection).list === "string")
+            quill.format("indent", "+1");
         quill.format("list", "bullet");
         quill.format("bold", true);
         quill.insertText(currentSelection.index, "Structure:\n");
@@ -101,19 +110,30 @@ const defaultTemplates = {
         quill.focus();
         let currentSelection: RangeStatic = quill.getSelection();
         let oldSelection = currentSelection;
-        quill.format("header", 3);
+
+        if (typeof quill.getFormat(currentSelection).list !== "string")
+            quill.format("list", "bullet");
+
+        quill.format("bold", true);
         quill.insertText(currentSelection.index, "Name of item:\n");
-        quill.format("header", false);
+        quill.formatText(
+            currentSelection.index,
+            "Name of item:\n".length,
+            "underline",
+            true
+        );
 
         quill.focus();
+        if (typeof quill.getFormat(currentSelection).list === "string")
+            quill.format("indent", "+1");
         currentSelection = quill.getSelection();
         quill.format("list", "bullet");
         quill.format("bold", true);
         quill.insertText(currentSelection.index, "Definition:");
+        quill.format("bold", false);
 
         quill.focus();
         currentSelection = quill.getSelection();
-        quill.format("bold", false);
         quill.insertText(currentSelection.index, "\n");
         quill.format("list", false);
 
@@ -144,16 +164,28 @@ const defaultTemplates = {
      */
     PROC: (quill: Quill) => {
         quill.focus();
+
         let currentSelection: RangeStatic = quill.getSelection();
         let oldSelection = currentSelection;
-        quill.format("header", 3);
+
+        if (typeof quill.getFormat(currentSelection).list !== "string")
+            quill.format("list", "bullet");
+
+        quill.format("bold", true);
+
         quill.insertText(currentSelection.index, "Name of process:\n");
-        quill.format("header", false);
+        quill.formatText(
+            currentSelection.index,
+            "Name of process:\n".length,
+            "underline",
+            true
+        );
 
         quill.focus();
         currentSelection = quill.getSelection();
         quill.format("list", "bullet");
-        quill.format("bold", true);
+        if (typeof quill.getFormat(currentSelection).list === "string")
+            quill.format("indent", "+1");
         quill.insertText(currentSelection.index, "Description:");
 
         quill.focus();
@@ -204,12 +236,25 @@ const defaultTemplates = {
         quill.focus();
         let currentSelection: RangeStatic = quill.getSelection();
         let oldSelection = currentSelection;
-        quill.format("header", 3);
+
+        quill.format("bold", true);
+
+        if (typeof quill.getFormat(currentSelection).list !== "string")
+            quill.format("list", "bullet");
+
         quill.insertText(currentSelection.index, "Name of theory:\n");
-        quill.format("header", false);
+        quill.formatText(
+            currentSelection.index,
+            "Name of theory:\n".length,
+            "underline",
+            true
+        );
+        quill.format("bold", false);
 
         quill.focus();
         currentSelection = quill.getSelection();
+        if (typeof quill.getFormat(currentSelection).list === "string")
+            quill.format("indent", "+1");
         quill.format("list", "bullet");
         quill.format("bold", true);
         quill.insertText(currentSelection.index, "Evidence:\n");
@@ -261,12 +306,18 @@ const defaultTemplates = {
         quill.focus();
         let currentSelection: RangeStatic = quill.getSelection();
         let oldSelection = currentSelection;
-        quill.format("header", 3);
+
+        quill.removeFormat(currentSelection.index, 1);
+
+        quill.format("header", 2, "user");
         quill.insertText(currentSelection.index, "Name of concept:\n");
-        quill.format("header", false);
 
         quill.focus();
+
         currentSelection = quill.getSelection();
+
+        if (typeof quill.getFormat(currentSelection).list === "string")
+            quill.format("indent", "+1");
         quill.format("list", "bullet");
         quill.format("bold", true);
         quill.insertText(currentSelection.index, "Sub-concept name:\n");
@@ -304,7 +355,8 @@ const defaultTemplates = {
         let currentSelection: RangeStatic = quill.getSelection();
         let oldSelection = currentSelection;
 
-        quill.format("list", "bullet");
+        if (typeof quill.getFormat(currentSelection).list !== "string")
+            quill.format("list", "bullet");
         quill.format("bold", true);
         quill.insertText(currentSelection.index, "Sub-concept name:\n");
 
@@ -343,6 +395,10 @@ const defaultTemplates = {
 
         quill.format("list", "bullet");
         quill.format("bold", true);
+
+        if (typeof quill.getFormat(currentSelection).list !== "string")
+            quill.format("list", "bullet");
+
         quill.insertText(currentSelection.index, "Example [details]:\n");
 
         quill.focus();
@@ -381,6 +437,10 @@ const defaultTemplates = {
 
         quill.format("list", "bullet");
         quill.format("bold", true);
+
+        if (typeof quill.getFormat(currentSelection).list !== "string")
+            quill.format("list", "bullet");
+
         quill.insertText(currentSelection.index, "Figure:\n");
 
         quill.focus();
