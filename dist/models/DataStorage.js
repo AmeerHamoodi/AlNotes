@@ -294,6 +294,17 @@ class DataStorage {
         if (!this.classExists(className)) return false;
         return this.db.classes[className.toLowerCase()];
     }
+
+    archiveClass(className) {
+        if (!this.classExists(className)) return false;
+        const classroom = className.toLowerCase();
+        this.db.classes[classroom].archived = true;
+
+        this.saveAll();
+
+        return this.getClasses();
+    }
+
     /**
      * Deletes textbook
      * @param {string} className Name of class

@@ -1,0 +1,105 @@
+diff --git a/node_modules/react-quill/lib/index.d.ts b/node_modules/react-quill/lib/index.d.ts
+index a003b6b..e59bf89 100644
+--- a/node_modules/react-quill/lib/index.d.ts
++++ b/node_modules/react-quill/lib/index.d.ts
+@@ -1,7 +1,7 @@
+ import React from 'react';
+-import Quill, { QuillOptionsStatic, DeltaStatic, RangeStatic, BoundsStatic, StringMap, Sources } from 'quill';
++import Quill, { QuillOptionsStatic, DeltaOperation, RangeStatic, BoundsStatic, StringMap, Sources } from 'quill';
+ declare namespace ReactQuill {
+-    type Value = string | DeltaStatic;
++    type Value = string | DeltaOperation;
+     type Range = RangeStatic | null;
+     interface QuillOptions extends QuillOptionsStatic {
+         tabIndex?: number;
+@@ -14,7 +14,7 @@ declare namespace ReactQuill {
+         formats?: string[];
+         id?: string;
+         modules?: StringMap;
+-        onChange?(value: string, delta: DeltaStatic, source: Sources, editor: UnprivilegedEditor): void;
++        onChange?(value: string, delta: DeltaOperation, source: Sources, editor: UnprivilegedEditor): void;
+         onChangeSelection?(selection: Range, source: Sources, editor: UnprivilegedEditor): void;
+         onFocus?(selection: Range, source: Sources, editor: UnprivilegedEditor): void;
+         onBlur?(previousSelection: Range, source: Sources, editor: UnprivilegedEditor): void;
+@@ -36,7 +36,7 @@ declare namespace ReactQuill {
+         getHTML(): string;
+         getBounds(index: number, length?: number): BoundsStatic;
+         getSelection(focus?: boolean): RangeStatic;
+-        getContents(index?: number, length?: number): DeltaStatic;
++        getContents(index?: number, length?: number): DeltaOperation;
+     }
+ }
+ import Value = ReactQuill.Value;
+@@ -62,9 +62,9 @@ declare class ReactQuill extends React.Component<ReactQuillProps, ReactQuillStat
+     state: ReactQuillState;
+     editor?: Quill;
+     editingArea?: React.ReactInstance | null;
+-    lastDeltaChangeSet?: DeltaStatic;
++    lastDeltaChangeSet?: DeltaOperation;
+     regenerationSnapshot?: {
+-        delta: DeltaStatic;
++        delta: DeltaOperation;
+         selection: Range;
+     };
+     unprivilegedEditor?: UnprivilegedEditor;
+@@ -99,7 +99,7 @@ declare class ReactQuill extends React.Component<ReactQuillProps, ReactQuillStat
+         getHTML: () => string;
+         getLength: () => number;
+         getText: (index?: number | undefined, length?: number | undefined) => string;
+-        getContents: (index?: number | undefined, length?: number | undefined) => DeltaStatic;
++        getContents: (index?: number | undefined, length?: number | undefined) => DeltaOperation;
+         getSelection: {
+             (focus: true): RangeStatic;
+             (focus?: false | undefined): Range;
+@@ -109,8 +109,8 @@ declare class ReactQuill extends React.Component<ReactQuillProps, ReactQuillStat
+     getEditingArea(): Element;
+     renderEditingArea(): JSX.Element;
+     render(): JSX.Element;
+-    onEditorChange: (eventName: "text-change" | "selection-change", rangeOrDelta: DeltaStatic | RangeStatic | null, oldRangeOrDelta: DeltaStatic | RangeStatic | null, source: Sources) => void;
+-    onEditorChangeText(value: string, delta: DeltaStatic, source: Sources, editor: UnprivilegedEditor): void;
++    onEditorChange: (eventName: "text-change" | "selection-change", rangeOrDelta: DeltaOperation | RangeStatic | null, oldRangeOrDelta: DeltaOperation | RangeStatic | null, source: Sources) => void;
++    onEditorChangeText(value: string, delta: DeltaOperation, source: Sources, editor: UnprivilegedEditor): void;
+     onEditorChangeSelection(nextSelection: RangeStatic, source: Sources, editor: UnprivilegedEditor): void;
+     focus(): void;
+     blur(): void;
+diff --git a/node_modules/react-quill/types.d.ts b/node_modules/react-quill/types.d.ts
+index 495a630..5b736e7 100644
+--- a/node_modules/react-quill/types.d.ts
++++ b/node_modules/react-quill/types.d.ts
+@@ -8,7 +8,7 @@ declare namespace ReactQuill {
+ 		getHTML(): string;
+ 		getBounds(index: number, length?: number): Quill.BoundsStatic;
+ 		getSelection(focus?: boolean): Quill.RangeStatic;
+-		getContents(index?: number, length?: number): Quill.DeltaStatic;
++		getContents(index?: number, length?: number): Quill.DeltaOperation;
+ 	}
+ 
+ 	export interface ComponentProps {
+@@ -17,15 +17,15 @@ declare namespace ReactQuill {
+ 		theme?: string;
+ 		style?: React.CSSProperties;
+ 		readOnly?: boolean;
+-		value?: string | Quill.Delta;
+-		defaultValue?: string | Quill.Delta;
++		value?: string | Quill.DeltaOperation;
++		defaultValue?: string | Quill.DeltaOperation;
+ 		placeholder?: string;
+ 		tabIndex?: number;
+ 		bounds?: string | HTMLElement;
+ 		scrollingContainer?: string | HTMLElement;
+ 		onChange?: (
+ 			content: string,
+-			delta: Quill.Delta,
++			delta: Quill.DeltaOperation,
+ 			source: Quill.Sources,
+ 			editor: UnprivilegedEditor
+ 		) => void;
+@@ -81,7 +81,7 @@ declare namespace ReactQuill {
+ 		hookEditor(editor: Quill.Quill): void;
+ 		unhookEditor(editor: Quill.Quill): void;
+ 		setEditorReadOnly(editor: Quill.Quill, value: boolean): void;
+-		setEditorContents(editor: Quill.Quill, value: Quill.Delta | string): void;
++		setEditorContents(editor: Quill.Quill, value: Quill.DeltaOperation | string): void;
+ 		setEditorSelection(editor: Quill.Quill, range: Quill.RangeStatic): void;
+ 		makeUnprivilegedEditor(editor: Quill.Quill): UnprivilegedEditor;
+ 	}

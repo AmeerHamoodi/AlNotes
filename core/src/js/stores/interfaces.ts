@@ -16,6 +16,7 @@ interface ClassesStoreInterface extends DefaultInterface {
     getClasses: () => void;
     createClass: (className: string) => void;
     deleteClass: (className: string) => void;
+    archiveClass: (className: string) => void;
 }
 
 interface UnitsStoreInterface {

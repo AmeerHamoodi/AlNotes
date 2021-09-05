@@ -8,6 +8,8 @@ interface CardPropsInterface {
     deleteMessage?: string;
     link?: string;
     deleteFunction?: () => void;
+    archive?: boolean;
+    archiveFunction?: () => void;
 }
 
 const CardInternal = ({
@@ -15,7 +17,8 @@ const CardInternal = ({
     openMessage,
     deleteMessage,
     link,
-    deleteFunction
+    deleteFunction,
+    archiveFunction
 }: CardPropsInterface) => {
     const deleteInternal = () => {
         if (
@@ -26,6 +29,15 @@ const CardInternal = ({
         )
             deleteFunction();
     };
+
+    const archiveInternal = () => {
+        if (
+            typeof archiveFunction == "function" &&
+            confirm("Are you sure you want to archive this")
+        )
+            archiveFunction();
+    };
+
     return (
         <Card className="mt">
             <Card.Content>
@@ -42,6 +54,17 @@ const CardInternal = ({
                     <Icon name="trash alternate"></Icon>
                     {deleteMessage || "Delete"}
                 </Button>
+                {typeof archiveInternal == "function" ? (
+                    <Button
+                        basic
+                        color="yellow"
+                        attached="bottom"
+                        onClick={archiveInternal}
+                    >
+                        <Icon name="archive" />
+                        Archive
+                    </Button>
+                ) : null}
             </Card.Content>
         </Card>
     );

@@ -13,6 +13,7 @@ module.exports = class ClassController {
         this._newClass();
         this._newClassItem();
         this._unitListeners();
+        this._archiveClass();
     }
     /**
      * Sets listerns for the getAllClasses events and sends back all of the classes;
@@ -70,6 +71,23 @@ module.exports = class ClassController {
             mainWindow.webContents.send("classContent", result);
         });
     }
+
+    _archiveClass() {
+        const { ipcMain, storage, mainWindow } = this;
+
+        ipcMain.on("archiveClass", (eve, args) => {
+            const result = storage.archiveClass(args);
+
+            if (result === false)
+                return mainWindow.webContents.send(
+                    "classThread:error",
+                    "Class does not exist"
+                );
+
+            mainWindow.webContents.send("getAllClasses:response", result);
+        });
+    }
+
     /**
      * Listens for all of the events regarding to the creation of class content.
      */

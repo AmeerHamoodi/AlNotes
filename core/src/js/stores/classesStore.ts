@@ -16,7 +16,7 @@ const { ipcRenderer } = window.require("electron");
 
 declare global {
     interface Window {
-        ipcRenderer: any
+        ipcRenderer: any;
     }
 }
 
@@ -37,7 +37,7 @@ class ClassesStore extends DefaultStore implements ClassesStoreInterface {
         makeObservable(this, {
             classes: observable,
             classesLoaded: observable,
-            _classListener: action,
+            _classListener: action
         });
 
         this._classListener();
@@ -47,30 +47,44 @@ class ClassesStore extends DefaultStore implements ClassesStoreInterface {
      * Listens to the getAllClasses:response data
      */
     _classListener() {
-        ipcRenderer.on("getAllClasses:response", (event: object, data: object[]) => {
-            try {
-                if (!Array.isArray(data)) throw new ResponseError("Invalid response data");
+        ipcRenderer.on(
+            "getAllClasses:response",
+            (event: object, data: object[]) => {
+                try {
+                    if (!Array.isArray(data))
+                        throw new ResponseError("Invalid response data");
 
-                const frontViewArray: ClassFrontInterface[] = data.map((item: ConstParams) => {
-                    const classroom: ClassFrontInterface = new ClassFront(item);
-                    classroom.deleteFunction = () => {
-                        if(confirm("Last chance, turn back now! This process can not be reversed!")) this.deleteClass(item.name);
-                    };
-                    return classroom;
-                })
+                    const frontViewArray: ClassFrontInterface[] = data
+                        .map((item: ConstParams) => {
+                            const classroom: ClassFrontInterface = new ClassFront(
+                                item
+                            );
+                            classroom.deleteFunction = () => {
+                                if (
+                                    confirm(
+                                        "Last chance, turn back now! This process can not be reversed!"
+                                    )
+                                )
+                                    this.deleteClass(item.name);
+                            };
+                            classroom.archiveFunction = () => {
+                                this.archiveClass(item.name);
+                            };
+                            return classroom;
+                        })
+                        .filter((item) => !item.archived);
 
-
-                runInAction(() => {
-                    this.classes = frontViewArray;
-                    this.classesLoaded = true;
-                    this.errorContent.occured = false;
-                    this.errorContent.data = "";
-                })
-            
-            } catch (e) {
-                this._handleError(e);
+                    runInAction(() => {
+                        this.classes = frontViewArray;
+                        this.classesLoaded = true;
+                        this.errorContent.occured = false;
+                        this.errorContent.data = "";
+                    });
+                } catch (e) {
+                    this._handleError(e);
+                }
             }
-        })
+        );
     }
 
     /**
@@ -86,11 +100,15 @@ class ClassesStore extends DefaultStore implements ClassesStoreInterface {
      */
     public createClass(className: string) {
         try {
-            if(typeof className !== "string" || className.length < 0 || !className.trim()) throw new StoreError("Invalid classname!");
+            if (
+                typeof className !== "string" ||
+                className.length < 0 ||
+                !className.trim()
+            )
+                throw new StoreError("Invalid classname!");
 
             ipcRenderer.send("newClass", className);
-
-        } catch(e) {
+        } catch (e) {
             this._handleError(e);
         }
     }
@@ -100,14 +118,25 @@ class ClassesStore extends DefaultStore implements ClassesStoreInterface {
      */
     public deleteClass(className: string) {
         try {
-            if(typeof className !== "string") throw new StoreError("Class name must be a string!");
+            if (typeof className !== "string")
+                throw new StoreError("Class name must be a string!");
 
             ipcRenderer.send("deleteClass", className);
-        } catch(e) {
+        } catch (e) {
             this._handleError(e);
         }
     }
 
+    public archiveClass(className: string) {
+        try {
+            if (typeof className !== "string")
+                throw new StoreError("Class name must be a string!");
+
+            ipcRenderer.send("archiveClass", className);
+        } catch (e) {
+            this._handleError(e);
+        }
+    }
 }
 
 export default ClassesStore;
