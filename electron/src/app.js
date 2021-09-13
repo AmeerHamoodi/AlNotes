@@ -80,6 +80,8 @@ class Main {
             this.setSpellChecking();
         });
 
+        // Stupid me moment
+
         /**
          * Where the controllers get initialized
          */
