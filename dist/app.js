@@ -35,17 +35,8 @@ class Main {
      */
     _init() {
         app.whenReady().then(() => {
+            this.setLoadingWindow();
             this.setWindowMain();
-
-            const webContents = this.mainWindow.webContents;
-
-            webContents.once("dom-ready", () => {
-                this.mainWindow.show();
-                this.showUpdateMessage();
-                this.autoupdate();
-                this.registerAutoShortcut();
-                this.setSpellChecking();
-            });
         });
         this.beforeCloseFunctions();
     }
@@ -74,8 +65,20 @@ class Main {
                 contextIsolation: false
             }
         });
+        this.mainWindow.hide();
         this.mainWindow.loadURL(path.join(__dirname, "/public/index.html"));
         this.mainWindow.removeMenu();
+
+        const webContents = this.mainWindow.webContents;
+
+        webContents.once("dom-ready", () => {
+            this.mainWindow.show();
+            this.loadingWindow.close();
+            this.showUpdateMessage();
+            this.autoupdate();
+            this.registerAutoShortcut();
+            this.setSpellChecking();
+        });
 
         /**
          * Where the controllers get initialized
@@ -121,13 +124,11 @@ class Main {
      */
     setLoadingWindow() {
         this.loadingWindow = new BrowserWindow({
-            width: 400,
+            width: 500,
             height: 300,
             frame: false
         });
-        this.loadingWindow.loadURL(
-            path.join(__dirname, "../devBuild/loading.html")
-        );
+        this.loadingWindow.loadURL(path.join(__dirname, "public/loading.html"));
     }
     /**
      * Initializes the context menu method here
