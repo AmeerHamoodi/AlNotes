@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { observer } from "mobx-react-lite";
 
 import { Dropdown, DropdownProps } from "semantic-ui-react";
@@ -76,6 +76,8 @@ const TemplateSearch = observer(
                 onSearchChange={(el, val) => setSearchItem(val.searchQuery)}
                 searchQuery={searchItem}
                 onKeyUp={checkEnter}
+                onBlur={() => (toShow ? noteStore.toggleSearch() : null)}
+                closeOnEscape
             ></Dropdown>
         ) : (
             <h1 style={{ textAlign: "center" }}>Loading...</h1>

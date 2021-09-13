@@ -84,8 +84,6 @@ module.exports = class ClassController {
                     "Class does not exist"
                 );
 
-            console.log(result);
-
             mainWindow.webContents.send("getAllClasses:response", result);
         });
     }
