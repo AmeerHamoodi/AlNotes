@@ -29,6 +29,13 @@ const Editor: FC<EditorProps> = observer(({ content, store, core }) => {
         if (typeof editorRef.current.getEditor === "function") {
             core.coreEditor = editorRef.current.getEditor();
         }
+
+        const interval = setInterval(() => core.saveNote(), 10000);
+
+        return () => {
+            clearInterval(interval);
+        }
+
     }, []);
 
     return (

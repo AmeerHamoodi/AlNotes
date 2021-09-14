@@ -47,7 +47,8 @@ const Class = observer(({ match }: RouteComponentProps<RouteDetails>) => {
                     toShow={unitsStore.errorContent.occured}
                     textToShow={unitsStore.errorContent.data}
                 ></Error>
-                {classItemsStore.contentLoaded ? (
+                {/* Commenting these out until a more stable solution can be found */}
+                {/* {classItemsStore.contentLoaded ? (
                     <Textbooks
                         classItemsStore={classItemsStore}
                         className={match.params.name}
@@ -78,7 +79,7 @@ const Class = observer(({ match }: RouteComponentProps<RouteDetails>) => {
                     ></Meetings>
                 ) : (
                     <div className="ui active centered inline loader"></div>
-                )}
+                )} */}
                 <Error
                     toShow={classItemsStore.errorContent.occured}
                     textToShow={classItemsStore.errorContent.data}

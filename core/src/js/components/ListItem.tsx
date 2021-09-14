@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { Item, Image, Icon, Button } from "semantic-ui-react";
 
 interface ListItemProps {
@@ -10,6 +10,7 @@ interface ListItemProps {
 }
 
 const ListItem = ({ name, link, deleteFunction, icon }: ListItemProps) => {
+    const history = useHistory();
     const internalDelete = () => {
         if (
             typeof deleteFunction === "function" &&
@@ -19,6 +20,17 @@ const ListItem = ({ name, link, deleteFunction, icon }: ListItemProps) => {
         )
             deleteFunction();
     };
+
+    const internalOpen = (linkDetails:string) => {
+        if(!linkDetails.includes("//")) return history.push(linkDetails);
+
+        const a = document.createElement("a");
+        a.href = linkDetails;
+        a.target = "_blank";
+
+        a.click();
+    };
+
     return (
         <Item>
             <Image size="tiny">
@@ -41,8 +53,7 @@ const ListItem = ({ name, link, deleteFunction, icon }: ListItemProps) => {
                 <Button
                     primary
                     className="right floated"
-                    as={Link}
-                    to={link || "/404"}
+                    onClick={() => internalOpen(link || "/404")}
                 >
                     <Icon name="plus"></Icon>
                     Open

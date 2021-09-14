@@ -46,25 +46,19 @@ const CardInternal = ({
                 </Card.Header>
             </Card.Content>
             <Card.Content extra>
-                <Button primary as={Link} to={link || "/404"} attached="bottom">
-                    <Icon name="add"></Icon>
-                    {openMessage || "Open"}
-                </Button>
-                <Button negative onClick={deleteInternal} attached="bottom">
-                    <Icon name="trash alternate"></Icon>
-                    {deleteMessage || "Delete"}
-                </Button>
-                {typeof archiveInternal == "function" ? (
+                <Button.Group>
+                <Button primary as={Link} to={link || "/404"} icon="add" />
+                <Button negative onClick={deleteInternal} icon="trash alternate" />
+                {typeof archiveFunction == "function" ? (
                     <Button
                         basic
                         color="yellow"
-                        attached="bottom"
                         onClick={archiveInternal}
-                    >
-                        <Icon name="archive" />
-                        Archive
-                    </Button>
+                        icon="archive"
+                    />
                 ) : null}
+                </Button.Group>
+                
             </Card.Content>
         </Card>
     );

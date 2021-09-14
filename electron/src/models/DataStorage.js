@@ -93,14 +93,13 @@ class DataStorage {
     newNote(title, content, className, unitName) {
         let id = this.generateNoteId();
         if (!this.noteExists(className, unitName.toLowerCase(), id)) {
-            this.db.classes[className].units[unitName.toLowerCase()].notes[
-                id
-            ] = {
-                content: content,
-                name: title,
-                date: this.getDate(),
-                id: id
-            };
+            this.db.classes[className].units[unitName.toLowerCase()].notes[id] =
+                {
+                    content: content,
+                    name: title,
+                    date: this.getDate(),
+                    id: id
+                };
             this.saveAll();
             return id;
         }
@@ -120,8 +119,8 @@ class DataStorage {
 
         className = this.formatClassName(className);
 
-        let note = this.db.classes[className].units[unitName.toLowerCase()]
-            .notes[id];
+        let note =
+            this.db.classes[className].units[unitName.toLowerCase()].notes[id];
         note.content = content;
         note.date = this.getDate();
         note.name = name;
@@ -458,6 +457,13 @@ class DataStorage {
         } else {
             throw new Error("Class: " + classroom + " does not exist :(");
         }
+    }
+
+    createBackUp() {
+        store.set(
+            `backup:${new Date().getFullYear()}.${new Date().getMonth()}.${new Date().getDate()}.${new Date().getHours()}.${new Date().getMinutes()}.${new Date().getSeconds()}`,
+            JSON.stringify(this.db)
+        );
     }
 }
 

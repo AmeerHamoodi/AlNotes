@@ -1,5 +1,5 @@
 //LIBS
-const { app, BrowserWindow, ipcMain } = require("electron");
+const { app, BrowserWindow, ipcMain, shell } = require("electron");
 const log = require("electron-log");
 const contextMenu = require("electron-context-menu");
 const { autoUpdater } = require("electron-updater");
@@ -108,15 +108,7 @@ class Main {
         this.classController.setAll();
         this.settingsController.setAll();
 
-        this.mainWindow.on("close", () => {
-            this.mainWindow.webContents.send("closing");
-        });
-
-        this.mainWindow.on("resize", () => {
-            const size = this.mainWindow.getSize();
-            settings.updateSize({ width: size[0], height: size[1] });
-        });
-        if (isDev) this.mainWindow.webContents.openDevTools(); //Comment this line out for production
+        this.registerUtilityListners();
     }
 
     /**
@@ -213,6 +205,23 @@ class Main {
         localShortcut.register(this.mainWindow, "CommandOrControl+F", () => {
             this.mainWindow.webContents.send("on-find");
         });
+    }
+
+    registerUtilityListners() {
+        this.mainWindow.on("close", () => {
+            this.mainWindow.webContents.send("closing");
+        });
+
+        this.mainWindow.on("resize", () => {
+            const size = this.mainWindow.getSize();
+            settings.updateSize({ width: size[0], height: size[1] });
+        });
+        if (isDev) this.mainWindow.webContents.openDevTools(); //Comment this line out for production
+        // this.mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+        //     shell.shell.openExternal(url);
+
+        //     return { action: "deny" };
+        // });
     }
 }
 

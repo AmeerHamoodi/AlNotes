@@ -41,6 +41,8 @@ interface CoreInterface {
     attachSaveState: (setSaveState: any) => void;
     /** Attaches the templates to core object */
     attachTemplates: (templates: templatesViewInt[]) => void;
+    /** Save note */
+    saveNote: () => void;
 }
 
 interface templatesViewInt {
@@ -97,15 +99,7 @@ class Core implements CoreInterface {
                 shortKey: true
             },
             () => {
-                const jsonContent = JSON.stringify(this.core.getContents());
-                this.store.saveNote(
-                    this.store.className,
-                    this.store.unitName,
-                    this.store.noteId,
-                    jsonContent,
-                    this.noteDetails.name
-                );
-                this.setSaveState(`Last saved: ${UTILS.getTime()}`);
+                this.saveNote();
             }
         );
         //FORMAT SHORTCUTS
@@ -134,6 +128,18 @@ class Core implements CoreInterface {
     public attachTemplates(templates: templatesViewInt[]) {
         this.templates = templates;
         this.store.addSearch(templates);
+    }
+
+    public saveNote() {
+        const jsonContent = JSON.stringify(this.core.getContents());
+                this.store.saveNote(
+                    this.store.className,
+                    this.store.unitName,
+                    this.store.noteId,
+                    jsonContent,
+                    this.noteDetails.name
+                );
+                this.setSaveState(`Last saved: ${UTILS.getTime()}`);
     }
 
     //SETTERS
