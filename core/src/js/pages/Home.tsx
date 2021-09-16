@@ -6,7 +6,7 @@ import Navbar from "../components/Navbar";
 import CardsContainer from "../components/CardsContainer";
 import CreateNew from "../components/CreateNew";
 import Error from "../components/Error";
-import { Container } from "semantic-ui-react";
+import { Container, Accordion, Icon, AccordionPanel } from "semantic-ui-react";
 
 //STORES
 import ClassesStore from "../stores/classesStore";
@@ -18,6 +18,7 @@ const classesStore: ClassesStoreInterface = new ClassesStore();
 
 const Home = observer((props) => {
     const [className, setClassName] = useState("");
+    const [activeAcc, setActiveAcc] = useState(-1);
     useEffect(() => {
         classesStore.getClasses();
     }, []);
@@ -31,6 +32,11 @@ const Home = observer((props) => {
         const input = el.target as HTMLInputElement;
         setClassName(input.value);
     };
+
+    const handleAccChange = (e: React.MouseEvent, props:any) => {
+        const index = props.index as number;
+        setActiveAcc(activeAcc === index ? -1: index);
+    }
 
     return (
         <>
@@ -65,6 +71,26 @@ const Home = observer((props) => {
                         textToShow={classesStore.errorContent.data}
                     ></Error>
                 </CreateNew>
+                <Accordion style={{marginBottom: "2rem"}}>
+                    <Accordion.Title
+                        active={activeAcc === 0}
+                        index={0}
+                        onClick={handleAccChange}
+                        >
+                        <Icon name='dropdown' />
+                        Archived
+                    </Accordion.Title>
+                    <Accordion.Content active={activeAcc === 0}>
+                        {classesStore.classesLoaded ? (
+                        <CardsContainer
+                            data={classesStore.archivedClasses}
+                            emptyMessage="No archived classes."
+                        ></CardsContainer>
+                        ) : (
+                            <h3 style={{ textAlign: "center" }}>Loading archived classes...</h3>
+                        )}
+                    </Accordion.Content>
+                </Accordion>
             </Container>
         </>
     );

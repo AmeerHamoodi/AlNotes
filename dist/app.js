@@ -7,6 +7,7 @@ const localShortcut = require("electron-localshortcut");
 const Store = require("electron-store");
 const path = require("path");
 const isDev = require("electron-is-dev");
+const { download } = require("electron-dl");
 
 //INTERNALS
 const DataStorage = require("./models/DataStorage");
@@ -222,6 +223,11 @@ class Main {
 
         //     return { action: "deny" };
         // });
+
+        ipcMain.on("download", (event, data) => {
+            console.log(data);
+            download(this.mainWindow, data, { saveAs: true });
+        });
     }
 }
 

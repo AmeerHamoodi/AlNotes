@@ -3460,7 +3460,7 @@ electron-context-menu@^2.5.1:
     electron-dl "^3.1.0"
     electron-is-dev "^1.2.0"
 
-electron-dl@^3.1.0:
+electron-dl@^3.1.0, electron-dl@^3.2.1:
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/electron-dl/-/electron-dl-3.2.1.tgz#244a1316c663691f70e8aa4515cd1a401b4b5690"
   integrity sha512-k5DFjocJlXbrjshO1zeWe/Gz7HkGwCgnehHPemiyzN2B/LfLlnbIX7sCj5F+huTwZ2l+nQehTI4IR37xvCn6FQ==

@@ -30,7 +30,7 @@ const Editor: FC<EditorProps> = observer(({ content, store, core }) => {
             core.coreEditor = editorRef.current.getEditor();
         }
 
-        const interval = setInterval(() => core.saveNote(), 10000);
+        const interval = setInterval(async () => await core.saveNote(), 10000);
 
         return () => {
             clearInterval(interval);

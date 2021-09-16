@@ -25,6 +25,7 @@ declare global {
  */
 class ClassesStore extends DefaultStore implements ClassesStoreInterface {
     classes: object[];
+    archivedClasses: object[];
     classesLoaded: boolean;
     /**
      * Sets classes as an array <observable> and classesLoaded as a boolean <observable>
@@ -32,10 +33,12 @@ class ClassesStore extends DefaultStore implements ClassesStoreInterface {
     constructor() {
         super();
         this.classes = [];
+        this.archivedClasses = [];
         this.classesLoaded = false;
 
         makeObservable(this, {
             classes: observable,
+            archivedClasses: observable,
             classesLoaded: observable,
             _classListener: action
         });
@@ -54,7 +57,7 @@ class ClassesStore extends DefaultStore implements ClassesStoreInterface {
                     if (!Array.isArray(data))
                         throw new ResponseError("Invalid response data");
 
-                    const frontViewArray: ClassFrontInterface[] = data
+                    const rawFrontViewArray: ClassFrontInterface[] = data
                         .map((item: ConstParams) => {
                             const classroom: ClassFrontInterface = new ClassFront(
                                 item
@@ -68,14 +71,18 @@ class ClassesStore extends DefaultStore implements ClassesStoreInterface {
                                     this.deleteClass(item.name);
                             };
                             classroom.archiveFunction = () => {
-                                this.archiveClass(item.name);
+                                if(item.archived) this.unarchiveClass(item.name);
+                                else this.archiveClass(item.name);
                             };
                             return classroom;
-                        })
-                        .filter((item) => !item.archived);
+                        });
+
+                        const visibleViewArray = rawFrontViewArray.filter((item) => !item.archived);
+                        const archivedViewArray = rawFrontViewArray.filter((item) => item.archived);
 
                     runInAction(() => {
-                        this.classes = frontViewArray;
+                        this.classes = visibleViewArray;
+                        this.archivedClasses = archivedViewArray;
                         this.classesLoaded = true;
                         this.errorContent.occured = false;
                         this.errorContent.data = "";
@@ -133,6 +140,17 @@ class ClassesStore extends DefaultStore implements ClassesStoreInterface {
                 throw new StoreError("Class name must be a string!");
 
             ipcRenderer.send("archiveClass", className);
+        } catch (e) {
+            this._handleError(e);
+        }
+    }
+
+    public unarchiveClass(className: string) {
+        try {
+            if (typeof className !== "string")
+                throw new StoreError("Class name must be a string!");
+
+            ipcRenderer.send("unarchiveClass", className);
         } catch (e) {
             this._handleError(e);
         }

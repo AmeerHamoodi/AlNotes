@@ -18,20 +18,24 @@ class UnitsStore extends DefaultStore implements UnitsStoreInterface {
     units: UnitFrontInterface[];
     unitsLoaded: boolean;
     currentClass: string;
+    exportContent: string;
 
     constructor() {
         super();
         this.units = [];
         this.unitsLoaded = false;
         this.currentClass = "";
+        this.exportContent = "";
 
         makeObservable(this, {
             units: observable,
             unitsLoaded: observable,
+            exportContent: observable,
             _unitsListener: action
         });
 
         this._unitsListener();
+        this._unitExportListener();
     }
 
     /**
@@ -51,12 +55,28 @@ class UnitsStore extends DefaultStore implements UnitsStoreInterface {
                         unit.deleteFunction = () => {
                             if (confirm("Are you sure you want to delete this unit? This is irreversiable")) this.deleteUnit(this.currentClass, unit.name);   
                         };
+                        unit.exportFunction = () => {
+                            this.exportUnit(this.currentClass, unit.name);
+                        };
                         return unit;
                     });
                     this.unitsLoaded = true;
                     this.errorContent.occured = false;
                     this.errorContent.data = "";
                 })
+
+            } catch (e) {
+                this._handleError(e);
+            }
+        })
+    }
+
+    _unitExportListener() {
+        ipcRenderer.on("exportUnit:response", (event: object, data: string) => {
+            try {
+                if (typeof data !== "string") throw new ResponseError("Invalid response data");
+
+                ipcRenderer.send("download", window.URL.createObjectURL(new Blob([data], {type: "text/plain"})));
 
             } catch (e) {
                 this._handleError(e);
@@ -106,6 +126,21 @@ class UnitsStore extends DefaultStore implements UnitsStoreInterface {
             if (typeof className !== "string" || typeof unitName !== "string") throw new StoreError("Invalid unit or class name");
 
             ipcRenderer.send("deleteUnit", { className, unitName });
+        } catch (e) {
+            this._handleError(e);
+        }
+    }
+
+    /**
+     * Exports unit
+     * @param className Name of class 
+     * @param unitName Name of unit
+     */
+    public exportUnit(className: string, unitName: string) {
+        try {
+            if (typeof className !== "string" || typeof unitName !== "string") throw new StoreError("Invalid unit or class name");
+
+            ipcRenderer.send("exportUnit", { className, unitName });
         } catch (e) {
             this._handleError(e);
         }

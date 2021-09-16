@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Card, Button, Icon } from "semantic-ui-react";
+import { Card, Button, Grid } from "semantic-ui-react";
 
 interface CardPropsInterface {
     name?: string;
@@ -8,7 +8,7 @@ interface CardPropsInterface {
     deleteMessage?: string;
     link?: string;
     deleteFunction?: () => void;
-    archive?: boolean;
+    archived?: boolean;
     archiveFunction?: () => void;
 }
 
@@ -18,6 +18,7 @@ const CardInternal = ({
     deleteMessage,
     link,
     deleteFunction,
+    archived,
     archiveFunction
 }: CardPropsInterface) => {
     const deleteInternal = () => {
@@ -33,7 +34,7 @@ const CardInternal = ({
     const archiveInternal = () => {
         if (
             typeof archiveFunction == "function" &&
-            confirm("Are you sure you want to archive this")
+            confirm(`Are you sure you want to ${!archived ? "archive" : "unarchive"} this`)
         )
             archiveFunction();
     };
@@ -41,24 +42,28 @@ const CardInternal = ({
     return (
         <Card className="mt">
             <Card.Content>
-                <Card.Header as={Link} to={link || "/404"}>
-                    {name || "No name"}
+                <Card.Header>
+                    <Grid>
+                        <Grid.Row>
+                            <Grid.Column width={3} floated="left">
+                            <Link to={link || "/404"}>{name || "No name"}</Link>
+                            </Grid.Column>
+                            <Grid.Column width={9} floated="right">
+                                <Button.Group floated="right">
+                                    <Button primary as={Link} to={link || "/404"} icon="add" />
+                                    <Button negative onClick={deleteInternal} icon="trash alternate" />
+                                    {typeof archiveFunction == "function" ? (
+                                        <Button
+                                            color="yellow"
+                                            onClick={archiveInternal}
+                                            icon={!archived ? "archive" : "eye"}
+                                        />
+                                    ) : null}
+                                </Button.Group>
+                            </Grid.Column>
+                        </Grid.Row>
+                    </Grid>
                 </Card.Header>
-            </Card.Content>
-            <Card.Content extra>
-                <Button.Group>
-                <Button primary as={Link} to={link || "/404"} icon="add" />
-                <Button negative onClick={deleteInternal} icon="trash alternate" />
-                {typeof archiveFunction == "function" ? (
-                    <Button
-                        basic
-                        color="yellow"
-                        onClick={archiveInternal}
-                        icon="archive"
-                    />
-                ) : null}
-                </Button.Group>
-                
             </Card.Content>
         </Card>
     );

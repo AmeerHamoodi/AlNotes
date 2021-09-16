@@ -7,9 +7,10 @@ interface ListItemProps {
     link: string;
     deleteFunction?: () => void;
     icon?: "folder" | "book" | "flask" | "users";
+    exportFunction?: () => void;
 }
 
-const ListItem = ({ name, link, deleteFunction, icon }: ListItemProps) => {
+const ListItem = ({ name, link, deleteFunction, icon, exportFunction }: ListItemProps) => {
     const history = useHistory();
     const internalDelete = () => {
         if (
@@ -19,6 +20,13 @@ const ListItem = ({ name, link, deleteFunction, icon }: ListItemProps) => {
             )
         )
             deleteFunction();
+    };
+
+    const internalExport = () => {
+        if (
+            typeof exportFunction === "function"
+        )
+        exportFunction();
     };
 
     const internalOpen = (linkDetails:string) => {
@@ -42,6 +50,8 @@ const ListItem = ({ name, link, deleteFunction, icon }: ListItemProps) => {
                 </Item.Header>
             </Item.Content>
             <Item.Content style={{ marginRight: "3em" }}>
+                {typeof exportFunction === "function" ? 
+                <Button color="purple" className="right floated" onClick={internalExport} icon="download"/>: null}
                 <Button
                     negative
                     className="right floated"

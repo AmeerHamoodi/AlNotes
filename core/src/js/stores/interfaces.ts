@@ -11,12 +11,14 @@ interface DefaultInterface {
 
 interface ClassesStoreInterface extends DefaultInterface {
     classes: object[];
+    archivedClasses: object[];
     classesLoaded: boolean;
     _classListener: () => void;
     getClasses: () => void;
     createClass: (className: string) => void;
     deleteClass: (className: string) => void;
     archiveClass: (className: string) => void;
+    unarchiveClass: (className: string) => void;
 }
 
 interface UnitsStoreInterface {
@@ -27,6 +29,7 @@ interface UnitsStoreInterface {
         data: any;
     };
     currentClass: string;
+    exportContent: string;
     _unitsListener: () => void;
     _errorListener: () => void;
     _handleError: (e: Error) => void;

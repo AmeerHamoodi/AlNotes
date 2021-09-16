@@ -12,6 +12,7 @@ interface UnitFrontInterface {
     name: string;
     link: string;
     deleteFunction?: () => void;
+    exportFunction?: () => void;
     icon?: string | "folder" | "book" | "flask" | "users";
 }
 

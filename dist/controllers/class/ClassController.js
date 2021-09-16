@@ -86,6 +86,18 @@ module.exports = class ClassController {
 
             mainWindow.webContents.send("getAllClasses:response", result);
         });
+
+        ipcMain.on("unarchiveClass", (eve, args) => {
+            const result = storage.unarchiveClass(args);
+
+            if (result === false)
+                return mainWindow.webContents.send(
+                    "classThread:error",
+                    "Class does not exist"
+                );
+
+            mainWindow.webContents.send("getAllClasses:response", result);
+        });
     }
 
     /**
@@ -224,6 +236,23 @@ module.exports = class ClassController {
                 "getAllUnits:response",
                 storage.getAllUnits(args.className)
             );
+        });
+
+        ipcMain.on("exportUnit", (eve, args) => {
+            if (!"unitName" in args || !"className" in args)
+                return this.mainWindow.webContents.send(
+                    "classThread:error",
+                    `Class or unit are not included`
+                );
+
+            const response = JSON.stringify(
+                storage.getNotes(
+                    args.className.toLowerCase(),
+                    args.unitName.toLowerCase()
+                )
+            );
+
+            this.mainWindow.send("exportUnit:response", response);
         });
     }
 };

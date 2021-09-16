@@ -42,7 +42,7 @@ interface CoreInterface {
     /** Attaches the templates to core object */
     attachTemplates: (templates: templatesViewInt[]) => void;
     /** Save note */
-    saveNote: () => void;
+    saveNote: () => Promise<any>;
 }
 
 interface templatesViewInt {
@@ -131,15 +131,19 @@ class Core implements CoreInterface {
     }
 
     public saveNote() {
-        const jsonContent = JSON.stringify(this.core.getContents());
-                this.store.saveNote(
-                    this.store.className,
-                    this.store.unitName,
-                    this.store.noteId,
-                    jsonContent,
-                    this.noteDetails.name
-                );
-                this.setSaveState(`Last saved: ${UTILS.getTime()}`);
+        return new Promise((resolve, reject) => {
+            const jsonContent = JSON.stringify(this.core.getContents());
+            this.store.saveNote(
+                this.store.className,
+                this.store.unitName,
+                this.store.noteId,
+                jsonContent,
+                this.noteDetails.name
+            );
+            this.setSaveState(`Last saved: ${UTILS.getTime()}`);
+
+            resolve(null);
+        });
     }
 
     //SETTERS
