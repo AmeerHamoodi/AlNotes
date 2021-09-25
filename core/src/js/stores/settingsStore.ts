@@ -44,6 +44,7 @@ class SettingsStore extends DefaultStore implements SettingsStoreInterface {
     newKeyboardSettingsQueue: keyboardSettingRaw[];
     rawKeyboardSettings: keyboardSettingRaw[];
     toQueueKeyboard: boolean;
+    isReadOnly: boolean;
 
     constructor() {
         super();
@@ -52,18 +53,23 @@ class SettingsStore extends DefaultStore implements SettingsStoreInterface {
         this.keyboardSettingsLoaded = false;
         this.newKeyboardSettingsQueue = [];
         this.toQueueKeyboard = false;
+        this.isReadOnly = false;
 
         makeObservable(this, {
             keyboardSettings: observable,
             keyboardSettingsLoaded: observable,
             toQueueKeyboard: observable,
             rawKeyboardSettings: observable,
+            isReadOnly: observable,
             addKeyDataToNewQueue: action,
             queueAllKeyboardSettings: action,
             newKeyboard: action
 
         });
         this._listenKeyboardSettings();
+        this._listenIsReadOnly();
+
+        window.isReadOnly = this.isReadOnly;
     }
 
     _listenKeyboardSettings() {
@@ -98,6 +104,17 @@ class SettingsStore extends DefaultStore implements SettingsStoreInterface {
             }
         })
     }
+
+    _listenIsReadOnly() {
+        ipcRenderer.on("isReadOnly:response", (e:any, data:boolean) => {
+            runInAction(() => {
+                this.isReadOnly = data;
+                window.isReadOnly = data;
+                console.log(data);
+            });
+        })
+    }
+
     /** Sends request to get keyboard */
     public getKeyboard() {
         try {
@@ -168,6 +185,10 @@ class SettingsStore extends DefaultStore implements SettingsStoreInterface {
 
     public queueAllKeyboardSettings() {
         this.toQueueKeyboard = true;
+    }
+
+    public setIsReadOnly() {
+        ipcRenderer.send("setReadOnly");
     }
 };
 

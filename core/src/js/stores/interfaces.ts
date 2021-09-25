@@ -125,6 +125,7 @@ interface NoteStoreInterface {
 
 interface SettingsStoreInterface {
     keyboardSettings: any;
+    isReadOnly: boolean;
     errorContent: {
         occured: boolean;
         data: any;
@@ -135,11 +136,13 @@ interface SettingsStoreInterface {
     /** Setting this to true will auto queue all keyboard settings */
     toQueueKeyboard: boolean;
     _listenKeyboardSettings: () => void;
+    _listenIsReadOnly: () => void;
     _errorListener: () => void;
     _handleError: (e: Error) => void;
     getKeyboard: () => void;
     addKeyDataToNewQueue: (keyData: string, func: string) => void;
     queueAllKeyboardSettings: () => void;
+    setIsReadOnly: () => void;
 }
 
 interface UpdateStoreInterface extends DefaultInterface {

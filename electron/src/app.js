@@ -28,6 +28,7 @@ class Main {
     constructor() {
         this.mainWindow = null;
         this.loadingWindow = null;
+        this.isReadOnly = false;
 
         this._init();
     }
@@ -79,6 +80,13 @@ class Main {
             this.autoupdate();
             this.registerAutoShortcut();
             this.setSpellChecking();
+        });
+
+        webContents.on("dom-ready", () => {
+            this.mainWindow.webContents.send(
+                "isReadOnly:response",
+                this.isReadOnly
+            );
         });
 
         /**
@@ -225,8 +233,22 @@ class Main {
         // });
 
         ipcMain.on("download", (event, data) => {
-            console.log(data);
             download(this.mainWindow, data, { saveAs: true });
+        });
+
+        ipcMain.on("setReadOnly", (event, data) => {
+            this.isReadOnly = true;
+            this.mainWindow.webContents.send(
+                "isReadOnly:response",
+                this.isReadOnly
+            );
+        });
+
+        ipcMain.on("isReadOnly", (event, data) => {
+            this.mainWindow.webContents.send(
+                "isReadOnly:response",
+                this.isReadOnly
+            );
         });
     }
 }

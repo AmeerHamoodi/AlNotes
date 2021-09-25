@@ -11,6 +11,7 @@ declare global {
     katex: any;
     mathquill4quill: any;
     MathQuill: any;
+    isReadOnly: boolean;
   }
 }
 

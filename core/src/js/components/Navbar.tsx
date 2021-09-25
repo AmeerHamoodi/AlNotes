@@ -1,6 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Menu, Icon } from "semantic-ui-react";
+import SettingsStore from "../stores/settingsStore";
+import {SettingsStoreInterface} from "../stores/interfaces";
+
+const settingsStore: SettingsStoreInterface = new SettingsStore();
 
 interface NavbarProps {
   backLink: string;
@@ -21,6 +25,9 @@ const Navbar = (props: NavbarProps) => {
       </Menu.Item>
       <Menu.Item as={Link} to="/settings" icon>
         <Icon name="cog"></Icon>
+      </Menu.Item>
+      <Menu.Item icon onClick={settingsStore.setIsReadOnly}>
+        <Icon name="book"></Icon>
       </Menu.Item>
     </Menu>
   );

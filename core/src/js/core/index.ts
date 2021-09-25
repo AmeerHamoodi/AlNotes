@@ -132,6 +132,7 @@ class Core implements CoreInterface {
 
     public saveNote() {
         return new Promise((resolve, reject) => {
+            if(window.isReadOnly) return resolve(null);
             const jsonContent = JSON.stringify(this.core.getContents());
             this.store.saveNote(
                 this.store.className,
